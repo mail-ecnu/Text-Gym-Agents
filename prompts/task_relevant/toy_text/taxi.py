@@ -481,7 +481,7 @@ class REFLEXION:
             },
         ]
 
-class EGG:
+class EXE:
     def __init__(self):
         self.PERCEPTRON_BASIC_FS_EXAMPLES = [
             {
@@ -526,83 +526,6 @@ class EGG:
                 "answer":
                     """
                 Based on the current game state, the insights and the suggestions, the optimal action for the player to take would be to move left (action 4) to pick up the passenager. Therefore, the optimal action to take now is to move left (action 4).
-                    """
-            },
-        ]
-
-class EGGWithoutInsights:
-    def __init__(self):
-        self.PERCEPTRON_BASIC_FS_EXAMPLES = [
-            {
-                "question":
-                    """
-                State description: Current Game State: Taxi is at Row 0, Col 1. The passenger is at the Green location. The passenger wants to go to the Blue location.
-                Goal description: The goal is to navigate the taxi to the passenger, pick them up, and drop them off at their destination as efficiently as possible.
-                Action description: Your Next Move: Please choose an action. Type '1' to move south (down), '2' to move north (up), '3' to move east (right), '4' to move west (left), '5' to pick up the passenger or '6' to drop off the passenger. Ensure you only provide the action number from the valid action list, i.e., [1, 2, 3, 4, 5, 6].
-                The suggestions are listed below:
-                1. The player should explore the environment by trying out different routes to reach the pick-up and drop-off locations. They should also try to identify any patterns in the locations of the pick-up and drop-off points, and use this information to plan their route. The exploration can be done by randomly selecting actions and observing the rewards obtained.
-                2. To improve the policy, the player should use a Q-learning algorithm to learn the optimal policy. They should use the information obtained through exploration to update the Q-values for each state-action pair. The player should also incorporate a penalty for repeating the same action multiple times in a row and a heuristic that encourages the taxi to move towards the passenger or destination.
-                3. The player should weight the exploration and exploitation differently by using an epsilon-greedy policy. They should set a high value of epsilon initially to encourage exploration and gradually decrease it over time to encourage exploitation. The player should also monitor the performance of the policy and adjust the exploration-exploitation trade-off accordingly.
-                    """,
-                "answer":
-                    """
-                Based on the current game state and the suggestions, the optimal action for the player to take would be to move down (action 1) to navigate around the obstacles and pick up the passenager. Therefore, the optimal action to take now is to move down (Action 1).
-                    """
-            },{
-                "question":
-                    """
-                State description: Current Game State: Taxi is at Row 4, Col 4. The passenger is at the Red location. The passenger wants to go to the Green location.
-                Goal description: The goal is to navigate the taxi to the passenger, pick them up, and drop them off at their destination as efficiently as possible.
-                Action description: Your Next Move: Please choose an action. Type '1' to move south (down), '2' to move north (up), '3' to move east (right), '4' to move west (left), '5' to pick up the passenger or '6' to drop off the passenger. Ensure you only provide the action number from the valid action list, i.e., [1, 2, 3, 4, 5, 6].
-                The suggestions are listed below:Suggestion for the next episode:
-                1. Exploration: The player should explore the shortest path to reach the pick-up and drop-off points. This can be done by using a heuristic algorithm such as A* search to find the shortest path. The player should also explore the penalty for repeating the same action multiple times in a row to avoid getting stuck in a loop.
-                2. Exploitation: The player should use a Q-learning algorithm to improve the policy. The Q-learning algorithm should take into account the shortest path to reach the pick-up and drop-off points, as well as the penalty for repeating the same action multiple times in a row. The player should also incorporate a heuristic that encourages the taxi to move towards the passenger or destination.
-                3. Weighting: The player should focus more on exploitation than exploration in this episode, as they have already explored the random policy in the previous episodes. The player should use the information obtained from the exploration to improve the policy and gain a higher performance. However, the player should still explore the penalty for repeating the same action multiple times in a row to avoid getting stuck in a loop.
-                    """,
-                "answer":
-                    """
-                Based on the current game state and the suggestions, the optimal action for the player to take would be to move left (action 4) to pick up the passenager. Therefore, the optimal action to take now is to move left (action 4).
-                    """
-            },
-        ]
-
-class EGGWithoutSuggestions:
-    def __init__(self):
-        self.PERCEPTRON_BASIC_FS_EXAMPLES = [
-            {
-                "question":
-                    """
-                State description: Current Game State: Taxi is at Row 0, Col 1. The passenger is at the Green location. The passenger wants to go to the Blue location.
-                Goal description: The goal is to navigate the taxi to the passenger, pick them up, and drop them off at their destination as efficiently as possible.
-                Action description: Your Next Move: Please choose an action. Type '1' to move south (down), '2' to move north (up), '3' to move east (right), '4' to move west (left), '5' to pick up the passenger or '6' to drop off the passenger. Ensure you only provide the action number from the valid action list, i.e., [1, 2, 3, 4, 5, 6].
-                The insights of the game are listed below: 
-                1. The current policy is random and not using any information about the locations of the pick-up and drop-off points or the shortest path to reach them.
-                2. The taxi is often stuck in a loop of repeatedly taking the same action, which could be addressed by implementing a penalty for repeating the same action multiple times in a row.
-                3. The taxi often moves in the opposite direction of the passenger or destination, which could be addressed by incorporating a heuristic that encourages the taxi to move towards the passenger or destination.
-                4. The performance of the current policy is very poor, as indicated by the negative rewards received in each episode.
-                5. A more informed policy, such as a Q-learning algorithm, could be used to improve performance.
-                    """,
-                "answer":
-                    """
-                Based on the current game state and the insights, the optimal action for the player to take would be to move down (action 1) to navigate around the obstacles and pick up the passenager. Therefore, the optimal action to take now is to move down (Action 1).
-                    """
-            },{
-                "question":
-                    """
-                State description: Current Game State: Taxi is at Row 4, Col 4. The passenger is at the Red location. The passenger wants to go to the Green location.
-                Goal description: The goal is to navigate the taxi to the passenger, pick them up, and drop them off at their destination as efficiently as possible.
-                Action description: Your Next Move: Please choose an action. Type '1' to move south (down), '2' to move north (up), '3' to move east (right), '4' to move west (left), '5' to pick up the passenger or '6' to drop off the passenger. Ensure you only provide the action number from the valid action list, i.e., [1, 2, 3, 4, 5, 6].
-                The insights of the game are listed below: 
-                1. The current policy is random and not using any information about the locations of the pick-up and drop-off points or the shortest path to reach them.
-                2. The taxi is often stuck in a loop of repeating the same action multiple times in a row.
-                3. The taxi often moves in the opposite direction of the passenger or destination.
-                4. A more informed policy, such as a Q-learning algorithm, could be used to improve performance.
-                5. Implementing a penalty for repeating the same action multiple times in a row could address the issue of being stuck in a loop.
-                6. Incorporating a heuristic that encourages the taxi to move towards the passenger or destination could address the issue of moving in the opposite direction.
-                    """,
-                "answer":
-                    """
-                Based on the current game state and the insights, the optimal action for the player to take would be to move left (action 4) to pick up the passenager. Therefore, the optimal action to take now is to move left (action 4).
                     """
             },
         ]

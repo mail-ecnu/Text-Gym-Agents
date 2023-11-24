@@ -9,8 +9,6 @@ class Guidance_Generator():
         self.args = args
         with open("./distillers/guidance_summary_few_shot_examples.txt", 'r') as f:
             self.SUMMARY_FEW_SHOT_EXAMPLES = f.read()
-        # with open("./distillers/exploration_few_shot_examples.txt", 'r') as f:
-        #     self.SUGGEST_FEW_SHOT_EXAMPLES = f.read()
         self.insight = ""
         self.suggestion = ""
         if logfile:
@@ -22,11 +20,17 @@ class Guidance_Generator():
         with open(file_path, 'r') as infile:
             data = json.load(infile)
         for traj in data: 
-            traj_text = traj[0]['game_description']
-            traj_text += traj[0]['goal_description']
+            traj_text = traj[0]['game_description']+'\n'
+            traj_text += traj[0]['goal_description']+'\n'
             for transition in traj[-max_step_num:]: 
-                traj_text += transition['observation']
-                traj_text += f"Action: {transition['action']}"
+                traj_text += transition['observation']+'\n'
+                if type(eval(transition['action'])) == type([]):
+                    action = float(eval(transition['action'])[0])-1
+                else:
+                    action = transition['action']
+                traj_text += f"Action: {action}\n"
+                traj_text += f"Reward: {transition['reward']}\n"
+            traj_text += f"Your performance is: {transition['cum_reward']}\n"
             summary = self.generate_summary(traj_text, mem)
             mem.append(summary)
         return mem
@@ -44,11 +48,6 @@ class Guidance_Generator():
         """
         segments = []
 
-        # Summarization memory
-        # if post_memory:
-        #     segments.append('Your summarization memory is as below:')
-        #     segments.extend([f'Episode #{i}: {m}' for i, m in enumerate(post_memory)])
-        
         # Trajectory
         segments.append(f"Your new collected trajectory is as below:\n {traj}")
         segments.append(f"The suggestion to guide the trajectory is:\n{self.suggestion}")
@@ -65,19 +64,6 @@ class Guidance_Generator():
         query = '\n'.join(segments)
         return query
 
-    # def _generate_summary_query(self, traj, post_memory):
-    #     """Allows the Agent to generate exploration guidance."""
-    #     query = ""
-    #     if len(post_memory) > 0:
-    #         query += '\Your summarization memory is as below:\n'
-    #         for i, m in enumerate(post_memory):
-    #             query += f'Episode #{i}: {m}\n'
-    #     query += f"""
-    #     {traj}
-    #     Above is the trajectory of the new experience.
-    #     """
-    #     query += '\n Anwser the following questions.\n 1. What is the performance of this policy and does it improve the performance compared to before? 2. Summarize the main reason that makes the policy improve or reduce the performance; 3. What new information of the task can be inferred compared to the memory?'
-    #     return query
 
     def generate_summary(self, traj, post_memory):
         query = self._generate_summary_query(traj, post_memory)
@@ -93,6 +79,7 @@ class Guidance_Generator():
                 query += f'Episode #{i}: {m}\n'
         query += '\n Identify and summarize the key information that can be exploited to improve performance of the player.'
         insight = get_chat(query,model=self.args.gpt_version, engine=self.args.gpt_version)
+        # import pdb;pdb.set_trace()
         logger.info(f'[Reflexion Memory]The insight prompt is: {query}.')
         logger.info(f'[Reflexion Memory]The insight response is: {insight}.')
         return insight
@@ -105,26 +92,8 @@ class Guidance_Generator():
             query +=  f"""You have obtained experience as below """
             for i, m in enumerate(post_memory):
                 query += f'Episode #{i}: {m}\n'
-        # if max_num_trials - len(post_memory) == 1:
-        #     query = (f"\n The main goal is to aid the human player in winning the game in the next episode. "
-        #             f"This is his {len(post_memory) + 1} try out of {max(max_num_trials, 1)} episodes. "
-        #             "Your suggestions should be simple, executable with heuristic policy, and suitable for an LLM agent. "
-        #             "Reply in an item list format. Specifically, focus on:"
-        #             "\n1. How to achieve optimal performance (exploitation) using the obtained knowledge?"
-        #             "\nNote: Stress the importance of prioritizing performance without exploration.")
-        #     suggestion = get_chat(query) + "\n Remember, in this attempt, aim solely for high performance without exploration."
-        # else:
-        # if max_num_trials-len(post_memory) == 1:
-        #     query += f"\n The main aim for you is to help the human player win the game in the last episode. The next episode is the last episode. You can give suggestions before each episode. Then what is your suggestion for his next episode? Note that this is the last try and he should not explore which may decrease his performance. The suggestions should be simple to follow, executable with heuristic policy, easy to use for an llm agent,and reply in item list format. The answer should instruct him to exploit all the knowlegde to gain the highest performance (exploitation) in the next episode. "
-        # else: 
+
         query += f"\n The main aim for you is to help the human player win the game in the last episode. He has only {max(max_num_trials-len(post_memory), 1)} episodes left to try.You can give suggestions before each episode. Then what is your suggestion for his next episode? Please provide simple, concise answers suitable for a six-year-old child, focusing on the following in item list format: 1. What game-relevant knowledge is critical to determine the optimal policy. Notice that the knowledge should be obtainable by interacting with the environment and helpful for the decisions.\n 2. How should the player conduct exploration in the next episode to acquire this information?\n3. How can the player exploit the information obtained to achieve higher performance in subsequent episodes?\n 4. How should exploration and exploitation be balanced to improve performance in the next episode?\n"
-            # query += (f"\n The primary goal is to assist the human player in winning the game in the final episode. "
-            #         f"This is his {len(post_memory) + 1} try out of {max(max_num_trials, 1)} episodes. "
-            #         "Provide suggestions for the next episode that balance both exploration and exploitation. "
-            #         "The suggestions should be in item list format, easy to follow, aligned with heuristic policy, and usable for an LLM agent. Address:"
-            #         "\n1. Which information the player should gather via exploration and the best ways to explore?"
-            #         "\n2. Strategies to refine the policy for enhanced performance (exploitation)?"
-            #         "\n3. How should exploration and exploitation be weighted in the next episode?")
 
         # TODO: consider the inconsistency between past suggestion and past memory.
         suggestion = get_chat(query,model=self.args.gpt_version, engine=self.args.gpt_version)

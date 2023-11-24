@@ -364,7 +364,7 @@ class REFLEXION:
             },
         ]
 
-class EGG:
+class EXE:
     def __init__(self):
         self.PERCEPTRON_BASIC_FS_EXAMPLES = [
             {
@@ -398,72 +398,6 @@ class EGG:
                 "answer":
                     """
                 Based on the current game state, the insights and the suggestions, the optimal action for the player to take would be to push the cart to the right (action 2) to maintain balance of the pole. Therefore, the optimal action to take now is to push the cart to the right (action 2).
-                    """
-            },
-        ]
-
-class EGGWithoutInsights:
-    def __init__(self):
-        self.PERCEPTRON_BASIC_FS_EXAMPLES = [
-            {
-                "question":
-                    """
-                State description: The current state is: The cart is positioned at -0.053, with a velocity of 0.01 towards the right. The pole is tilted at 0.05 radians, rotating at 0.11 radians per second towards the right.
-                Goal description: The goal is to keep the pole balanced upright for as long as possible.
-                Action description: Valid action list: [1, 2]. Action 1 means to push the cart to the left, and Action 2 means push the cart to the right. 
-                The suggestions are listed below:Suggestion for the next episode:
-                1. Exploration: The player should explore different strategies for recovering from large tilts of the pole. This can be done by trying out different actions when the pole is tilted beyond a certain angle, such as moving the cart in the opposite direction or applying a stronger force. The player can also try to observe the behavior of the pole and cart in different situations to gain a better understanding of the dynamics of the game.
-                2. Exploitation: To improve performance, the player can adjust the policy to take into account the increasing velocity of the cart towards the end of the game. This can be done by increasing the sensitivity of the policy to changes in the velocity of the cart, or by using a different algorithm that is better suited to handling non-stationary environments. Additionally, the player can incorporate a mechanism for learning from past mistakes, such as experience replay, to help the policy recover from large tilts of the pole.
-                3. Weighting: The player should focus more on exploitation than exploration in the next episode, as they have already explored different strategies in the previous episodes. However, they should still allocate some time for exploration to gain a better understanding of the dynamics of the game and to try out new strategies for recovering from large til
-                    """,
-                "answer":
-                    """
-                Based on the current game state and the suggestions, the optimal action for the player to take would be to push the cart to the right (action 2) to maintain balance of the pole. Therefore, the optimal action to take now is to push the cart to the right (action 2).
-                    """
-            },{
-                "question":
-                    """
-                State description: The current state is: The cart is positioned at 0.033, with a velocity of 0.05 towards the left. The pole is tilted at 0.02 radians, rotating at 0.03 radians per second towards the right.
-                Goal description: The goal is to keep the pole balanced upright for as long as possible.
-                Action description: Valid action list: [1, 2]. Action 1 means to push the cart to the left, and Action 2 means push the cart to the right. 
-                The suggestions are listed below:
-                1. For exploration, the player should try to experiment with different action sequences to see if there are any patterns that lead to longer pole balancing times. One way to do this is to randomly select actions for a certain number of steps before returning to the current policy. 
-                2. To improve policy performance, the player can try incorporating a mechanism for learning from past mistakes, such as experience replay. Additionally, the policy can be adjusted to take into account the increasing velocity of the cart by adding a penalty for large changes in cart velocity. 
-                3. The player should focus more on exploitation than exploration in the next episode, as they have already tried multiple exploration strategies in previous episodes. However, they should still allocate a small portion of their actions to exploration to avoid getting stuck in a suboptimal policy. A good ratio to start with could be 80% exploitation and 20% exploration.
-                    """,
-                "answer":
-                    """
-                Based on the current game state and the suggestions, the optimal action for the player to take would be to push the cart to the right (action 2) to maintain balance of the pole. Therefore, the optimal action to take now is to push the cart to the right (action 2).
-                    """
-            },
-        ]
-
-class EGGWithoutSuggestions:
-    def __init__(self):
-        self.PERCEPTRON_BASIC_FS_EXAMPLES = [
-            {
-                "question":
-                    """
-                State description: The current state is: The cart is positioned at -0.053, with a velocity of 0.01 towards the right. The pole is tilted at 0.05 radians, rotating at 0.11 radians per second towards the right.
-                Goal description: The goal is to keep the pole balanced upright for as long as possible.
-                Action description: Valid action list: [1, 2]. Action 1 means to push the cart to the left, and Action 2 means push the cart to the right. 
-                The insights of the game are listed below: The key information that can be exploited to improve performance of the player includes the fact that the policy alternates between moving the cart left and right based on the pole's tilt, but struggles to recover from large tilts of the pole. Additionally, the velocity of the cart increases rapidly towards the end of the game, indicating that the policy may not be able to keep up with the increasing difficulty of the game. To improve performance, the policy can be adjusted to take into account the increasing velocity of the cart or a different algorithm can be used. Incorporating a mechanism for learning from past mistakes, such as experience replay, may also be beneficial.
-                    """,
-                "answer":
-                    """
-                Based on the current game state and the insights, the optimal action for the player to take would be to push the cart to the right (action 2) to maintain balance of the pole. Therefore, the optimal action to take now is to push the cart to the right (action 2).
-                    """
-            },{
-                "question":
-                    """
-                State description: The current state is: The cart is positioned at 0.033, with a velocity of 0.05 towards the left. The pole is tilted at 0.02 radians, rotating at 0.03 radians per second towards the right.
-                Goal description: The goal is to keep the pole balanced upright for as long as possible.
-                Action description: Valid action list: [1, 2]. Action 1 means to push the cart to the left, and Action 2 means push the cart to the right. 
-                The insights of the game are listed below: The key information that can be exploited to improve performance of the player includes the fact that the policy alternates between moving the cart left and right based on the pole's tilt, but struggles to recover from large tilts of the pole. Additionally, the velocity of the cart increases rapidly towards the end of the game, which may indicate that the policy is not able to keep up with the increasing difficulty of the game. To improve performance, the policy can be adjusted to take into account the increasing velocity of the cart or a different algorithm can be used. Incorporating a mechanism for learning from past mistakes, such as experience replay, may also be beneficial.
-                    """,
-                "answer":
-                    """
-                Based on the current game state and the insights, the optimal action for the player to take would be to push the cart to the right (action 2) to maintain balance of the pole. Therefore, the optimal action to take now is to push the cart to the right (action 2).
                     """
             },
         ]
