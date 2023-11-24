@@ -17,7 +17,7 @@ class EnvironmentHistory:
 
     def __str__(self) -> str:
         s = ''
-        for i, item in enumerate(self._history[-150:]):
+        for i, item in enumerate(self._history):
             if item['label'] == 'action':
                 s += f'He takes action: {item["value"]}'
             elif item['label'] == 'observation':
@@ -137,4 +137,5 @@ class EnvironmentHistory:
         self._history = self._history[:-1]
 
     def __len__(self) -> int:
-        return len(self._history)
+        action = [item for item in self._history if item['label'] == 'action' ]
+        return len(action)

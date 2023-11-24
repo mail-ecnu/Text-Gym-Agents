@@ -18,11 +18,17 @@ class RefletionGenerator():
         with open(file_path, 'r') as infile:
             data = json.load(infile)
         for traj in data: 
-            traj_text = traj[0]['game_description']
-            traj_text += traj[0]['goal_description']
+            traj_text = traj[0]['game_description']+'\n'
+            traj_text += traj[0]['goal_description']+'\n'
             for transition in traj[-max_step_num:]: 
-                traj_text += transition['observation']
-                traj_text += f"Action: {transition['action']}"
+                traj_text += transition['observation']+'\n'
+                if type(eval(transition['action'])) == type([]):
+                    action = float(eval(transition['action'])[0])-1
+                else:
+                    action = transition['action']
+                traj_text += f"Action: {action}\n"
+                traj_text += f"Reward: {transition['reward']}\n"
+            traj_text += f"Your performance is: {transition['cum_reward']}\n"
             reflection = self.generate(traj_text, mem, max_len_mem=5)
             mem.append(reflection)
         return mem

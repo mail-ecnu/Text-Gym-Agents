@@ -1,6 +1,6 @@
 import openai
 from .misc import history_to_str
-from langchain.chat_models import AzureChatOpenAI, ChatOpenAI
+from langchain.chat_models import AzureChatOpenAI
 from langchain.prompts.chat import (
     PromptTemplate,
     ChatPromptTemplate,
@@ -19,7 +19,7 @@ from loguru import logger
 
 
 
-class Jarvis(NaiveAct):
+class EXE(NaiveAct):
     def __init__(self, action_space, args, prompts, distiller, temperature=0., max_tokens=None, logger=None, fixed_suggestion=None, fixed_insight=None):
         super().__init__(action_space, args, prompts, distiller, temperature, max_tokens, logger)
         self.pre_memory = []
@@ -30,8 +30,7 @@ class Jarvis(NaiveAct):
         self.goal_description = args.goal_description
         self.action_description = args.action_description
         self.action_desc_dict = args.action_desc_dict
-        self.mem_num = args.trajectories_num
-        self.temperature = temperature
+        self.mem_num = args.short_mem_num
         self.fixed_suggestion = fixed_suggestion
         self.fixed_insight = fixed_insight
         self._update_mem(None)
@@ -50,10 +49,12 @@ class Jarvis(NaiveAct):
         self._update_mem(traj)
 
     def clear_mem(self):
+        self.update_mem()
         self.pre_memory = []
         self.post_memory = []
         self.is_first = True
-        self._update_mem(None)
+        self.env_history.reset()
+        # self._update_mem(None)
 
     def _update_mem(self, traj):
         if self.memory:
@@ -82,6 +83,7 @@ class Jarvis(NaiveAct):
             insight_str += f"{self.insight}\n"
         suggestion_str = "The suggestions are listed below:" + self.pre_memory[-1]
         return insight_str + suggestion_str 
+    
     def act(
         self,
         state_description,
@@ -94,7 +96,15 @@ class Jarvis(NaiveAct):
         self.game_description = game_description 
         self.goal_description = goal_description
         self.env_history.add("observation", state_description)
-        chat = ChatOpenAI(temperature=0.5, openai_api_key=openai.api_key, model=self.args.gpt_version)
+        chat = AzureChatOpenAI(
+            openai_api_type=openai.api_type,
+            openai_api_version=openai.api_version,
+            openai_api_base=openai.api_base,
+            openai_api_key=openai.api_key,
+            deployment_name=self.args.gpt_version,
+            temperature=self.temperature,
+            max_tokens=self.max_tokens,
+        )
         # print(self.logger)
         reply_format_description = \
             "Your response should choose an optimal action from valid action list, and terminated with following format: "        
@@ -107,8 +117,8 @@ class Jarvis(NaiveAct):
             for examples in self.irr_few_shot_examples:
                 template += "\nQuestion: \n" + examples['question'] + "Answer: \n" + examples['answer']
         
-        template += "\n\nNow you are in the task." 
-        template += " {game_description} {action_description} {goal_description}"
+        template += "\n\nNow you are in the task.\n" 
+        template += " {game_description}\n{action_description}\n{goal_description}"
         template += "You are observing something and  " \
                 "you need to choose the optimal action acoordingly."
         template += 'Response and interact using the format: {reply_format_description}{format_instructions}\n'
@@ -116,7 +126,7 @@ class Jarvis(NaiveAct):
         template += self._read_mem()
         system_message_prompt = SystemMessagePromptTemplate.from_template(template)
         
-        short_memory_template = HumanMessagePromptTemplate.from_template("{history}")
+        short_memory_template = HumanMessagePromptTemplate.from_template("{history}\nNext is the observation that the agent gets:\n{state_description}Please select an optimal action to gain higher rewards based on the current state and history. The action description is below: {action_description}. Please think step by step.")
         chat_prompt = ChatPromptTemplate.from_messages(
             [system_message_prompt, short_memory_template])
         if self.logger:
@@ -130,12 +140,7 @@ class Jarvis(NaiveAct):
         handler = FileCallbackHandler(logfile)
         total_tokens, total_cost = 0, 0 
         max_think_times = 1
-        # TODO: ADD REACT Support
-        # print(str(self.env_history))
-        if self.use_short_mem: 
-            my_history = str(self.env_history)
-        else:
-            my_history = ""
+
         for i_think in range(max_think_times):
             # chain = LLMChain(llm=chat, prompt=chat_prompt, callbacks=[handler], verbose=True)
             chain = LLMChain(llm=chat, prompt=chat_prompt, callbacks=[handler], verbose=False)
@@ -145,11 +150,11 @@ class Jarvis(NaiveAct):
                     game_description=game_description,
                     goal_description=goal_description,
                     action_description=action_description,
-                    # state_description = self.env_history.get_last_history(),
-                    history=self.env_history.get_histories_with_last(self.mem_num),
+                    state_description = self.env_history.get_last_history(),
+                    history=self.env_history.get_histories(self.mem_num),
                     format_instructions=self.parser.get_format_instructions(),
                     reply_format_description=reply_format_description,
-                    max_token=3000
+                    max_token=self.max_tokens
                 )
 
                 total_tokens += cb.total_tokens
@@ -166,12 +171,12 @@ class Jarvis(NaiveAct):
             self.logger.info(f'History: {history_to_str(env_info["history"])}')
         text_prompt = chat_prompt.format_messages(
             game_description=game_description,
-                    goal_description=goal_description,
-                    action_description=action_description,
-                    # state_description = self.env_history.get_last_history(),
-                    history=self.env_history.get_histories_with_last(self.mem_num),
-                    format_instructions=self.parser.get_format_instructions(),
-                    reply_format_description=reply_format_description,
+            goal_description=goal_description,
+            action_description=action_description,
+            state_description = self.env_history.get_last_history(),
+            history=self.env_history.get_histories(self.mem_num),
+            format_instructions=self.parser.get_format_instructions(),
+            reply_format_description=reply_format_description,
         )
         text_prompt = f'{text_prompt[0].content}\n{text_prompt[1].content}'
         return action, text_prompt, response, total_tokens, total_cost

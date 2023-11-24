@@ -464,7 +464,7 @@ class REFLEXION:
             },
         ]
 
-class EGG:
+class EXE:
     def __init__(self):
         self.PERCEPTRON_BASIC_FS_EXAMPLES = [
             {
@@ -507,82 +507,6 @@ class EGG:
                 "answer":
                     """
                 Based on the current game state, the insights and the suggestions, the optimal action for the player to take would be to fire main engine (action 3) to reduce the descent velocity of the spacecraft. Therefore, the optimal action to take now is to fire main engine (action 3).
-                    """
-            },
-        ]
-
-class EGGWithoutInsights:
-    def __init__(self):
-        self.PERCEPTRON_BASIC_FS_EXAMPLES = [
-            {
-                "question":
-                    """
-                State description: The lander is at position (-0.01, 1.39), the horizontal speed of movement is -0.65, the vertical velocity speed of movement is -0.41. The angle is 0.01 radians, and it's rotating at 0.13 radians per second. The left leg is not in contact with ground. The right leg is not in contact with ground.
-                Goal description: The goal is to successfully land the lander on the landing pad which is at position (0, 0) with a vertical velocity close to 0, and make sure all two legs are up and the lander is balanced.
-                Action description: Please choose an action. Type '1' to do noting, '2' to fire left engine and make lander move to right, '3' to fire main engine and make lander move to up, or '4' to fire right engine and make lander move to left. Ensure you only provide the action number from the valid action list, i.e., [1, 2, 3, 4].
-                The suggestions are listed below:
-                1. For exploration in the next episode, the player should focus on gathering more information about the lander's movement and behavior during descent. This can be done by varying the thrust and angle adjustments to see how the lander responds, and observing any patterns or trends in its movement. The player can also try different starting positions and initial forces to see how they affect the lander's trajectory. 
-                2. To improve the policy for higher performance in the next episode, the player should focus on fine-tuning the thrust and angle adjustments to optimize the lander's descent and landing. This can be done by analyzing the data gathered from exploration and adjusting the policy accordingly. The player should also pay attention to the lander's rotation and angle to ensure a gentle landing on the pad. 
-                3. The player should weigh exploration and exploitation equally in the next episode, as both are important for improving the policy and achieving a successful landing. The player should continue to gather information through exploration while also using that information to make informed decisions during exploitation.
-                    """,
-                "answer":
-                    """
-                Based on the current game state and the suggestions, the optimal action for the player to take would be to fire main engine (action 3) to reduce the descent velocity of the spacecraft. Therefore, the optimal action to take now is to fire main engine (action 3).
-                    """
-            },
-            {
-                "question":
-                    """
-                State description: The lander is at position (0.31, 0.04), the horizontal speed of movement is -0.21, the vertical velocity speed of movement is -0.09. The angle is 0.24 radians, and it's rotating at 0.17 radians per second. The left leg is not in contact with ground. The right leg is in contact with ground.
-                Goal description: The goal is to successfully land the lander on the landing pad which is at position (0, 0) with a vertical velocity close to 0, and make sure all two legs are up and the lander is balanced.
-                Action description: Please choose an action. Type '1' to do noting, '2' to fire left engine and make lander move to right, '3' to fire main engine and make lander move to up, or '4' to fire right engine and make lander move to left. Ensure you only provide the action number from the valid action list, i.e., [1, 2, 3, 4].
-                The suggestions are listed below:
-                1. Exploration: 
-                - The player should explore the effect of adjusting the thrust and angle of the lander during descent to ensure a gentle landing on the pad. 
-                - To make the exploration, the player can try different combinations of thrust and angle adjustments during descent and observe the effect on the lander's movement and performance score.
-                2. Exploitation: 
-                - The player should improve the policy by taking into account the contact with the ground and adjusting the thrust accordingly to ensure a gentle landing. 
-                - Additionally, the policy should also take into account the angle and rotation of the lander to ensure that it lands upright on the pad. 
-                - To improve the policy, the player can use the information obtained from the previous episodes and adjust the thrust and angle accordingly during descent.
-                3. Trade-off: 
-                - The player should focus more on exploitation in the next episode as they have already explored different thrust and angle adjustments in the previous episodes. 
-                - However, the player should still allocate some time for exploration to fine-tune the policy and ensure a successful landing on the pad. 
-                - A good trade-off would be to allocate seventy percent of the time for exploitation and thirty percent of the time for exploration.
-                    """,
-                "answer":
-                    """
-                Based on the current game state and the suggestions, the optimal action for the player to take would be to fire main engine (action 3) to reduce the descent velocity of the spacecraft. Therefore, the optimal action to take now is to fire main engine (action 3).
-                    """
-            },
-        ]
-
-class EGGWithoutSuggestions:
-    def __init__(self):
-        self.PERCEPTRON_BASIC_FS_EXAMPLES = [
-            {
-                "question":
-                    """
-                State description: The lander is at position (-0.01, 1.39), the horizontal speed of movement is -0.65, the vertical velocity speed of movement is -0.41. The angle is 0.01 radians, and it's rotating at 0.13 radians per second. The left leg is not in contact with ground. The right leg is not in contact with ground.
-                Goal description: The goal is to successfully land the lander on the landing pad which is at position (0, 0) with a vertical velocity close to 0, and make sure all two legs are up and the lander is balanced.
-                Action description: Please choose an action. Type '1' to do noting, '2' to fire left engine and make lander move to right, '3' to fire main engine and make lander move to up, or '4' to fire right engine and make lander move to left. Ensure you only provide the action number from the valid action list, i.e., [1, 2, 3, 4].
-                The insights of the game are listed below: The key information that can be exploited to improve the player's performance includes taking into account the lander's movement and adjusting the thrust accordingly to stabilize its descent, considering the angle and rotation of the lander to ensure a gentle landing, and fine-tuning the policy to optimize the thrust and angle adjustments for a smoother landing. Additionally, the player should avoid constantly applying thrust to the lander as it may not be effective in successfully landing the lander on the pad.
-                    """,
-                "answer":
-                    """
-                Based on the current game state and the insights, the optimal action for the player to take would be to fire main engine (action 3) to reduce the descent velocity of the spacecraft. Therefore, the optimal action to take now is to fire main engine (action 3).
-                    """
-            },
-            {
-                "question":
-                    """
-                State description: The lander is at position (0.31, 0.04), the horizontal speed of movement is -0.21, the vertical velocity speed of movement is -0.09. The angle is 0.24 radians, and it's rotating at 0.17 radians per second. The left leg is not in contact with ground. The right leg is in contact with ground.
-                Goal description: The goal is to successfully land the lander on the landing pad which is at position (0, 0) with a vertical velocity close to 0, and make sure all two legs are up and the lander is balanced.
-                Action description: Please choose an action. Type '1' to do noting, '2' to fire left engine and make lander move to right, '3' to fire main engine and make lander move to up, or '4' to fire right engine and make lander move to left. Ensure you only provide the action number from the valid action list, i.e., [1, 2, 3, 4].
-                The insights of the game are listed below: The key information that can be exploited to improve the player's performance includes taking into account the lander's movement and adjusting the thrust accordingly to stabilize its descent, considering the angle and rotation of the lander to ensure a gentle landing, and adjusting the thrust to ensure a gentle landing when the lander makes contact with the ground. Additionally, fine-tuning the policy to optimize the thrust and angle adjustments for a smoother landing can further improve performance.
-                    """,
-                "answer":
-                    """
-                Based on the current game state and the insights, the optimal action for the player to take would be to fire main engine (action 3) to reduce the descent velocity of the spacecraft. Therefore, the optimal action to take now is to fire main engine (action 3).
                     """
             },
         ]

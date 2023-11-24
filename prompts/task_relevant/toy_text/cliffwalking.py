@@ -365,7 +365,7 @@ class REFLEXION:
             },
         ]
 
-class EGG:
+class EXE:
     def __init__(self):
         self.PERCEPTRON_BASIC_FS_EXAMPLES = [
             {
@@ -408,77 +408,3 @@ class EGG:
             },
         ]
 
-class EGGWithoutInsights:
-    def __init__(self):
-        self.PERCEPTRON_BASIC_FS_EXAMPLES = [
-            {
-                "question":
-                    """
-                State description: Current Game State: The player is at location [2, 11] in the grid world.
-                Goal description: The goal is to navigate from the starting point to an target which locate at (3,11), avoiding the cliff, in as few steps as possible.
-                Action description: Your Next Move:\nPlease choose an action. Type '1' to move up, '2' to move right, '3' to move down, or '4' to move left. Ensure you only provide the action number from the valid action list, i.e., [1, 2, 3, 4].
-                The suggestions are listed below:Suggestion for the next episode:
-                1. Exploration: The player should explore different paths towards the goal location, rather than always moving in a straight line. This can be done by randomly selecting actions with a certain probability, such as 10%, to encourage the player to try different paths. The player should also try to gather information about the rewards and penalties associated with different actions, especially those near the cliff.
-                2. Exploitation: The player should prioritize avoiding the cliff over reaching the goal quickly. This can be done by updating the policy to include a penalty for moving towards the cliff or a reward for moving away from it. The player should also try to incorporate a more cautious approach that considers the potential consequences of each action.
-                3. Weighting: The player should balance exploration and exploitation by assigning a higher weight to exploitation. This is because the player has already tried two episodes and needs to focus on improving performance. However, some level of exploration is still necessary to avoid getting stuck in a suboptimal policy. A reasonable weighting could be 70% exploitation and 30% exploration.
-                    """,
-                "answer":
-                    """
-                Based on the current game state and the suggestions, the optimal action for the player to take would be to move down (action 3) to reach the goal location at [3, 11]. Therefore, the optimal action to take now is to move down (Action 3).
-                    """
-            },{
-                "question":
-                    """
-                State description: Current Game State: The player is at location [3,0] in the grid world.
-                Goal description: The goal is to navigate from the starting point to an target which locate at (3,11), avoiding the cliff, in as few steps as possible.
-                Action description: Your Next Move:\nPlease choose an action. Type '1' to move up, '2' to move right, '3' to move down, or '4' to move left. Ensure you only provide the action number from the valid action list, i.e., [1, 2, 3, 4].
-                The suggestions are listed below:
-                1. The player should explore different paths towards the goal location, especially those that are not in a straight line or zigzag pattern. This can be done by randomly selecting actions or by using a more exploratory policy, such as epsilon-greedy or softmax. The player should also pay attention to the rewards and penalties associated with each action, especially those related to cliff avoidance.
-                2. To improve performance, the policy should prioritize both reaching the goal location and avoiding the cliff. This can be done by incorporating a penalty for moving towards the cliff or a reward for moving away from it. The policy should also encourage diagonal movements towards the goal location, which would reduce the number of steps needed to reach the goal. Additionally, the policy should include a penalty for falling off the cliff, which would further incentivize the player to avoid it.
-                3. The player should balance exploration and exploitation by using a more exploratory policy, such as epsilon-greedy or softmax, with a low exploration rate. This would allow the player to explore different paths towards the goal location while still prioritizing cliff avoidance and efficient movements. The player should also periodically evaluate the policy and adjust the exploration rate accordingly.
-
-                    """,
-                "answer":
-                    """
-                Based on the current game state and the suggestions, it seems like the player is stuck in a loop and not making any progress towards the goal location. 
-                To improve performance, the player should prioritize both reaching the goal location and avoiding the cliff. 
-                It is recommended to incorporate a penalty for moving towards the cliff or a reward for moving away from it. 
-                The policy should also encourage diagonal movements towards the goal location, which would reduce the number of steps needed to reach the goal. 
-                For the next action, I suggest the player to move up (action 1) to explore a different path towards the goal location. 
-                    """
-            },
-        ]
-
-class EGGWithoutSuggestions:
-    def __init__(self):
-        self.PERCEPTRON_BASIC_FS_EXAMPLES = [
-            {
-                "question":
-                    """
-                State description: Current Game State: The player is at location [2, 11] in the grid world.
-                Goal description: The goal is to navigate from the starting point to an target which locate at (3,11), avoiding the cliff, in as few steps as possible.
-                Action description: Your Next Move:\nPlease choose an action. Type '1' to move up, '2' to move right, '3' to move down, or '4' to move left. Ensure you only provide the action number from the valid action list, i.e., [1, 2, 3, 4].
-                The insights of the game are listed below: The key information that can be exploited to improve the player's performance is that they tend to move in a straight line towards the goal location, even if it means getting closer to the cliff. This behavior can be addressed by incorporating a more cautious approach that prioritizes avoiding the cliff over reaching the goal quickly. Additionally, the policy could be updated to encourage exploration of different paths towards the goal location, rather than always moving in a straight line. The negative consequences of not prioritizing cliff avoidance are highlighted in the player's poor performance and multiple penalties.
-                    """,
-                "answer":
-                    """
-                Based on the current game state and the insights, the optimal action for the player to take would be to move down (action 3) to reach the goal location at [3, 11]. Therefore, the optimal action to take now is to move down (Action 3).
-                    """
-            },{
-                "question":
-                    """
-                State description: Current Game State: The player is at location [3,0] in the grid world.
-                Goal description: The goal is to navigate from the starting point to an target which locate at (3,11), avoiding the cliff, in as few steps as possible.
-                Action description: Your Next Move:\nPlease choose an action. Type '1' to move up, '2' to move right, '3' to move down, or '4' to move left. Ensure you only provide the action number from the valid action list, i.e., [1, 2, 3, 4].
-                The insights of the game are listed below: The key information that can be exploited to improve performance of the player is that they tend to move in a straight line or zigzag pattern towards the goal location, even if it means getting closer to the cliff. This behavior can be improved by incorporating a more cautious approach that prioritizes avoiding the cliff over reaching the goal quickly, and by encouraging exploration of different paths towards the goal location. Additionally, the policy could be updated to include a penalty for falling off the cliff, which would further incentivize the player to avoid it.
-                    """,
-                "answer":
-                    """
-                Based on the current game state and the insights, it seems like the player is stuck in a loop and not making any progress towards the goal location. 
-                To improve performance, the player should prioritize both reaching the goal location and avoiding the cliff. 
-                It is recommended to incorporate a penalty for moving towards the cliff or a reward for moving away from it. 
-                The policy should also encourage diagonal movements towards the goal location, which would reduce the number of steps needed to reach the goal. 
-                For the next action, I suggest the player to move up (action 1) to explore a different path towards the goal location. 
-                    """
-            },
-        ]
