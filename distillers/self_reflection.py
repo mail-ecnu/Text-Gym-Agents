@@ -22,8 +22,8 @@ class RefletionGenerator():
             traj_text += traj[0]['goal_description']+'\n'
             for transition in traj[-max_step_num:]: 
                 traj_text += transition['observation']+'\n'
-                if type(eval(transition['action'])) == type([]):
-                    action = float(eval(transition['action'])[0])-1
+                if type(eval(str(transition['action']))) == type([]):
+                    action = float(eval(str(transition['action']))[0])-1
                 else:
                     action = transition['action']
                 traj_text += f"Action: {action}\n"
