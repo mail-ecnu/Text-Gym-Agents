@@ -6,7 +6,7 @@ from loguru import logger
 from .parser import PARSERS
 from langchain.output_parsers import PydanticOutputParser
 from langchain.output_parsers import OutputFixingParser
-from langchain.chat_models import AzureChatOpenAI
+from langchain.chat_models import AzureChatOpenAI, ChatOpenAI
 from memory.env_history import EnvironmentHistory
 import tiktoken
 import json
@@ -88,15 +88,18 @@ class NaiveAct(gpt):
         else:
             num_action = 1
 
-        autofixing_chat = AzureChatOpenAI(
-            openai_api_type=openai.api_type,
-            openai_api_version=openai.api_version,
-            openai_api_base=openai.api_base,
-            openai_api_key=openai.api_key,
-            deployment_name=self.args.gpt_version,
-            temperature=self.temperature,
-            max_tokens=self.max_tokens
-        )
+        if self.args.api_type == "azure":
+            autofixing_chat = AzureChatOpenAI(
+                openai_api_type=openai.api_type,
+                openai_api_version=openai.api_version,
+                openai_api_base=openai.api_base,
+                openai_api_key=openai.api_key,
+                deployment_name=self.args.gpt_version,
+                temperature=self.temperature,
+                max_tokens=self.max_tokens
+            )
+        elif self.args.api_type == "openai":
+            autofixing_chat = ChatOpenAI(temperature=self.temperature, openai_api_key=openai.api_key)
 
         parser = PydanticOutputParser(pydantic_object=PARSERS[num_action])
         autofixing_parser = OutputFixingParser.from_llm(

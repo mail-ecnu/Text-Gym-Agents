@@ -54,7 +54,7 @@ class TrajPromptSummarizer():
             reflection_query = self._generate_summary_query(traj, memory[-max_len_mem:])
         else:
             reflection_query = self._generate_summary_query(traj, memory)
-        reflection = get_completion(reflection_query, engine=self.args.gpt_version) 
+        reflection = get_completion(reflection_query, engine=self.args.gpt_version)
         logger.info(f'[Reflexion Memory]The reflexion prompt is: {reflection_query}.')
         logger.info(f'[Reflexion Memory]The reflexion response is: {reflection}.')
         return reflection
