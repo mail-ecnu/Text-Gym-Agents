@@ -292,8 +292,16 @@ if __name__ == "__main__":
         default=1,
         help="Whether only taking local observations, if is_only_local_obs = 1, only using local obs"
     )
+    parser.add_argument(
+        "--api_type",
+        type=str,
+        default="azure",
+        help="choose api type, now support azure and openai"
+    )
     args = parser.parse_args()
 
+    if args.api_type != "azure" and args.api_type != "openai":
+        raise ValueError(f"The {args.api_type} is not supported, please use 'azure' or 'openai' !")
     # Get the specified translator, environment, and ChatGPT model
     env_class = envs.REGISTRY[args.env]
     init_summarizer = InitSummarizer(envs.REGISTRY[args.init_summarizer], args)

@@ -1,6 +1,6 @@
 import openai
 from .misc import history_to_str
-from langchain.chat_models import AzureChatOpenAI
+from langchain.chat_models import AzureChatOpenAI, ChatOpenAI
 from langchain.prompts.chat import (
     PromptTemplate,
     ChatPromptTemplate,
@@ -31,15 +31,20 @@ class ChainOfThought(NaiveAct):
     ):
         self.action_description = action_description
         self._add_history_before_action(game_description, goal_description, state_description)
-        chat = AzureChatOpenAI(
-            openai_api_type=openai.api_type,
-            openai_api_version=openai.api_version,
-            openai_api_base=openai.api_base,
-            openai_api_key=openai.api_key,
-            deployment_name=self.args.gpt_version,
-            temperature=self.temperature,
-            max_tokens=self.max_tokens
-        )
+        
+        if self.args.api_type == "azure":
+            chat = AzureChatOpenAI(
+                openai_api_type=openai.api_type,
+                openai_api_version=openai.api_version,
+                openai_api_base=openai.api_base,
+                openai_api_key=openai.api_key,
+                deployment_name=self.args.gpt_version,
+                temperature=self.temperature,
+                max_tokens=self.max_tokens
+            )
+        elif self.args.api_type == "openai":
+            chat = ChatOpenAI(temperature=self.temperature, openai_api_key=openai.api_key)
+    
 
         suffix_flag = False
         reply_format_description = \
