@@ -25,23 +25,23 @@ def run_chain(chain, *args, **kwargs):
     return chain.run(*args, **kwargs)
 
 # @retry(wait=wait_random_exponential(min=1, max=60), stop=stop_after_attempt(6))
-def get_completion(prompt: str, engine: str = "gpt-35-turbo", temperature: float = 0.0, max_tokens: int = 256, stop_strs: Optional[List[str]] = None) -> str:
-    response = openai.Completion.create(
-                model=engine,
-                engine=engine,
-                prompt=prompt,
-                temperature=temperature,
-                max_tokens=max_tokens,
-                top_p=1,
-                frequency_penalty=0.0,
-                presence_penalty=0.0,
-                stop=stop_strs,
-                # request_timeout = 1
-            )
-    return response.choices[0].text
+def get_completion(prompt: str, api_type: str = "azure", engine: str = "gpt-35-turbo", temperature: float = 0.0, max_tokens: int = 256, stop_strs: Optional[List[str]] = None) -> str:
+    if api_type == "azure":
+        response = openai.Completion.create(
+                    engine=engine,
+                    prompt=prompt,
+                    temperature=temperature,
+                    max_tokens=max_tokens,
+                    top_p=1,
+                    frequency_penalty=0.0,
+                    presence_penalty=0.0,
+                    stop=stop_strs,
+                    # request_timeout = 1
+                )
+        return response.choices[0].text
 
 # @retry(wait=wait_random_exponential(min=1, max=60), stop=stop_after_attempt(6))
-def get_chat(prompt: str, model: str = "gpt-35-turbo", engine: str = "gpt-35-turbo", temperature: float = 0.0, max_tokens: int = 256, stop_strs: Optional[List[str]] = None, is_batched: bool = False) -> str:
+def get_chat(prompt: str, api_type: str = "azure", model: str = "gpt-35-turbo", engine: str = "gpt-35-turbo", temperature: float = 0.0, max_tokens: int = 256, stop_strs: Optional[List[str]] = None, is_batched: bool = False) -> str:
     assert model != "text-davinci-003"
     messages = [
         {
@@ -49,14 +49,15 @@ def get_chat(prompt: str, model: str = "gpt-35-turbo", engine: str = "gpt-35-tur
             "content": prompt
         }
     ]
-    response = openai.ChatCompletion.create(
-        model=model,
-        engine=engine,
-        messages=messages,
-        max_tokens=max_tokens,
-        stop=stop_strs,
-        temperature=temperature,
-        # request_timeout = 1
-    )
-    return response.choices[0]["message"]["content"]
+    if api_type == "azure":
+        response = openai.ChatCompletion.create(
+            model=model,
+            engine=engine,
+            messages=messages,
+            max_tokens=max_tokens,
+            stop=stop_strs,
+            temperature=temperature,
+            # request_timeout = 1
+        )
+        return response.choices[0]["message"]["content"]
 
