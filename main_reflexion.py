@@ -99,7 +99,7 @@ def _run(translator, environment, decider, max_episode_len, logfile, args, trail
         error_flag = True
         retry_num = 1
         for error_i in range(retry_num):
-            # try:
+            try:
                 action, prompt, response, tokens, cost = decider.act(
                     state_description,
                     action_description,
@@ -127,15 +127,15 @@ def _run(translator, environment, decider, max_episode_len, logfile, args, trail
                 current_total_cost += cost
                 error_flag = False
                 break
-            # except Exception as e:
-            #     print(e)
-            #     if error_i < retry_num-1:
-            #         if "Cliff" in args.env_name or "Frozen" in args.env_name:
-            #             decider.env_history.remove_invalid_state()
-            #         decider.env_history.remove_invalid_state()
-            #     if logger:
-            #         logger.debug(f"Error: {e}, Retry! ({error_i+1}/{retry_num})")
-            #     continue
+            except Exception as e:
+                print(e)
+                if error_i < retry_num-1:
+                    if "Cliff" in args.env_name or "Frozen" in args.env_name:
+                        decider.env_history.remove_invalid_state()
+                    decider.env_history.remove_invalid_state()
+                if logger:
+                    logger.debug(f"Error: {e}, Retry! ({error_i+1}/{retry_num})")
+                continue
         if error_flag:
             if "Continuous" in args.env_name:
                 action = [decider.default_action]

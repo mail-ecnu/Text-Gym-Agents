@@ -45,7 +45,7 @@ class RefletionGenerator():
             for i, m in enumerate(memory):
                 query += f'Trial #{i}: {m}\n'
 
-        query += '\n\nNew plan:'
+        query += '\n\nPlease give your new plan.'
         return query
 
     def generate(self, traj, memory, max_len_mem=5):
