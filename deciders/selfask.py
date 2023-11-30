@@ -43,7 +43,7 @@ class SelfAskAct(NaiveAct):
                 max_tokens=self.max_tokens
             )
         elif self.args.api_type == "openai":
-            chat = ChatOpenAI(temperature=self.temperature, openai_api_key=openai.api_key)
+            chat = ChatOpenAI(temperature=self.temperature, openai_api_key=openai.api_key, model=self.args.gpt_version)
 
         suffix_flag = False
         reply_format_description = \

@@ -108,7 +108,7 @@ class EXE(NaiveAct):
                 max_tokens=self.max_tokens
             )
         elif self.args.api_type == "openai":
-            chat = ChatOpenAI(temperature=self.temperature, openai_api_key=openai.api_key)
+            chat = ChatOpenAI(temperature=self.temperature, openai_api_key=openai.api_key, model=self.args.gpt_version)
         # print(self.logger)
         reply_format_description = \
             "Your response should choose an optimal action from valid action list, and terminated with following format: "        
