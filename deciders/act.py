@@ -99,7 +99,7 @@ class NaiveAct(gpt):
                 max_tokens=self.max_tokens
             )
         elif self.args.api_type == "openai":
-            autofixing_chat = ChatOpenAI(temperature=self.temperature, openai_api_key=openai.api_key)
+            autofixing_chat = ChatOpenAI(temperature=self.temperature, openai_api_key=openai.api_key,model=self.args.gpt_version)
 
         parser = PydanticOutputParser(pydantic_object=PARSERS[num_action])
         autofixing_parser = OutputFixingParser.from_llm(

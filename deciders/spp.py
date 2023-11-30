@@ -42,7 +42,7 @@ class SPP(NaiveAct):
                 max_tokens=self.max_tokens
             )
         elif self.args.api_type == "openai":
-            chat = ChatOpenAI(temperature=self.temperature, openai_api_key=openai.api_key)
+            chat = ChatOpenAI(temperature=self.temperature, openai_api_key=openai.api_key, model=self.args.gpt_version)
 
         self.fewshot_example = self.irr_few_shot_examples if not self.fewshot_example else self.fewshot_example
         self.irr_few_shot_examples = self.irr_few_shot_examples if not self.fewshot_example else self.fewshot_example
