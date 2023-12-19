@@ -70,10 +70,6 @@ def evaluate_translator(translator, environment, decider, max_episode_len, logfi
                 else:
                     decider.update_mem() 
         decider.clear_mem()
-# wandb.log({'memory': decider.memory})
-    # with open('./mem.json', 'w') as f:
-    #     json.dump(decider.memory, f) #, cls=NumpyArrayEncoder)
-    # f.close()
     return utilities            
 
 def _run(translator, environment, decider, max_episode_len, logfile, args, trail, seed):
@@ -91,27 +87,15 @@ def _run(translator, environment, decider, max_episode_len, logfile, args, trail
     goal_description = environment.get_goal_description()
     action_description = environment.get_action_description()
 
-    # Initialize the history
-    if args.past_horizon:
-        raise NotImplementedError
-        history = deque(maxlen=args.past_horizon)
-        env_info['history'] = history
-
     # Initialize the statistics
     frames = []
     utility = 0
     current_total_tokens = 0
     current_total_cost = 0
-    columns = ["Prompt", "Response", "Action", "Return", "#All Tokens", "All Cost"]
     start_time = datetime.datetime.now()
     # Run the game for a maximum number of steps
     for round in range(max_episode_len):
-        # If the past horizon is specified, keep track of the past states, actions, and rewards
-        if args.past_horizon:
-            previous_tuples = {'state': None, 'action': None, 'reward': None}
-
         # Keep asking ChatGPT for an action until it provides a valid one
-        asking_round = 0
         error_flag = True
         retry_num = 1
         for error_i in range(retry_num):
@@ -125,28 +109,18 @@ def _run(translator, environment, decider, max_episode_len, logfile, args, trail
                     logfile
                 )
 
-                if args.past_horizon:
-                    raise NotImplementedError
-                    previous_tuples['state'] = state_description
-
-                # Perform the action in the environment
                 if "Continuous" in args.env_name:
                     action = [action]
 
-                
                 state_description, reward, termination, truncation, env_info = environment.step_llm(
                     action
                 )
                 if "Cliff" in args.env_name or "Frozen" in args.env_name:
                     decider.env_history.add('reward', env_info['potential_state'] + environment.reward_desc_dict[reward])
+                else:
+                    decider.env_history.add('reward', f"The player get rewards {reward}.")
+                    
                 utility += reward
-
-                if args.past_horizon:
-                    raise NotImplementedError
-                    previous_tuples['action'] = action
-                    previous_tuples['reward'] = reward
-                    history.append(previous_tuples)
-                    env_info['history'] = history
 
                 # Update the statistics
                 current_total_tokens += tokens
@@ -162,8 +136,6 @@ def _run(translator, environment, decider, max_episode_len, logfile, args, trail
                 if logger:
                     logger.debug(f"Error: {e}, Retry! ({error_i+1}/{retry_num})")
                 continue
-        # If the action is still invalid after 5 tries, use the default action
-        # file.write(prompt+"\n"+"======================================\n")
         if error_flag:
             if "Continuous" in args.env_name:
                 action = [decider.default_action]
@@ -180,14 +152,6 @@ def _run(translator, environment, decider, max_episode_len, logfile, args, trail
                 decider.env_history.add('reward', env_info['potential_state'] + environment.reward_desc_dict[reward])
             utility += reward
 
-            if args.past_horizon:
-                raise NotImplementedError
-                previous_tuples['action'] = action
-                previous_tuples['reward'] = reward
-                history.append(previous_tuples)
-                env_info['history'] = history
-
-            # Update the statistics
             
             logger.info(f"Seed: {seed}")
             logger.info(f'The optimal action is: {decider.default_action}.')
@@ -195,23 +159,15 @@ def _run(translator, environment, decider, max_episode_len, logfile, args, trail
         else:
             current_total_tokens += tokens
             current_total_cost += cost
-            # print(prompt)
             logger.info(f"Seed: {seed}")
             logger.info(f"current_total_tokens: {current_total_tokens}")
             logger.info(f"current_total_cost: {current_total_cost}")
             logger.info(f"Now it is round {round}.")
 
         frames.append(environment.render())
-
-        # If the game is over, break the loop
         if termination or truncation:
             if logger:
                 logger.info(f"Terminated!")
-            # save_frames_as_gif(
-            #     frames,
-            #     path=f"./images/{environment.env_name}/",
-            #     filename=f"{translator.__class__.__name__}.gif",
-            # )
             break
         time.sleep(1)
     decider.env_history.add('terminate_state', environment.get_terminate_state(round+1, max_episode_len))
@@ -277,10 +233,16 @@ if __name__ == "__main__":
         help="The maximum number of steps in an episode",
     )
     parser.add_argument(
-        "--past_horizon", type=int, help="The horizon of looking back"
+        "--max_query_tokens",
+        type=int,
+        default=5000,
+        help="The maximum number of tokens when querying",
     )
     parser.add_argument(
-        "--future_horizon", type=int, help="The horizon of looking to the future"
+        "--max_tokens",
+        type=int,
+        default=2000,
+        help="The maximum number of tokens when responding",
     )
     parser.add_argument(
         "--distiller",
@@ -307,12 +269,6 @@ if __name__ == "__main__":
         help="The number of trials",
     )
     parser.add_argument(
-        "--trajectories_num",
-        type=int,
-        default=20,
-        help="The number of trials",
-    )
-    parser.add_argument(
         "--use_short_mem",
         type=int,
         default=1,
@@ -327,7 +283,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--short_mem_num",
         type=int,
-        default=20,
+        default=10,
         help="Set numbers of short memories used in actor, if use_short_mem = 1"
     )
     parser.add_argument(
@@ -336,8 +292,16 @@ if __name__ == "__main__":
         default=1,
         help="Whether only taking local observations, if is_only_local_obs = 1, only using local obs"
     )
+    parser.add_argument(
+        "--api_type",
+        type=str,
+        default="azure",
+        help="choose api type, now support azure and openai"
+    )
     args = parser.parse_args()
 
+    if args.api_type != "azure" and args.api_type != "openai":
+        raise ValueError(f"The {args.api_type} is not supported, please use 'azure' or 'openai' !")
     # Get the specified translator, environment, and ChatGPT model
     env_class = envs.REGISTRY[args.env]
     init_summarizer = InitSummarizer(envs.REGISTRY[args.init_summarizer], args)
@@ -370,14 +334,13 @@ if __name__ == "__main__":
         f"llm.log/output-{args.env_name}-{args.decider}-{args.gpt_version}-l{args.prompt_level}"
         f"-{datetime.datetime.now().timestamp()}.log"
     )
-    if "reflexion" in args.decider or "jarvis" in args.decider:
-        logfile_reflexion = (
+
+    logfile_reflexion = (
         f"llm.log/memory-{args.env_name}-{args.decider}-{args.gpt_version}-l{args.prompt_level}"
         f"-{datetime.datetime.now().timestamp()}.log"
     )
-        my_distiller = distiller_class(logfile_reflexion,args=args)
-    else:
-        my_distiller = distiller_class(args=args)
+    my_distiller = distiller_class(logfile=logfile_reflexion,args=args)
+
     args.game_description = environment.game_description
     args.goal_description = environment.goal_description
     args.action_description = environment.action_description
@@ -386,11 +349,6 @@ if __name__ == "__main__":
 
     logger.add(logfile, colorize=True, enqueue=True, filter=lambda x: '[Reflexion Memory]' not in x['message'])
 
-    fixed_suggestion = None
-    fixed_insight = None
-    if "jarvis" in args.decider:
-        decider = decider_class(environment.env.action_space, args, prompts_class, my_distiller, temperature=0.0, logger=logger, fixed_suggestion=fixed_suggestion, fixed_insight=fixed_insight)
-    else:
-        decider = decider_class(environment.env.action_space, args, prompts_class, my_distiller, temperature=0.0, logger=logger)
+    decider = decider_class(environment.env.action_space, args, prompts_class, my_distiller, temperature=0.0, logger=logger, max_tokens=args.max_tokens)
     # Evaluate the translator
     evaluate_translator(translator, environment, decider, args.max_episode_len, logfile, args)

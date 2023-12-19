@@ -374,7 +374,7 @@ class REFLEXION:
             }
         ]
 
-class EGG:
+class EXE:
     def __init__(self):
         self.PERCEPTRON_BASIC_FS_EXAMPLES = [
             {
@@ -409,71 +409,5 @@ class EGG:
                     """,
                 "answer":
                     """Based on the current game state, the insights and the suggestions, The optimal action is: 1."""
-            }
-        ]
-
-class EGGWithoutInsights:
-    def __init__(self):
-        self.PERCEPTRON_BASIC_FS_EXAMPLES = [
-            {
-                "question":
-                    """
-                State description: Current Game State: The player's current sum is 6, the dealer is showing 7, and the player has a usable ace: no.
-                Goal description: The goal is to beat the dealer by obtaining cards that sum to closer to 21, without going over 21.
-                Action description: Your Next Move: \n Please choose an action. Type '1' to stick (stop receiving cards) or '2' to hit (add a card). Ensure you only provide the action number from the valid action list, i.e., [1, 2].
-                The suggestions are listed below:
-                1. For exploration in the next episode, the player should try to observe the dealer's face-up card and use that information to inform their decision-making process. They can do this by hitting until they have a hand value of at least 12, and then observing the dealer's card before deciding whether to hit or stick. This will help the player make more informed decisions and potentially increase their chances of winning.
-                2. To improve the policy and gain a higher performance in the next episode, the player should focus on using their usable ace to their advantage. They should aim to use the ace as 11 when their hand value is low (e.g. less than 12) and as 1 when their hand value is high (e.g. more than 17). This will help the player avoid busting and increase their chances of getting closer to 21.
-                3. The player should weight exploration and exploitation equally in the next episode. While it is important to explore and gather new information, it is also important to use that information to improve performance. By balancing exploration and exploitation, the player can make more informed decisions and potentially increase their chances of winning.
-                    """,
-                "answer":
-                    """
-                Based on the current game state and the suggestions, the player should hit (add a card) as their current sum is very low and they have no usable ace to use to their advantage. 
-                The goal is to get closer to 21 without going over, and hitting will increase the player's chances of achieving this goal. 
-                Therefore, the optimal action for the player is to choose action number 2 to hit. 
-                    """
-            },{
-                "question":
-                    """
-                State description: Current Game State: The player's current sum is 20, the dealer is showing 4, and the player has a usable ace: no.
-                Goal description: The goal is to beat the dealer by obtaining cards that sum to closer to 21, without going over 21.
-                Action description: Your Next Move: \n Please choose an action. Type '1' to stick (stop receiving cards) or '2' to hit (add a card). Ensure you only provide the action number from the valid action list, i.e., [1, 2].
-                The suggestions are listed below:
-                1. Exploration: The player should explore the value of their usable ace in different scenarios. They can try using the ace as 1 or 11 and observe the outcome. To make the exploration, the player can randomly choose to use the ace as 1 or 11 in different game states and record the results.
-                2. Exploitation: The player should improve their policy by considering the dealer's face-up card and the likelihood of the dealer having a higher hand. They can also use the information from the previous trajectories to make more informed decisions. For example, if the player has a low hand value and the dealer has a high face-up card, the player may choose to hit to improve their hand. On the other hand, if the player has a high hand value and the dealer has a low face-up card, the player may choose to stick to avoid going over 21.
-                3. Weighting: The player should balance exploration and exploitation by allocating more time to exploitation. Since the player only has two episodes left, they should focus on exploiting the information they have gathered so far to increase their chances of winning. However, they should also continue to explore the value of their usable ace in different scenarios to potentially improve their policy in future games.
-                    """,
-                "answer":
-                    """Based on the current game state and the suggestions, The optimal action is: 1."""
-            }
-        ]
-
-class EGGWithoutSuggestions:
-    def __init__(self):
-        self.PERCEPTRON_BASIC_FS_EXAMPLES = [
-            {
-                "question":
-                    """
-                State description: Current Game State: The player's current sum is 6, the dealer is showing 7, and the player has a usable ace: no.
-                Goal description: The goal is to beat the dealer by obtaining cards that sum to closer to 21, without going over 21.
-                Action description: Your Next Move: \n Please choose an action. Type '1' to stick (stop receiving cards) or '2' to hit (add a card). Ensure you only provide the action number from the valid action list, i.e., [1, 2].
-                The insights of the game are listed below: The key information that can be exploited to improve the performance of the player is the presence of a usable ace in their hand. This information can be used to inform the player's decision-making process and potentially improve their performance by allowing them to make more informed decisions about whether to hit or stick based on the value of their hand. By taking into account the value of the ace, the player can potentially increase their chances of winning the hand.
-                    """,
-                "answer":
-                    """
-                Based on the current game state and the insights, the player should hit (add a card) as their current sum is very low and they have no usable ace to use to their advantage. 
-                The goal is to get closer to 21 without going over, and hitting will increase the player's chances of achieving this goal. 
-                Therefore, the optimal action for the player is to choose action number 2 to hit. 
-                    """
-            },{
-                "question":
-                    """
-                State description: Current Game State: The player's current sum is 20, the dealer is showing 4, and the player has a usable ace: no.
-                Goal description: The goal is to beat the dealer by obtaining cards that sum to closer to 21, without going over 21.
-                Action description: Your Next Move: \n Please choose an action. Type '1' to stick (stop receiving cards) or '2' to hit (add a card). Ensure you only provide the action number from the valid action list, i.e., [1, 2].
-                The insights of the game are listed below: The key information that can be exploited to improve the performance of the player includes the presence of a usable ace, the player's current hand sum, the dealer's face-up card, and the likelihood of the dealer having a higher hand. By taking into account these factors, the player can make more informed decisions on whether to hit or stick, potentially increasing their chances of winning.
-                    """,
-                "answer":
-                    """Based on the current game state and the insights, The optimal action is: 1."""
             }
         ]

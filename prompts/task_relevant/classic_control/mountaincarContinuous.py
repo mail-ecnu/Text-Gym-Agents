@@ -355,7 +355,7 @@ class REFLEXION:
             },
         ]
 
-class EGG:
+class EXE:
     def __init__(self):
         self.PERCEPTRON_BASIC_FS_EXAMPLES = [
             {
@@ -394,77 +394,6 @@ class EGG:
                 "answer":
                     """
                 Based on the current game state, the insights and the suggestions, the optimal action for the player to take would be to accelerate to the left (Action -1.0) to obtain potential energy of rightward motion. Therefore, the optimal action to take now is to accelerate to the left (Action -1.0).
-                    """
-            },
-        ]
-
-class EGGWithoutInsights:
-    def __init__(self):
-        self.PERCEPTRON_BASIC_FS_EXAMPLES = [
-            {
-                "question":
-                    """
-                State description: Current Game State: The car is positioned at 0.472, with a velocity of 0.049 towards the right.
-                Goal description: The goal is to reach the flag placed on top of the right hill as quickly as possible.
-                Action description: Your Next Move: Please select a numerical value within the range of [-1,1], which represents the directional force being applied to the car. The action will be limited to the range of [-1,1], and then multiplied by a power of 0.0015..
-                The suggestions are listed below:Suggestion for the next episode:
-                1. Exploration: In the next episode, the player should focus on exploring the environment more thoroughly by trying out different actions. Specifically, the player should try accelerating in both directions (left and right) to see if there are any hidden paths that can lead to the goal state more quickly. To encourage exploration, the player can add some randomness to the policy by choosing actions randomly with a certain probability (e.g., 10% of the time).
-                2. Exploitation: To improve performance, the player should continue to use the policy that has been successful in the past episodes, which is to constantly accelerate in the direction of the goal, with occasional changes in direction to avoid getting stuck in local minima. However, the player should also try to optimize the policy by adjusting the frequency of changes in direction based on the car's velocity and position. For example, if the car is moving slowly and is far from the goal, the player should consider changing direction more frequently to explore more of the environment.
-                3. Exploration vs. Exploitation: The player should balance exploration and exploitation by adjusting the probability of choosing actions randomly. In the beginning of the episode, the player should focus more on exploration by choosing actions randomly with a higher probability
-                    """,
-                "answer":
-                    """
-                Based on the current game state and the suggestions, the optimal action for the player to take would be to accelerate to the right (Action 1.0). Therefore, the optimal action to take now is to push the cart to accelerate to the right (Action 1.0).
-                    """
-            },{
-                "question":
-                    """
-                State description: Current Game State: The car is positioned at -0.218, with a velocity of 0.002 towards the left.
-                Goal description: The goal is to reach the flag placed on top of the right hill as quickly as possible.
-                Action description: Your Next Move: Please select a numerical value within the range of [-1,1], which represents the directional force being applied to the car. The action will be limited to the range of [-1,1], and then multiplied by a power of 0.0015..
-                The suggestions are listed below:
-                1. The player should explore different acceleration strategies, such as accelerating in the opposite direction of the goal or accelerating randomly, to gather information on the environment and avoid getting stuck in local minima. This can be done by adding some randomness to the policy or using a different algorithm that balances exploration and exploitation.
-                2. To improve policy performance, the player can use the information gathered from exploration to update the value function and adjust the policy accordingly. Additionally, the player can consider using a more sophisticated memory system that takes into account the car's velocity and position, rather than just its position, to better capture the dynamics of the environment.
-                3. The player should balance exploration and exploitation by allocating a certain percentage of actions to exploration and the remaining percentage to exploitation. This can be done by setting a threshold for the amount of exploration and adjusting it based on the performance of the policy. The player should also monitor the performance of the policy and adjust the balance between exploration and exploitation accordingly.
-                    """,
-                "answer":
-                    """
-                Based on the current game state and the suggestions, the optimal action for the player to take would be to accelerate to the left (Action -1.0) to obtain potential energy of rightward motion. Therefore, the optimal action to take now is to accelerate to the left (Action -1.0).
-                    """
-            },
-        ]
-
-class EGGWithoutSuggestions:
-    def __init__(self):
-        self.PERCEPTRON_BASIC_FS_EXAMPLES = [
-            {
-                "question":
-                    """
-                State description: Current Game State: The car is positioned at 0.472, with a velocity of 0.049 towards the right.
-                Goal description: The goal is to reach the flag placed on top of the right hill as quickly as possible.
-                Action description: Your Next Move: Please select a numerical value within the range of [-1,1], which represents the directional force being applied to the car. The action will be limited to the range of [-1,1], and then multiplied by a power of 0.0015..
-                The insights of the game are listed below: The key information that can be exploited to improve performance of the player includes the fact that the car often gets stuck in local minima, the policy of constantly accelerating in the direction of the goal with occasional changes in direction, and the use of exploration techniques to encourage the car to try out different actions and explore the environment more thoroughly. Additionally, a more sophisticated memory system that takes into account the car's velocity and position, rather than just its position, and a different algorithm that balances exploration and exploitation more effectively can also improve performance.
-                    """,
-                "answer":
-                    """
-                Based on the current game state and the insights, the optimal action for the player to take would be to accelerate to the right (Action 1.0). Therefore, the optimal action to take now is to push the cart to accelerate to the right (Action 1.0).
-                    """
-            },{
-                "question":
-                    """
-                State description: Current Game State: The car is positioned at -0.218, with a velocity of 0.002 towards the left.
-                Goal description: The goal is to reach the flag placed on top of the right hill as quickly as possible.
-                Action description: Your Next Move: Please select a numerical value within the range of [-1,1], which represents the directional force being applied to the car. The action will be limited to the range of [-1,1], and then multiplied by a power of 0.0015..
-                The insights of the game are listed below: 
-                1. The policy of constantly accelerating towards the goal with occasional changes in direction to avoid local minima is not performing well.
-                2. Exploration techniques can be used to encourage the car to try out different actions and explore the environment more thoroughly.
-                3. A more sophisticated memory system that takes into account the car's velocity and position can improve the accuracy of the value function.
-                4. A different algorithm that balances exploration and exploitation more effectively can also be considered.
-                5. The car is able to gain enough momentum to climb the hill towards the goal, but still gets stuck in local minima at times.
-                    """,
-                "answer":
-                    """
-                Based on the current game state and the insights, the optimal action for the player to take would be to accelerate to the left (Action -1.0) to obtain potential energy of rightward motion. Therefore, the optimal action to take now is to accelerate to the left (Action -1.0).
                     """
             },
         ]

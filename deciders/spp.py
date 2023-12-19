@@ -1,6 +1,6 @@
 import openai
 from .misc import history_to_str
-from langchain.chat_models import AzureChatOpenAI
+from langchain.chat_models import AzureChatOpenAI, ChatOpenAI
 from langchain.prompts.chat import (
     PromptTemplate,
     ChatPromptTemplate,
@@ -30,15 +30,19 @@ class SPP(NaiveAct):
     ):
         self.action_description = action_description
         self._add_history_before_action(game_description, goal_description, state_description)
-        chat = AzureChatOpenAI(
-            openai_api_type=openai.api_type,
-            openai_api_version=openai.api_version,
-            openai_api_base=openai.api_base,
-            openai_api_key=openai.api_key,
-            deployment_name=self.args.gpt_version,
-            temperature=self.temperature,
-            max_tokens=self.max_tokens
-        )
+
+        if self.args.api_type == "azure":
+            chat = AzureChatOpenAI(
+                openai_api_type=openai.api_type,
+                openai_api_version=openai.api_version,
+                openai_api_base=openai.api_base,
+                openai_api_key=openai.api_key,
+                deployment_name=self.args.gpt_version,
+                temperature=self.temperature,
+                max_tokens=self.max_tokens
+            )
+        elif self.args.api_type == "openai":
+            chat = ChatOpenAI(temperature=self.temperature, openai_api_key=openai.api_key, model=self.args.gpt_version)
 
         self.fewshot_example = self.irr_few_shot_examples if not self.fewshot_example else self.fewshot_example
         self.irr_few_shot_examples = self.irr_few_shot_examples if not self.fewshot_example else self.fewshot_example
@@ -81,7 +85,7 @@ class SPP(NaiveAct):
             if len(self.env_history) > 1:
                 if not suffix_flag: 
                     human_template += '\nSubsequently, I will offer pertinent guidance or information about the task. Please utilize this instruction to accomplish the given task effectively.'
-                human_template += f"\nBelow are the latest {self.args.short_mem_num} historical data entries:\n"
+                human_template += f"\nBelow are the latest {min(self.mem_num, len(self.env_history))} historical data entries:\n"
                 human_template += f"{self.env_history.get_histories(self.mem_num)}"
         human_template += '\nNext is the observation that the agent gets:\nCurrent {state_description}\n'
         human_template += 'Please select an action based on the current game state and the information you get. You must select the appropriate action from the given action descriptions and cannot refrain from taking action or performing any prohibited actions. Here is the action description below:\n{action_description}\n'

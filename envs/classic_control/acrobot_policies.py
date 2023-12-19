@@ -6,7 +6,7 @@ import numpy as np
 def dedicated_1_policy(state, pre_action=1):
     def get_description():   
         return "Always select action 1"
-    dedicated_0_policy.description = get_description()
+    dedicated_1_policy.description = get_description()
     return 1
 
 def dedicated_2_policy(state, pre_action=1):

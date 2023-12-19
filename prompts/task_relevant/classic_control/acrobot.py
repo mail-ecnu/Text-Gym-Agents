@@ -362,7 +362,7 @@ class REFLEXION:
             },
         ]
 
-class EGG:
+class EXE:
     def __init__(self):
         self.PERCEPTRON_BASIC_FS_EXAMPLES = [
             {
@@ -418,94 +418,6 @@ class EGG:
                 "answer":
                     """
                 Based on the current game state, the insights and the suggestions, the optimal action for the player to take would be to apply 1 torque (Action 3). Therefore, the optimal action to take now is to apply 1 torque (Action 3).
-                    """
-            },
-        ]
-
-class EGGWithoutInsights:
-    def __init__(self):
-        self.PERCEPTRON_BASIC_FS_EXAMPLES = [
-            {
-                "question":
-                    """
-                State description: Current Game State: Link1: angle theta1 -0.04 radians, rotating 0.02 radians per second clockwise. Link2: angle theta2 0.02 radians relative to Link1, rotating 0.07 radians per second counterclockwise.
-                Goal description: The goal is to apply torque on the actuator to swing the free end of the linear chain above the target height, which is constructed as: -cos(theta1) - cos(theta2 + theta1) > 1.0.
-                Action description: Your Next Move: \n Please choose an action. Type '1' to apply -1 torque, '2' to apply 0 torque, or '3' to apply 1 torque. Ensure you provide the action number from the valid action list, i.e., [1, 2, 3].
-                The suggestions are listed below:
-                1. Exploration:
-                - The player should explore different torque values and directions to find the optimal policy.
-                - To make the exploration, the player can randomly choose torque values and directions for a certain number of steps, then evaluate the performance and adjust the policy accordingly.
-
-                2. Exploitation:
-                - The player should adjust the torque based on the current state of the system, such as the angles and angular velocities of the links.
-                - The player should also try to apply torque in a way that helps swing the free end of the linear chain above the target height.
-                - To improve the policy, the player can use techniques such as reinforcement learning or model-based control.
-
-                3. Weighting:
-                - The player should focus more on exploration in the beginning of the episode to find the optimal policy.
-                - As the episode progresses, the player should shift the focus towards exploitation to gain a higher performance.
-                - The player should also adjust the weighting based on the performance and adjust the policy accordingly.
-                    """,
-                "answer":
-                    """
-                Based on the current game state and the suggestions, the optimal action for the player to take would be to apply -1 torque (Action 1). Therefore, the optimal action to take now is to apply -1 torque (Action 1).
-                    """
-            },{
-                "question":
-                    """
-                State description: Current Game State: Link1: angle theta1 0.31 radians, rotating 0.76 radians per second clockwise. Link2: angle theta2 -0.73 radians relative to Link1, rotating 0.98 radians per second counterclockwise.
-                Goal description: The goal is to apply torque on the actuator to swing the free end of the linear chain above the target height, which is constructed as: -cos(theta1) - cos(theta2 + theta1) > 1.0.
-                Action description: Your Next Move: \n Please choose an action. Type '1' to apply -1 torque, '2' to apply 0 torque, or '3' to apply 1 torque. Ensure you provide the action number from the valid action list, i.e., [1, 2, 3].
-                The suggestions are listed below:
-                1. Exploration: 
-                - The player should explore different torque values and directions, rather than sticking to a consistent pattern. 
-                - The player should also adjust the torque based on the current state of the system, such as the angles and angular velocities of the links. 
-                - To make the exploration, the player can randomly choose torque values and directions, or try to systematically vary the torque values and directions to cover a wider range of possibilities.
-
-                2. Exploitation: 
-                - The player should use the information obtained from exploration to inform a more adaptive and effective policy. 
-                - The player can use techniques such as reinforcement learning or model-based control to improve the policy. 
-                - The policy should take into account the current state of the system, such as the angles and angular velocities of the links, to adjust the torque values and directions accordingly.
-
-                3. Weighting for exploration and exploitation: 
-                - The player should balance exploration and exploitation to find the optimal policy. 
-                - In the beginning of the episode, the player should focus more on exploration to gather information about the system and find a wider range of possible solutions. 
-                - As the episode progresses, the player should shift the focus towards exploitation to improve the policy and achieve a higher performance. 
-                - The weighting can be adjusted
-                    """,
-                "answer":
-                    """
-                Based on the current game state and the suggestions, the optimal action for the player to take would be to apply 1 torque (Action 3). Therefore, the optimal action to take now is to apply 1 torque (Action 3).
-                    """
-            },
-        ]
-
-class EGGWithoutSuggestions:
-    def __init__(self):
-        self.PERCEPTRON_BASIC_FS_EXAMPLES = [
-            {
-                "question":
-                    """
-                State description: Current Game State: Link1: angle theta1 -0.04 radians, rotating 0.02 radians per second clockwise. Link2: angle theta2 0.02 radians relative to Link1, rotating 0.07 radians per second counterclockwise.
-                Goal description: The goal is to apply torque on the actuator to swing the free end of the linear chain above the target height, which is constructed as: -cos(theta1) - cos(theta2 + theta1) > 1.0.
-                Action description: Your Next Move: \n Please choose an action. Type '1' to apply -1 torque, '2' to apply 0 torque, or '3' to apply 1 torque. Ensure you provide the action number from the valid action list, i.e., [1, 2, 3].
-                The insights of the game are listed below: The key information that can be exploited to improve the player's performance is that the current policy of consistently applying torque in one direction is not effective in achieving the goal of swinging the free end of the linear chain above the target height. The player may benefit from exploring different torque values and directions and adjusting its torque based on the current state of the system, such as the angles and angular velocities of the links. This information can be used to inform a more adaptive and effective policy, potentially using techniques such as reinforcement learning or model-based control.
-                    """,
-                "answer":
-                    """
-                Based on the current game state and the insights, the optimal action for the player to take would be to apply -1 torque (Action 1). Therefore, the optimal action to take now is to apply -1 torque (Action 1).
-                    """
-            },{
-                "question":
-                    """
-                State description: Current Game State: Link1: angle theta1 0.31 radians, rotating 0.76 radians per second clockwise. Link2: angle theta2 -0.73 radians relative to Link1, rotating 0.98 radians per second counterclockwise.
-                Goal description: The goal is to apply torque on the actuator to swing the free end of the linear chain above the target height, which is constructed as: -cos(theta1) - cos(theta2 + theta1) > 1.0.
-                Action description: Your Next Move: \n Please choose an action. Type '1' to apply -1 torque, '2' to apply 0 torque, or '3' to apply 1 torque. Ensure you provide the action number from the valid action list, i.e., [1, 2, 3].
-                The insights of the game are listed below: The key information that can be exploited to improve the performance of the player is that the current policy of consistently applying torque in one direction is not effective in achieving the goal of swinging the free end of the linear chain above the target height. The player may benefit from exploring different torque values and directions and adjusting its torque based on the current state of the system, such as the angles and angular velocities of the links. This information can be used to inform a more adaptive and effective policy, potentially using techniques such as reinforcement learning or model-based control.
-                    """,
-                "answer":
-                    """
-                Based on the current game state and the insights, the optimal action for the player to take would be to apply 1 torque (Action 3). Therefore, the optimal action to take now is to apply 1 torque (Action 3).
                     """
             },
         ]

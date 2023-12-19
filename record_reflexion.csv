@@ -1,0 +1,11 @@
+env,level,decider,avg_score
+CartPole-v0,1,expert,200.0
+LunarLander-v2,1,expert,200.0
+Acrobot-v1,1,expert,200.0
+MountainCar-v0,1,expert,200.0
+Blackjack-v1,1,expert,200.0
+Taxi-v3,1,expert,200.0
+CliffWalking-v0,1,expert,200.0
+FrozenLake-v1,1,expert,200.0
+MountainCarContinuous-v0,1,expert,200.0
+
