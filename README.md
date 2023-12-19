@@ -45,7 +45,7 @@ class gpt:
 2. Install Requirements
 
 ```
-conda env create --file environment.yml
+conda env create --file environment.yaml
 ```
 
 3. Testing 
