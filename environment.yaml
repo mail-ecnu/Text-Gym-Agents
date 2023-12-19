@@ -1,89 +1,96 @@
 name: llm-gym
+channels:
+  - conda-forge
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+  - defaults
 dependencies:
-  - _libgcc_mutex=0.1=main
-  - _openmp_mutex=5.1=1_gnu
-  - asttokens=2.0.5=pyhd3eb1b0_0
-  - async-timeout=4.0.2=py38h06a4308_0
-  - backcall=0.2.0=pyhd3eb1b0_0
-  - blas=1.0=mkl
-  - brotlipy=0.7.0=py38h27cfd23_1003
-  - ca-certificates=2023.01.10=h06a4308_0
-  - cached-property=1.5.2=py_0
-  - cffi=1.15.1=py38h5eee18b_3
-  - chardet=4.0.0=py38h06a4308_1003
-  - comm=0.1.2=py38h06a4308_0
-  - cryptography=39.0.1=py38h9ce1e76_2
-  - cudatoolkit=11.3.1=h2bc3f7f_2
-  - debugpy=1.5.1=py38h295c915_0
-  - decorator=5.1.1=pyhd8ed1ab_0
-  - executing=0.8.3=pyhd3eb1b0_0
-  - frozenlist=1.3.3=py38h5eee18b_0
-  - hdf5=1.10.6=h3ffc7dd_1
-  - idna=3.4=py38h06a4308_0
-  - importlib_metadata=6.0.0=hd3eb1b0_0
-  - intel-openmp=2023.1.0=hdb19cb5_46305
-  - ipykernel=6.19.2=py38hb070fc8_0
-  - ipython=8.12.0=py38h06a4308_0
-  - jedi=0.18.1=py38h06a4308_1
-  - jupyter_client=8.1.0=py38h06a4308_0
-  - jupyter_core=5.3.0=py38h06a4308_0
-  - ld_impl_linux-64=2.38=h1181459_1
-  - libffi=3.4.4=h6a678d5_0
-  - libgcc-ng=11.2.0=h1234567_1
-  - libgfortran-ng=11.2.0=h00389a5_1
-  - libgfortran5=11.2.0=h1234567_1
-  - libgomp=11.2.0=h1234567_1
-  - libllvm14=14.0.6=hdb19cb5_3
-  - libprotobuf=3.20.3=he621ea3_0
-  - libsodium=1.0.18=h7b6447c_0
-  - libstdcxx-ng=11.2.0=h1234567_1
-  - matplotlib-inline=0.1.6=py38h06a4308_0
-  - mkl=2023.1.0=h6d00ec8_46342
-  - mkl-service=2.4.0=py38h5eee18b_1
-  - mkl_fft=1.3.6=py38h417a72b_1
-  - mkl_random=1.2.2=py38h417a72b_1
-  - ncurses=6.4=h6a678d5_0
-  - nest-asyncio=1.5.6=py38h06a4308_0
-  - numpy=1.24.3=py38hf6e8229_1
-  - numpy-base=1.24.3=py38h060ed82_1
-  - openssl=3.0.10=h7f8727e_2
-  - parso=0.8.3=pyhd3eb1b0_0
-  - pcre=8.45=h295c915_0
-  - pexpect=4.8.0=pyhd3eb1b0_3
-  - pickleshare=0.7.5=pyhd3eb1b0_1003
-  - pip=23.1.2=py38h06a4308_0
-  - platformdirs=2.5.2=py38h06a4308_0
-  - prompt-toolkit=3.0.36=py38h06a4308_0
-  - ptyprocess=0.7.0=pyhd3eb1b0_2
-  - pure_eval=0.2.2=pyhd3eb1b0_0
-  - pycparser=2.21=pyhd3eb1b0_0
-  - pygments=2.15.1=py38h06a4308_1
-  - pyopenssl=23.0.0=py38h06a4308_0
-  - pysocks=1.7.1=py38h06a4308_0
-  - python=3.8.16=h955ad1f_4
-  - python-dateutil=2.8.2=pyhd3eb1b0_0
-  - python_abi=3.8=2_cp38
-  - pyzmq=25.1.0=py38h6a678d5_0
-  - readline=8.2=h5eee18b_0
-  - setuptools=67.8.0=py38h06a4308_0
-  - six=1.16.0=pyhd3eb1b0_1
-  - sqlite=3.41.2=h5eee18b_0
-  - stack_data=0.2.0=pyhd3eb1b0_0
-  - tbb=2021.8.0=hdb19cb5_0
-  - tk=8.6.12=h1ccaba5_0
-  - tornado=6.2=py38h5eee18b_0
-  - traitlets=5.7.1=py38h06a4308_0
-  - wcwidth=0.2.5=pyhd3eb1b0_0
-  - wheel=0.38.4=py38h06a4308_0
-  - xz=5.4.2=h5eee18b_0
-  - yaml=0.2.5=h7b6447c_0
-  - zeromq=4.3.4=h2531618_0
-  - zlib=1.2.13=h5eee18b_0
+  - _libgcc_mutex=0.1
+  - _openmp_mutex=5.1
+  - asttokens=2.0.5
+  - async-timeout=4.0.2
+  - backcall=0.2.0
+  - blas=1.0
+  - brotlipy=0.7.0
+  - ca-certificates=2023.01.10
+  - cached-property=1.5.2
+  - cffi=1.15.1
+  - chardet=4.0.0
+  - comm=0.1.2
+  - cryptography=39.0.1
+  - cudatoolkit=11.3.1
+  - debugpy=1.5.1
+  - decorator=5.1.1
+  - executing=0.8.3
+  - frozenlist=1.3.3
+  - hdf5=1.10.6
+  - idna=3.4
+  - importlib_metadata=6.0.0
+  - intel-openmp=2023.1.0
+  - ipykernel=6.19.2
+  - ipython=8.12.0
+  - jedi=0.18.1
+  - jupyter_client=8.1.0
+  - jupyter_core=5.3.0
+  - ld_impl_linux-64=2.38
+  - libffi=3.4.4
+  - libgcc-ng=11.2.0
+  - libgfortran-ng=11.2.0
+  - libgfortran5=11.2.0
+  - libgomp=11.2.0
+  - libllvm14=14.0.6
+  - libprotobuf=3.20.3
+  - libsodium=1.0.18
+  - libstdcxx-ng=11.2.0
+  - matplotlib-inline=0.1.6
+  - mkl=2023.1.0
+  - mkl-service=2.4.0
+  - mkl_fft=1.3.6
+  - mkl_random=1.2.2
+  - ncurses=6.4
+  - nest-asyncio=1.5.6
+  - numpy=1.24.3
+  - numpy-base=1.24.3
+  - openssl=3.0.10
+  - packaging=23.1
+  - parso=0.8.3
+  - pcre=8.45
+  - pexpect=4.8.0
+  - pickleshare=0.7.5
+  - pip=23.1.2
+  - platformdirs=2.5.2
+  - prompt-toolkit=3.0.36
+  - ptyprocess=0.7.0
+  - pure_eval=0.2.2
+  - pycparser=2.21
+  - pygments=2.15.1
+  - pyopenssl=23.0.0
+  - pysocks=1.7.1
+  - python=3.8.16
+  - python-dateutil=2.8.2
+  - python_abi=3.8
+  - pyzmq=25.1.0
+  - readline=8.2
+  - setuptools=67.8.0
+  - six=1.16.0
+  - sqlite=3.41.2
+  - stack_data=0.2.0
+  - tbb=2021.8.0
+  - tk=8.6.12
+  - tornado=6.2
+  - traitlets=5.7.1
+  - typing_extensions=4.7.1
+  - wcwidth=0.2.5
+  - wheel=0.38.4
+  - xz=5.4.2
+  - yaml=0.2.5
+  - zeromq=4.3.4
+  - zlib=1.2.13
   - pip:
       - absl-py==1.4.0
       - aiohttp==3.8.4
       - aiosignal==1.3.1
       - annotated-types==0.5.0
+      - anyio==3.7.1
       - appdirs==1.4.4
       - aquarel==0.0.5
       - attrs==23.1.0
@@ -97,7 +104,9 @@ dependencies:
       - contourpy==1.1.0
       - cycler==0.11.0
       - dataclasses-json==0.5.14
+      - distro==1.8.0
       - docker-pycreds==0.4.0
+      - exceptiongroup==1.2.0
       - filelock==3.12.3
       - fonttools==4.40.0
       - fsspec==2023.6.0
@@ -109,10 +118,14 @@ dependencies:
       - grpcio==1.57.0
       - gym==0.26.2
       - gym-notices==0.0.8
+      - h11==0.14.0
       - h5py==3.9.0
+      - httpcore==1.0.2
+      - httpx==0.25.2
       - huggingface-hub==0.16.4
       - importlib-metadata==6.6.0
       - importlib-resources==5.12.0
+      - joblib==1.3.2
       - kiwisolver==1.4.4
       - langchain==0.0.270
       - langsmith==0.0.25
@@ -129,7 +142,6 @@ dependencies:
       - numexpr==2.8.5
       - oauthlib==3.2.2
       - openai==0.27.8
-      - packaging==23.1
       - pandas==2.0.3
       - pathtools==0.1.2
       - pillow==9.5.0
@@ -152,17 +164,18 @@ dependencies:
       - sentry-sdk==1.28.1
       - setproctitle==1.3.2
       - smmap==5.0.0
+      - sniffio==1.3.0
       - sqlalchemy==2.0.20
       - swig==4.1.1
       - tenacity==8.2.3
       - tensorboard==2.14.0
       - tensorboard-data-server==0.7.1
+      - threadpoolctl==3.2.0
       - tiktoken==0.4.0
       - timeout-decorator==0.5.0
       - tokenizers==0.13.3
       - tqdm==4.65.0
       - transformers==4.30.2
-      - typing-extensions==4.7.1
       - typing-inspect==0.9.0
       - tzdata==2023.3
       - urllib3==1.26.16
