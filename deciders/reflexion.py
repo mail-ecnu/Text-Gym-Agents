@@ -1,6 +1,6 @@
 import openai
 from .misc import history_to_str
-from langchain.chat_models import AzureChatOpenAI
+from langchain.chat_models import AzureChatOpenAI, ChatOpenAI
 from langchain.prompts.chat import (
     PromptTemplate,
     ChatPromptTemplate,
@@ -31,7 +31,7 @@ class Reflexion(NaiveAct):
         traj = self.game_description 
         traj += self.goal_description
         one_history_token = self.num_tokens_from_string(self.env_history.get_one_history())
-        history_num = 4000 // one_history_token
+        history_num = self.args.max_query_tokens // one_history_token
         traj += self.env_history.get_histories_with_last(history_num)
         self._update_mem(traj)
 
@@ -53,15 +53,19 @@ class Reflexion(NaiveAct):
         self.game_description = game_description 
         self.goal_description = goal_description
         self.env_history.add("observation", state_description)
-        chat = AzureChatOpenAI(
-            openai_api_type=openai.api_type,
-            openai_api_version=openai.api_version,
-            openai_api_base=openai.api_base,
-            openai_api_key=openai.api_key,
-            deployment_name=self.args.gpt_version,
-            temperature=self.temperature,
-            max_tokens=self.max_tokens,
-        )
+
+        if self.args.api_type == "azure":
+            chat = AzureChatOpenAI(
+                openai_api_type=openai.api_type,
+                openai_api_version=openai.api_version,
+                openai_api_base=openai.api_base,
+                openai_api_key=openai.api_key,
+                deployment_name=self.args.gpt_version,
+                temperature=self.temperature,
+                max_tokens=self.max_tokens
+            )
+        elif self.args.api_type == "openai":
+            chat = ChatOpenAI(temperature=self.temperature, openai_api_key=openai.api_key, model=self.args.gpt_version)
         suffix_flag = False
         reply_format_description = \
             "Your response should choose an optimal action from a valid action list and terminate with the following format: "
@@ -109,7 +113,7 @@ class Reflexion(NaiveAct):
             if len(self.env_history) > 1:
                 if not suffix_flag: 
                     human_template += '\nSubsequently, I will offer pertinent guidance or information about the task. Please utilize this instruction to accomplish the given task effectively.'
-                human_template += f"\nBelow are the latest {self.mem_num} historical data entries:\n"
+                human_template += f"\nBelow are the latest {min(self.mem_num, len(self.env_history))} historical data entries:\n"
                 human_template += f"{self.env_history.get_histories(self.mem_num)}"
         human_template += '\nNext is the observation that the agent gets:\nCurrent {state_description}\n'
         human_template += 'Please select an action based on the current game state and the information you get. You must select the appropriate action from the given action descriptions and cannot refrain from taking action or performing any prohibited actions. Here is the action description below:\n{action_description}\n'
@@ -150,7 +154,7 @@ class Reflexion(NaiveAct):
                     action_description=action_description,
                     format_instructions=self.parser.get_format_instructions(),
                     reply_format_description=reply_format_description,
-                    max_token = 3000
+                    max_token = self.max_tokens
                 )
 
                 total_tokens += cb.total_tokens

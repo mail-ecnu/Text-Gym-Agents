@@ -18,11 +18,17 @@ class RefletionGenerator():
         with open(file_path, 'r') as infile:
             data = json.load(infile)
         for traj in data: 
-            traj_text = traj[0]['game_description']
-            traj_text += traj[0]['goal_description']
+            traj_text = traj[0]['game_description']+'\n'
+            traj_text += traj[0]['goal_description']+'\n'
             for transition in traj[-max_step_num:]: 
-                traj_text += transition['observation']
-                traj_text += f"Action: {transition['action']}"
+                traj_text += transition['observation']+'\n'
+                if type(eval(str(transition['action']))) == type([]):
+                    action = float(eval(str(transition['action']))[0])-1
+                else:
+                    action = transition['action']
+                traj_text += f"Action: {action}\n"
+                traj_text += f"Reward: {transition['reward']}\n"
+            traj_text += f"Your performance is: {transition['cum_reward']}\n"
             reflection = self.generate(traj_text, mem, max_len_mem=5)
             mem.append(reflection)
         return mem
@@ -39,7 +45,7 @@ class RefletionGenerator():
             for i, m in enumerate(memory):
                 query += f'Trial #{i}: {m}\n'
 
-        query += '\n\nNew plan:'
+        query += '\n\nPlease give your new plan.'
         return query
 
     def generate(self, traj, memory, max_len_mem=5):
@@ -47,7 +53,7 @@ class RefletionGenerator():
             reflection_query = self._generate_reflection_query(traj, memory[-max_len_mem:])
         else:
             reflection_query = self._generate_reflection_query(traj, memory)
-        reflection = get_completion(reflection_query, engine=self.args.gpt_version)
+        reflection = get_completion(reflection_query, api_type=self.args.api_type, engine=self.args.gpt_version)
         logger.info(f'[Reflexion Memory]The reflexion prompt is: {reflection_query}.')
         logger.info(f'[Reflexion Memory]The reflexion response is: {reflection}.')
         return reflection

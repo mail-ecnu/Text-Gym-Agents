@@ -21,7 +21,7 @@ class RandomAct():
         return self.action_space.sample()+1, '', '', '', 0, 0
 
 class NaiveAct(gpt):
-    def __init__(self, action_space, args, prompts, distiller, temperature=0.0, max_tokens=512, logger=None):
+    def __init__(self, action_space, args, prompts, distiller, temperature=0.0, max_tokens=2048, logger=None):
         self.action_space = action_space
         self.temperature = temperature
         self.action_desc_dict = args.action_desc_dict
@@ -48,7 +48,7 @@ class NaiveAct(gpt):
             self.memory = self.summarized_fewshot_example
         if args.use_short_mem == 1: 
             self.use_short_mem = True
-            self.mem_num = self.args.trajectories_num
+            self.mem_num = self.args.short_mem_num
         else:
             self.use_short_mem = False
             self.mem_num = 0
@@ -74,10 +74,11 @@ class NaiveAct(gpt):
         self.env_history.reset()
 
     def clear_mem(self):
+        self.update_mem()
         self.pre_memory = []
         self.post_memory = []
         self.is_first = True
-        self._update_mem(None)
+        self.env_history.reset()
 
 
     def _parser_initialization(self):
@@ -87,16 +88,18 @@ class NaiveAct(gpt):
         else:
             num_action = 1
 
-        # autofixing_chat = AzureChatOpenAI(
-        #     openai_api_type=openai.api_type,
-        #     openai_api_version=openai.api_version,
-        #     openai_api_base=openai.api_base,
-        #     openai_api_key=openai.api_key,
-        #     deployment_name="gpt-35-turbo",
-        #     temperature=self.temperature,
-        #     max_tokens=self.max_tokens
-        # )
-        autofixing_chat = ChatOpenAI(temperature=0, openai_api_key=openai.api_key)
+        if self.args.api_type == "azure":
+            autofixing_chat = AzureChatOpenAI(
+                openai_api_type=openai.api_type,
+                openai_api_version=openai.api_version,
+                openai_api_base=openai.api_base,
+                openai_api_key=openai.api_key,
+                deployment_name=self.args.gpt_version,
+                temperature=self.temperature,
+                max_tokens=self.max_tokens
+            )
+        elif self.args.api_type == "openai":
+            autofixing_chat = ChatOpenAI(temperature=self.temperature, openai_api_key=openai.api_key,model=self.args.gpt_version)
 
         parser = PydanticOutputParser(pydantic_object=PARSERS[num_action])
         autofixing_parser = OutputFixingParser.from_llm(
@@ -127,13 +130,14 @@ class NaiveAct(gpt):
                 for i, transition in enumerate(traj): 
                     traj_text += transition['observation']
                     traj_text += f"> {transition['action']}"
+                    traj_text += f"{transition.get('reward','')}\n"
                     one_traj_token = self.num_tokens_from_string(traj_text)
-                    if one_traj_token > 5000:
+                    if one_traj_token > self.args.max_query_tokens:
                         max_step_num = i+1
                         break
                 traj_text += f"Your performance is: {transition['cum_reward']}"
             if not max_step_num:
-                max_step_num = 200
+                max_step_num = self.args.max_episode_len
             self.summarized_fewshot_example = self.distiller.generate_from_file(json_file,max_step_num=max_step_num)
 
     def response(self, state_description, action_description, env_info, game_description=None, goal_description=None, fewshot_examples=None):
@@ -155,10 +159,11 @@ class NaiveAct(gpt):
         self.game_description = game_description 
         self.goal_description = goal_description
         self.env_history.add("observation", state_description)
-        # print(self.env_history)
-        if len(self.env_history) >= 2:
+
+        # limit the token used, or it may exceed the max token
+        if len(self.env_history):
             one_history_token = self.num_tokens_from_string(self.env_history.get_one_history())
-            self.env_history.set_history(6000 // one_history_token)
+            self.env_history.set_history(self.args.max_query_tokens // one_history_token)
 
     def act(self, state_description, action_description, env_info, game_description=None, goal_description=None, logfile=None):
         self._add_history_before_action(game_description, goal_description, state_description)
@@ -192,7 +197,7 @@ class NaiveAct(gpt):
         if self.use_short_mem:
             if len(self.env_history) > 1:
                 my_mem += '\nSubsequently, I will offer pertinent guidance or information about the task. Please utilize this instruction to accomplish the given task effectively.'
-                my_mem += f"\nBelow are the latest {min(self.args.short_mem_num,len(self.env_history)//2)} historical data entries:\n"
+                my_mem += f"\nBelow are the latest {min(self.mem_num, len(self.env_history))} historical data entries:\n"
                 my_mem += f"{self.env_history.get_histories(self.mem_num)}"
 
         while asking_round < 3: 

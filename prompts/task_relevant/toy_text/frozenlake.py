@@ -446,7 +446,7 @@ class REFLEXION:
             },
         ]
 
-class EGG:
+class EXE:
     def __init__(self):
         self.PERCEPTRON_BASIC_FS_EXAMPLES = [
             {
@@ -469,55 +469,6 @@ class EGG:
                 "answer":
                     """
                 Based on the current game state, the insights and the suggestions, the optimal action for the player to take would be to move right (action 3) to navigate around the holes and reach the goal position. Therefore, the optimal action to take now is to move right (action 3).
-                    """
-            },
-        ]
-
-class EGGWithoutInsights:
-    def __init__(self):
-        self.PERCEPTRON_BASIC_FS_EXAMPLES = [
-            {
-                "question":
-                    """
-                State description: Current Game State: The current position of the player is at row 2, column 0.
-                Goal description: The goal is to navigate across the frozen lake and reach the goal position located at (3,3) without falling into any holes, which are located at (1,1), (1,3), (2,3) and (0,3).
-                Action description: Your Next Move: 
-                Please choose an action. The possible actions are:
-                '1': Move left (Decrease the horizontal coordinate by 1)
-                '2': Move down (Increase the vertical coordinate by 1)
-                '3': Move right (Increase the horizontal coordinate by 1)
-                '4': Move up (Decrease the vertical coordinate by 1). Ensure you only provide the action number from the valid action list, i.e., [1, 2, 3, 4].
-                The suggestions are listed below:Suggestion for the next episode:
-                1. Exploration: The player should explore the environment to understand the slippery nature of the frozen lake. The player can do this by taking random actions and observing the resulting movements. This will help the player to develop a better understanding of the environment and adjust its actions accordingly.
-                2. Exploitation: The player should use a Q-learning algorithm to improve its policy. The Q-learning algorithm will help the player to learn from its experiences and develop a better policy over time. The player should also consider the slippery nature of the frozen lake when updating its Q-values.
-                3. Weighting: The player should balance exploration and exploitation by using an epsilon-greedy policy. The player should set a high value of epsilon initially to encourage exploration and gradually decrease it over time to encourage exploitation. This will help the player to explore the environment initially and then exploit its knowledge to gain a higher performance.
-                    """,
-                "answer":
-                    """
-                Based on the current game state and the suggestions, the optimal action for the player to take would be to move right (action 3) to navigate around the holes and reach the goal position. Therefore, the optimal action to take now is to move right (action 3).
-                    """
-            },
-        ]
-
-class EGGWithoutSuggestions:
-    def __init__(self):
-        self.PERCEPTRON_BASIC_FS_EXAMPLES = [
-            {
-                "question":
-                    """
-                State description: Current Game State: The current position of the player is at row 2, column 0.
-                Goal description: The goal is to navigate across the frozen lake and reach the goal position located at (3,3) without falling into any holes, which are located at (1,1), (1,3), (2,3) and (0,3).
-                Action description: Your Next Move: 
-                Please choose an action. The possible actions are:
-                '1': Move left (Decrease the horizontal coordinate by 1)
-                '2': Move down (Increase the vertical coordinate by 1)
-                '3': Move right (Increase the horizontal coordinate by 1)
-                '4': Move up (Decrease the vertical coordinate by 1). Ensure you only provide the action number from the valid action list, i.e., [1, 2, 3, 4].
-                The insights of the game are listed below: The key information that can be exploited to improve the performance of the player includes the fact that the current policy is random and ineffective, the player is not learning from its experiences, and the slippery nature of the frozen lake is causing unintended movements. To improve performance, the player needs to incorporate a learning algorithm to improve its policy over time and develop a strategy that takes into account the slippery nature of the ice.
-                    """,
-                "answer":
-                    """
-                Based on the current game state and the insights, the optimal action for the player to take would be to move right (action 3) to navigate around the holes and reach the goal position. Therefore, the optimal action to take now is to move right (action 3).
                     """
             },
         ]

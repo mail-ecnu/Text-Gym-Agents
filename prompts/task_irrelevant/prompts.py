@@ -2,7 +2,7 @@ class ACT:
     def __init__(self):
         self.TASK_IRRELEVANT_PROMPTS = []
 
-class JARVIS:
+class EXE:
     def __init__(self):
         self.TASK_IRRELEVANT_PROMPTS = []
 
