@@ -10,6 +10,10 @@ from .toy_text import blackjack_translator, blackjack_policies
 from .toy_text import taxi_translator, taxi_policies
 from .toy_text import cliffwalking_translator, cliffwalking_policies
 from .toy_text import frozenlake_translator, frozenlake_policies
+from .atari import register_environments
+from .atari import Boxing_policies, Boxing_translator, Pong_policies, Pong_translator
+
+register_environments()
 
 REGISTRY = {}
 REGISTRY["sampling_wrapper"] = SettableStateEnv
@@ -49,3 +53,42 @@ REGISTRY["frozenlake_policies"] = [frozenlake_policies.dedicated_1_policy, froze
 REGISTRY["mountaincarContinuous_init_translator"] = mountaincarContinuous_translator.GameDescriber
 REGISTRY["mountaincarContinuous_basic_translator"] = mountaincarContinuous_translator.BasicStateSequenceTranslator
 REGISTRY["mountaincarContinuous_policies"] = [mountaincarContinuous_policies.pseudo_random_policy, mountaincarContinuous_policies.real_random_policy]
+
+
+REGISTRY["RepresentedBoxing_init_translator"] = Boxing_translator.GameDescriber
+REGISTRY["RepresentedBoxing_basic_translator"] = Boxing_translator.BasicStateSequenceTranslator
+REGISTRY["RepresentedBoxing_basic_policies"] = [
+    Boxing_policies.real_random_policy,
+    Boxing_policies.pseudo_random_policy,
+    Boxing_policies.dedicated_1_policy,
+    Boxing_policies.dedicated_2_policy,
+    Boxing_policies.dedicated_3_policy,
+    Boxing_policies.dedicated_4_policy,
+    Boxing_policies.dedicated_5_policy,
+    Boxing_policies.dedicated_6_policy,
+    Boxing_policies.dedicated_7_policy,
+    Boxing_policies.dedicated_8_policy,
+    Boxing_policies.dedicated_9_policy,
+    Boxing_policies.dedicated_10_policy,
+    Boxing_policies.dedicated_11_policy,
+    Boxing_policies.dedicated_12_policy,
+    Boxing_policies.dedicated_13_policy,
+    Boxing_policies.dedicated_14_policy,
+    Boxing_policies.dedicated_15_policy,
+    Boxing_policies.dedicated_16_policy,
+    Boxing_policies.dedicated_17_policy,
+    Boxing_policies.dedicated_18_policy
+]
+
+REGISTRY["RepresentedPong_init_translator"] = Pong_translator.GameDescriber
+REGISTRY["RepresentedPong_basic_translator"] = Pong_translator.BasicStateSequenceTranslator
+REGISTRY["RepresentedPong_basic_policies"] = [
+    Pong_policies.real_random_policy,
+    Pong_policies.pseudo_random_policy,
+    Pong_policies.dedicated_1_policy,
+    Pong_policies.dedicated_2_policy,
+    Pong_policies.dedicated_3_policy,
+    Pong_policies.dedicated_4_policy,
+    Pong_policies.dedicated_5_policy,
+    Pong_policies.dedicated_6_policy,
+]
