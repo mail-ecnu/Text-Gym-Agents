@@ -1,0 +1,1 @@
+from .represented_atari_game import register_environments

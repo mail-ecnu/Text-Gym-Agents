@@ -1,0 +1,1 @@
+python main_reflexion.py --env_name RepresentedBoxing-v0 --init_summarizer RepresentedBoxing_init_translator --curr_summarizer RepresentedBoxing_basic_translator --decider naive_actor --prompt_level 1 --num_trails 1 --seed 0
