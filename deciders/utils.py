@@ -16,8 +16,8 @@ else:
 
 Model = Literal["gpt-4", "gpt-35-turbo", "text-davinci-003"]
 
-from .gpt import gpt
-gpt().__init__()
+# from .gpt import gpt
+# gpt().__init__()
 
 import timeout_decorator
 @timeout_decorator.timeout(30)
