@@ -45,7 +45,7 @@ class gpt:
 2. Install Requirements
 
 ```
-conda env create --file environment.yml
+conda env create --file environment.yaml
 ```
 
 3. Testing 
@@ -56,3 +56,25 @@ Here is an example of how to run the script:
 ```
 ./test.sh
 ```
+
+### Install Mujoco Environment
+1. Download the MuJoCo, recommand [mujoco210](https://github.com/google-deepmind/mujoco/releases/tag/2.1.0), for Linux, it is `mujoco210-linux-x86_64.tar.gz
+`, then
+- make new file `mkdir ~/.mujoco`
+- move the dowload file into the file `cp mujoco210-linux-x86_64.tar.gz ~/.mujoco` and extract it by `tar -zxvf mujoco210-linux-x86_64.tar.gz` 
+- `vim ~/.bashrc` and add the following line into the `.bashrc`:
+`export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/<user>/.mujoco/mujoco210/bin
+`
+
+2. install mujoco_py which allows using MuJoCo from Python 
+```
+sudo apt install libosmesa6-dev libgl1-mesa-glx libglfw3
+sudo apt-get install libglew-dev
+
+pip install mujoco-py==2.1.2.14
+pip install cython==0.29.37
+```
+
+3. install gym[mujoco]
+`pip install gym[mujoco]`
+

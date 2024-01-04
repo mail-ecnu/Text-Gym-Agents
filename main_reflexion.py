@@ -221,7 +221,7 @@ if __name__ == "__main__":
         help="The actor used to select action",
     )
     parser.add_argument(
-        "--gpt_version", type=str, default="gpt-35-turbo", help="The version of GPT to use"
+        "--gpt_version", type=str, default="gpt-3.5-turbo", help="The version of GPT to use"
     )
     parser.add_argument(
         "--render", type=str, default="rgb_array", help="The render mode"
@@ -296,6 +296,7 @@ if __name__ == "__main__":
         "--api_type",
         type=str,
         default="azure",
+        choices=["azure", "openai"],
         help="choose api type, now support azure and openai"
     )
     args = parser.parse_args()
