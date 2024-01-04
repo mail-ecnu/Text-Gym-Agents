@@ -302,6 +302,15 @@ if __name__ == "__main__":
 
     if args.api_type != "azure" and args.api_type != "openai":
         raise ValueError(f"The {args.api_type} is not supported, please use 'azure' or 'openai' !")
+    
+    # Please note when using "azure", the model name is gpt-35-turbo while using "openai", the model name is "gpt-3.5-turbo"
+    if args.api_type == "azure":
+        if args.gpt_version == "gpt-3.5-turbo":
+            args.gpt_version = 'gpt-35-turbo'
+    elif args.api_type == "openai":
+        if args.gpt_version == "gpt-35-turbo":
+            args.gpt_version = 'gpt-3.5-turbo'
+
     # Get the specified translator, environment, and ChatGPT model
     env_class = envs.REGISTRY[args.env]
     init_summarizer = InitSummarizer(envs.REGISTRY[args.init_summarizer], args)
