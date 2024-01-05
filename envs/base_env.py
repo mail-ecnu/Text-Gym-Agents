@@ -1,6 +1,7 @@
 # This file contains functions for interacting with the CartPole environment
 
 import gym
+from gym.spaces import Discrete
 
 class SettableStateEnv(gym.Wrapper):
     def __init__(self, env):
@@ -55,10 +56,11 @@ class BaseEnv(gym.Wrapper):
 
     def step_llm(self, action): 
         potential_next_state = self.get_potential_next_state(action)
-        if "Continuous" in self.env_name:
-            state, reward, terminated, _, info = super().step(action)
-        else:
+        if isinstance(self.action_space, Discrete):
             state, reward, terminated, _, info = super().step(action-1)
+        else:
+            state, reward, terminated, _, info = super().step(action)
+            
         self.transition_data['action'] = action
         self.transition_data['next_state'] = state
         self.transition_data['reward'] = reward 
