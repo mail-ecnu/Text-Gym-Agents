@@ -17,6 +17,9 @@ import random
 import numpy as np
 import datetime
 from loguru import logger
+from gym.spaces import Discrete
+
+
 
 
 def set_seed(seed):
@@ -109,9 +112,6 @@ def _run(translator, environment, decider, max_episode_len, logfile, args, trail
                     logfile
                 )
 
-                if "Continuous" in args.env_name:
-                    action = [action]
-
                 state_description, reward, termination, truncation, env_info = environment.step_llm(
                     action
                 )
@@ -137,10 +137,6 @@ def _run(translator, environment, decider, max_episode_len, logfile, args, trail
                     logger.debug(f"Error: {e}, Retry! ({error_i+1}/{retry_num})")
                 continue
         if error_flag:
-            if "Continuous" in args.env_name:
-                action = [decider.default_action]
-            else:
-                action = decider.default_action
             state_description, reward, termination, truncation, env_info = environment.step_llm(
                     action
                 )
@@ -164,7 +160,7 @@ def _run(translator, environment, decider, max_episode_len, logfile, args, trail
             logger.info(f"current_total_cost: {current_total_cost}")
             logger.info(f"Now it is round {round}.")
 
-        frames.append(environment.render())
+        # frames.append(environment.render())
         if termination or truncation:
             if logger:
                 logger.info(f"Terminated!")
