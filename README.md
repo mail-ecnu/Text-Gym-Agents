@@ -90,6 +90,13 @@ pip install cython==0.29.37
 
 If you encounter the error `Unable to find game "[env_name]"` when running a script for Atari environments, it may be due to the absence of Atari ROMs in the `atari_py` package since version 0.2.7. To resolve this issue, you can manually download the ROMs and add them to Gym's registry.
 
+#### Update: A simplified solution
+
+``` shell
+pip install gym[accept-rom-license]
+AutoROM --accept-license
+```
+
 Follow the steps below to import Atari ROMs:
 
 #### Step 1: Download ROMs and Install Dependencies
