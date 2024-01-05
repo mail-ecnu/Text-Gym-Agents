@@ -10,4 +10,5 @@ FrozenLake-v1,1,expert,200.0
 MountainCarContinuous-v0,1,expert,200.0
 RepresentedBoxing-v0,1,expert,200.0
 RepresentedPong-v0,1,expert,200.0
-
+RepresentedMsPacman-v0,1,expert,10000.0
+RepresentedMontezumaRevenge-v0,1,expert,10000.0
