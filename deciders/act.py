@@ -209,41 +209,16 @@ class NaiveAct(gpt):
                 my_mem += f"\nBelow are the latest {min(self.mem_num, len(self.env_history))} historical data entries:\n"
                 my_mem += f"{self.env_history.get_histories(self.mem_num)}"
 
-        while asking_round < 3: 
-            prompt, res = self.response(state_description, action_description, env_info, game_description, goal_description, my_mem)
-            action_str = res.choices[0].text.strip()
-            print(f'my anwser is {action_str}')
-            try: 
-                if "Continuous" in self.args.env_name:
-                    action = float(re.findall(r"[-+]?\d*\.\d+", action_str)[0])
-                    
-                else:
-                    action = int(re.findall(r"\d+", action_str)[0])
-            except: 
-                action = None
-                asking_round += 1
-                continue
-
-            if "Continuous" not in self.args.env_name:
-                if (action-1) in self.action_space:
-                    break
-                else:
-                    asking_round += 1
-                    action = None
-            else:
-                if action >= self.action_space.low and action <= self.action_space.high:
-                    break
-                else:
-                    asking_round += 1
-                    action = None
-                
-        if action is None: 
-            print('err on selecting action')
-            action = self.default_action
+        
+        prompt, res = self.response(state_description, action_description, env_info, game_description, goal_description, my_mem)
+        action_str = res.choices[0].text.strip()
+        print(f'my anwser is {action_str}')
+        action = self.parser.parse(response).action
         self._add_history_after_action(action)
-        self.logger.info(f'\n{prompt}')
-        self.logger.info(f'The GPT response is: {res}.')
+        self.logger.info(f'The GPT response is: {response}.')
         self.logger.info(f'The optimal action is: {action}.')
+        if env_info.get('history'):
+            self.logger.info(f'History: {history_to_str(env_info["history"])}')
         return action, prompt, res, 0, 0
 
     def _read_mem(self, ):
