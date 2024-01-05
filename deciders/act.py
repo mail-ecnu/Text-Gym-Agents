@@ -3,7 +3,7 @@
 import openai
 from .gpt import gpt 
 from loguru import logger
-from .parser import PARSERS
+from .parser import DISPARSERS, CONPARSERS
 from langchain.output_parsers import PydanticOutputParser
 from langchain.output_parsers import OutputFixingParser
 from langchain.chat_models import AzureChatOpenAI, ChatOpenAI
@@ -12,13 +12,18 @@ import tiktoken
 import json
 import re
 from .utils import run_chain
+from gym.spaces import Discrete
 
 class RandomAct():
     def __init__(self, action_space):
         self.action_space = action_space
     
     def act(self, state_description, action_description, env_info, game_description=None, goal_description=None):
-        return self.action_space.sample()+1, '', '', '', 0, 0
+        if isinstance(self.action_space, Discrete):
+            action = self.action_space.sample()+1
+        else:
+            action = self.action_space.sample()
+        return action, '', '', '', 0, 0
 
 class NaiveAct(gpt):
     def __init__(self, action_space, args, prompts, distiller, temperature=0.0, max_tokens=2048, logger=None):
@@ -37,7 +42,10 @@ class NaiveAct(gpt):
         super().__init__(args)
         self.distiller = distiller
         self.fewshot_example_initialization(args.prompt_level, args.prompt_path, distiller = self.distiller)
-        self.default_action = 1
+        if isinstance(self.action_space, Discrete):
+            self.default_action = 1
+        else:
+            self.default_action = [0 for ind in range(self.action_space.shape[0])]
         self.parser = self._parser_initialization()
         self.irr_game_description = ''
         self.memory = []
@@ -82,11 +90,12 @@ class NaiveAct(gpt):
 
 
     def _parser_initialization(self):
-        if hasattr(self.action_space, 'n'):
-            assert self.action_space.n in PARSERS.keys(), f'Action space {self.action_space} is not supported.'
+        if isinstance(self.action_space, Discrete): 
+            PARSERS = DISPARSERS
             num_action = self.action_space.n
-        else:
-            num_action = 1
+        else: 
+            PARSERS = CONPARSERS
+            num_action = self.action_space.shape[0]
 
         if self.args.api_type == "azure":
             autofixing_chat = AzureChatOpenAI(
@@ -204,7 +213,6 @@ class NaiveAct(gpt):
             prompt, res = self.response(state_description, action_description, env_info, game_description, goal_description, my_mem)
             action_str = res.choices[0].text.strip()
             print(f'my anwser is {action_str}')
-            # import pdb; pdb.set_trace()
             try: 
                 if "Continuous" in self.args.env_name:
                     action = float(re.findall(r"[-+]?\d*\.\d+", action_str)[0])
