@@ -137,6 +137,7 @@ def _run(translator, environment, decider, max_episode_len, logfile, args, trail
                     logger.debug(f"Error: {e}, Retry! ({error_i+1}/{retry_num})")
                 continue
         if error_flag:
+            action = decider.default_action
             state_description, reward, termination, truncation, env_info = environment.step_llm(
                     action
                 )
