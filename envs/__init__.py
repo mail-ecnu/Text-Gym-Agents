@@ -12,8 +12,10 @@ from .toy_text import taxi_translator, taxi_policies
 from .toy_text import cliffwalking_translator, cliffwalking_policies
 from .toy_text import frozenlake_translator, frozenlake_policies
 
-from .atari import register_environments
+from .atari import montezumarevenge_policies, register_environments
 from .atari import Boxing_policies, Boxing_translator, Pong_policies, Pong_translator
+from .atari import mspacman_policies, mspacman_translator
+from .atari import montezumarevenge_translator
 register_environments()
 
 from .mujoco import ant_translator, ant_policies
@@ -94,6 +96,47 @@ REGISTRY["RepresentedPong_basic_policies"] = [
     Pong_policies.dedicated_4_policy,
     Pong_policies.dedicated_5_policy,
     Pong_policies.dedicated_6_policy,
+]
+
+REGISTRY["RepresentedMsPacman_init_translator"] = mspacman_translator.GameDescriber
+REGISTRY["RepresentedMsPacman_basic_translator"] = mspacman_translator.BasicStateSequenceTranslator
+REGISTRY["RepresentedMsPacman_basic_policies"] = [
+    mspacman_policies.real_random_policy,
+    mspacman_policies.pseudo_random_policy,
+    mspacman_policies.dedicated_1_policy,
+    mspacman_policies.dedicated_2_policy,
+    mspacman_policies.dedicated_3_policy,
+    mspacman_policies.dedicated_4_policy,
+    mspacman_policies.dedicated_5_policy,
+    mspacman_policies.dedicated_6_policy,
+    mspacman_policies.dedicated_7_policy,
+    mspacman_policies.dedicated_8_policy,
+    mspacman_policies.dedicated_9_policy,
+]
+
+REGISTRY["RepresentedMontezumaRevenge_init_translator"] = montezumarevenge_translator.GameDescriber
+REGISTRY["RepresentedMontezumaRevenge_basic_translator"] = montezumarevenge_translator.BasicStateSequenceTranslator
+REGISTRY["RepresentedMontezumaRevenge_basic_policies"] = [
+    montezumarevenge_policies.real_random_policy,
+    montezumarevenge_policies.pseudo_random_policy,
+    montezumarevenge_policies.dedicated_1_policy,
+    montezumarevenge_policies.dedicated_2_policy,
+    montezumarevenge_policies.dedicated_3_policy,
+    montezumarevenge_policies.dedicated_4_policy,
+    montezumarevenge_policies.dedicated_5_policy,
+    montezumarevenge_policies.dedicated_6_policy,
+    montezumarevenge_policies.dedicated_7_policy,
+    montezumarevenge_policies.dedicated_8_policy,
+    montezumarevenge_policies.dedicated_9_policy,
+    montezumarevenge_policies.dedicated_10_policy,
+    montezumarevenge_policies.dedicated_11_policy,
+    montezumarevenge_policies.dedicated_12_policy,
+    montezumarevenge_policies.dedicated_13_policy,
+    montezumarevenge_policies.dedicated_14_policy,
+    montezumarevenge_policies.dedicated_15_policy,
+    montezumarevenge_policies.dedicated_16_policy,
+    montezumarevenge_policies.dedicated_17_policy,
+    montezumarevenge_policies.dedicated_18_policy,
 ]
 
 REGISTRY["ant_init_translator"] = ant_translator.GameDescriber
