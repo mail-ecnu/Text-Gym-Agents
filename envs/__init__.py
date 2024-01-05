@@ -12,10 +12,10 @@ from .toy_text import taxi_translator, taxi_policies
 from .toy_text import cliffwalking_translator, cliffwalking_policies
 from .toy_text import frozenlake_translator, frozenlake_policies
 
-from .atari import montezumarevenge_policies, register_environments
+from .atari import register_environments
 from .atari import Boxing_policies, Boxing_translator, Pong_policies, Pong_translator
 from .atari import mspacman_policies, mspacman_translator
-from .atari import montezumarevenge_translator
+from .atari import montezumarevenge_policies, montezumarevenge_translator
 register_environments()
 
 from .mujoco import ant_translator, ant_policies
