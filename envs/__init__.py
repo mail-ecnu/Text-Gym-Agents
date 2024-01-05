@@ -1,4 +1,5 @@
 from .base_env import BaseEnv, SettableStateEnv
+
 from .classic_control import cartpole_translator, cartpole_policies
 from .classic_control import acrobot_translator, acrobot_policies
 from .classic_control import mountaincar_translator, mountaincar_policies
@@ -10,10 +11,12 @@ from .toy_text import blackjack_translator, blackjack_policies
 from .toy_text import taxi_translator, taxi_policies
 from .toy_text import cliffwalking_translator, cliffwalking_policies
 from .toy_text import frozenlake_translator, frozenlake_policies
+
 from .atari import register_environments
 from .atari import Boxing_policies, Boxing_translator, Pong_policies, Pong_translator
-
 register_environments()
+
+from .mujoco import ant_translator, ant_policies
 
 REGISTRY = {}
 REGISTRY["sampling_wrapper"] = SettableStateEnv
@@ -92,3 +95,7 @@ REGISTRY["RepresentedPong_basic_policies"] = [
     Pong_policies.dedicated_5_policy,
     Pong_policies.dedicated_6_policy,
 ]
+
+REGISTRY["ant_init_translator"] = ant_translator.GameDescriber
+REGISTRY["ant_basic_translator"] = ant_translator.BasicStateSequenceTranslator
+REGISTRY["ant_policies"] = [ant_policies.pseudo_random_policy, ant_policies.real_random_policy]

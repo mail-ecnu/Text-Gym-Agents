@@ -62,4 +62,27 @@ Or you can also test this by copying a command from a .sh script
 ```
 python main_reflexion.py --env_name CartPole-v0 --init_summarizer cart_init_translator --curr_summarizer cart_basic_translator --decider exe_actor --prompt_level 1 --num_trails 1 --distiller guide_generator 
 ```
+
 If you use openai key, please add "--api_type openai" at the end of the command!
+
+### Install Mujoco Environment
+1. Download the MuJoCo, recommand [mujoco210](https://github.com/google-deepmind/mujoco/releases/tag/2.1.0), for Linux, it is `mujoco210-linux-x86_64.tar.gz
+`, then
+- make new file `mkdir ~/.mujoco`
+- move the dowload file into the file `cp mujoco210-linux-x86_64.tar.gz ~/.mujoco` and extract it by `tar -zxvf mujoco210-linux-x86_64.tar.gz` 
+- `vim ~/.bashrc` and add the following line into the `.bashrc`:
+`export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/<user>/.mujoco/mujoco210/bin
+`
+
+2. install mujoco_py which allows using MuJoCo from Python 
+```
+sudo apt install libosmesa6-dev libgl1-mesa-glx libglfw3
+sudo apt-get install libglew-dev
+
+pip install mujoco-py==2.1.2.14
+pip install cython==0.29.37
+```
+
+3. install gym[mujoco]
+`pip install gym[mujoco]`
+
