@@ -34,25 +34,32 @@ For `L5` level, we handcraft the few shot examples with domain knowledge in `pro
 ```python 
 import openai
 class gpt: 
-    def __init__(self,):
-        openai.api_type = "azure"
-        openai.api_version = "2023-05-15"
-        # Your Azure OpenAI resource's endpoint value.
-        openai.api_base = "https://js-partner.openai.azure.com/"
-        openai.api_key = "your azure openai key"
+    def __init__(self, args):
+        if args.api_type == "azure":
+            openai.api_type = "azure"
+            openai.api_version = "2023-05-15"
+            # Your Azure OpenAI resource's endpoint value.
+            openai.api_base = "https://midivi-main-scu1.openai.azure.com/"
+            openai.api_key = "your azure key"
+        else:
+            openai.api_key = "your openai key"
 ```
-
 2. Install Requirements
 
 ```
-conda env create --file environment.yml
+conda env create --file environment.yaml
 ```
 
 3. Testing 
-The project can be run using the provided test.sh script. This script runs a series of commands, each of which initiates a Gym environment and applies different translators to it.
+The project can be run using the provided .sh script in shell/ folder. This script runs a series of commands, each of which initiates a Gym environment and applies different translators to it.
 
 Here is an example of how to run the script:
 
 ```
-./test.sh
+sh shell/test_cartpole.sh
 ```
+Or you can also test this by copying a command from a .sh script
+```
+python main_reflexion.py --env_name CartPole-v0 --init_summarizer cart_init_translator --curr_summarizer cart_basic_translator --decider exe_actor --prompt_level 1 --num_trails 1 --distiller guide_generator 
+```
+If you use openai key, please add "--api_type openai" at the end of the command!

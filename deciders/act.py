@@ -34,7 +34,7 @@ class NaiveAct(gpt):
         else:
             model = args.gpt_version
         self.encoding = tiktoken.encoding_for_model(model)
-        super().__init__()
+        super().__init__(args)
         self.distiller = distiller
         self.fewshot_example_initialization(args.prompt_level, args.prompt_path, distiller = self.distiller)
         self.default_action = 1
