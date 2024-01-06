@@ -11,7 +11,7 @@ from memory.env_history import EnvironmentHistory
 import tiktoken
 import json
 import re
-from .utils import run_chain
+from .utils import run_chain, get_completion, get_chat
 from gym.spaces import Discrete
 
 class RandomAct():
@@ -156,12 +156,15 @@ class NaiveAct(gpt):
             prompt = f"{game_description}\n{goal_description}\n{fewshot_examples}\nCurrent {state_description}\n{action_description} "
         prompt += "Please select an action based on the current game state and the information you get. You must select the appropriate action from the given action descriptions and cannot refrain from taking action or performing any prohibited actions. Your Action is: "
         print(f"prompt is {prompt}")
-        res = openai.Completion.create(
-                engine=self.args.gpt_version,
-                prompt=prompt,
-                temperature=self.temperature,
-                max_tokens=self.max_tokens,
-            )
+        # res = get_chat(prompt, self.args.api_type, self.args.gpt_version, self.temperature, self.max_tokens)
+        res = get_chat(prompt, api_type=self.args.api_type, model=self.args.gpt_version, engine=self.args.gpt_version, temperature=self.temperature, max_tokens=self.max_tokens)
+        # openai.ChatCompletion.create(
+        #         engine=self.args.gpt_version,
+        #         # model=self.args.gpt_version,
+        #         prompt=prompt,
+        #         temperature=self.temperature,
+        #         max_tokens=self.max_tokens,
+        #     )
         return prompt, res
     
     def _add_history_before_action(self, game_description, goal_description, state_description):
@@ -210,8 +213,8 @@ class NaiveAct(gpt):
                 my_mem += f"{self.env_history.get_histories(self.mem_num)}"
 
         
-        prompt, res = self.response(state_description, action_description, env_info, game_description, goal_description, my_mem)
-        action_str = res.choices[0].text.strip()
+        prompt, response = self.response(state_description, action_description, env_info, game_description, goal_description, my_mem)
+        action_str = response
         print(f'my anwser is {action_str}')
         action = self.parser.parse(response).action
         self._add_history_after_action(action)
@@ -219,7 +222,7 @@ class NaiveAct(gpt):
         self.logger.info(f'The optimal action is: {action}.')
         if env_info.get('history'):
             self.logger.info(f'History: {history_to_str(env_info["history"])}')
-        return action, prompt, res, 0, 0
+        return action, prompt, response, 0, 0
 
     def _read_mem(self, ):
         memory = self.memory
