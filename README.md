@@ -90,59 +90,12 @@ pip install cython==0.29.37
 
 If you encounter the error `Unable to find game "[env_name]"` when running a script for Atari environments, it may be due to the absence of Atari ROMs in the `atari_py` package since version 0.2.7. To resolve this issue, you can manually download the ROMs and add them to Gym's registry.
 
-#### Update: A simplified solution
-
 ``` shell
 pip install gym[accept-rom-license]
 AutoROM --accept-license
 ```
 
-Follow the steps below to import Atari ROMs:
-
-#### Step 1: Download ROMs and Install Dependencies
-Create a new Jupyter notebook (e.g., at the root directory of this project) and run the following code cell just once. This code block downloads the ROMs and installs the necessary dependencies (`unrar` and `atari_py`):
-
-```python
-import urllib.request
-
-# Download the Atari ROMs
-urllib.request.urlretrieve("http://www.atarimania.com/roms/Roms.rar", "Roms.rar")
-
-# Install dependencies
-!pip install unrar
-!pip install atari_py
-
-# Extract the ROMs
-!unrar x Roms.rar
-
-# Organize and compress ROM folders
-!mkdir rars
-!zip HC\ ROMS.zip HC\ ROMS
-!zip ROMS.zip ROMS
-
-# Clean up extracted folders
-!rm -r HC\ ROMS
-!rm -r ROMS
-
-# Move zipped ROMS to the rars folder
-!mv HC\ ROMS.zip rars
-!mv ROMS.zip rars
-```
-
-#### Step 2: Import ROMs to Atari-Py
-Now, use the following lines within the same notebook to import the ROMs to `atari_py`:
-
-```python
-# Import ROMs to atari_py
-!python -m atari_py.import_roms rars
-
-# Clean up downloaded files and folders
-!rm -r rars
-!rm Roms.rar
-```
-
-#### Step 3: Test the Imported ROMs
-Test the imported ROMs by running the following Python code in your Jupyter notebook:
+Test  with the following code
 
 ```python
 import gym
