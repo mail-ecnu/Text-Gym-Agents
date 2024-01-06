@@ -54,6 +54,7 @@ def get_completion(prompt: str, api_type: str = "azure", engine: str = "gpt-35-t
             temperature=temperature,
             # request_timeout = 1
         )
+        import pdb; pdb.set_trace()
         return response.choices[0]["message"]["content"]
 
 # @retry(wait=wait_random_exponential(min=1, max=60), stop=stop_after_attempt(6))
