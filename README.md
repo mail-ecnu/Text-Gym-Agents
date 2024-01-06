@@ -86,3 +86,32 @@ pip install cython==0.29.37
 3. install gym[mujoco]
 `pip install gym[mujoco]`
 
+### Import Atari ROMs
+
+If you encounter the error `Unable to find game "[env_name]"` when running a script for Atari environments, it may be due to the absence of Atari ROMs in the `atari_py` package since version 0.2.7. To resolve this issue, you can manually download the ROMs and add them to Gym's registry.
+
+``` shell
+pip install gym[accept-rom-license]
+AutoROM --accept-license
+```
+
+Test  with the following code
+
+```python
+import gym
+from atariari.benchmark.wrapper import AtariARIWrapper
+
+# Initialize the environment
+env = AtariARIWrapper(gym.make("MsPacmanNoFrameskip-v4"))
+obs = env.reset()
+
+# Perform a single step in the environment
+obs, reward, done, info = env.step(1)
+
+# Check the information provided by the environment (including labels and scores)
+print(info["labels"])
+```
+
+If everything runs smoothly, you have successfully imported the Atari ROMs and set up your environment.
+
+Reference: [StackOverflow answer](https://stackoverflow.com/a/68143504/38626)
