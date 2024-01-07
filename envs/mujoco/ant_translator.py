@@ -1,3 +1,8 @@
+'''
+Action Space Box(-1.0, 1.0, (8,), float32)
+Observation Space Box(-inf, inf, (27,), float64)
+'''
+
 class BasicLevelTranslator:
     def __init__(self):
         pass

@@ -292,7 +292,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--api_type",
         type=str,
-        default="azure",
+        default="openai",
         choices=["azure", "openai"],
         help="choose api type, now support azure and openai"
     )

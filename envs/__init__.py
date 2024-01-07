@@ -16,7 +16,6 @@ from .atari import register_environments
 from .atari import Boxing_policies, Boxing_translator, Pong_policies, Pong_translator
 register_environments()
 
-from .mujoco import ant_translator, ant_policies
 
 REGISTRY = {}
 REGISTRY["sampling_wrapper"] = SettableStateEnv
@@ -95,6 +94,41 @@ REGISTRY["RepresentedPong_basic_policies"] = [
     Pong_policies.dedicated_5_policy,
     Pong_policies.dedicated_6_policy,
 ]
+
+## For mujoco env
+
+
+from .mujoco import invertedPendulum_translator, invertedPendulum_policies
+from .mujoco import invertedDoublePendulum_translator, invertedDoublePendulum_policies
+from .mujoco import hopper_translator, hopper_policies
+from .mujoco import walker2d_translator, walker2d_policies
+
+from .mujoco import halfcheetah_translator, halfcheetah_policies
+from .mujoco import ant_translator, ant_policies
+
+REGISTRY["invertedPendulum_init_translator"] = invertedPendulum_translator.GameDescriber
+REGISTRY["invertedPendulum_basic_translator"] = invertedPendulum_translator.BasicStateSequenceTranslator
+REGISTRY["invertedPendulum_policies"] = [invertedPendulum_policies.pseudo_random_policy, invertedPendulum_policies.real_random_policy]
+
+REGISTRY["invertedDoublePendulum_init_translator"] = invertedDoublePendulum_translator.GameDescriber
+REGISTRY["invertedDoublePendulum_basic_translator"] = invertedDoublePendulum_translator.BasicStateSequenceTranslator
+REGISTRY["invertedDoublePendulum_policies"] = [invertedDoublePendulum_policies.pseudo_random_policy, invertedDoublePendulum_policies.real_random_policy]
+
+
+REGISTRY["hopper_init_translator"] = hopper_translator.GameDescriber
+REGISTRY["hopper_basic_translator"] = hopper_translator.BasicStateSequenceTranslator
+REGISTRY["hopper_policies"] = [hopper_policies.pseudo_random_policy, hopper_policies.real_random_policy]
+
+REGISTRY["walker2d_init_translator"] = walker2d_translator.GameDescriber
+REGISTRY["walker2d_basic_translator"] = walker2d_translator.BasicStateSequenceTranslator
+REGISTRY["walker2d_policies"] = [walker2d_policies.pseudo_random_policy, walker2d_policies.real_random_policy]
+
+
+
+REGISTRY["halfcheetah_init_translator"] = halfcheetah_translator.GameDescriber
+REGISTRY["halfcheetah_basic_translator"] = halfcheetah_translator.BasicStateSequenceTranslator
+REGISTRY["halfcheetah_policies"] = [halfcheetah_policies.pseudo_random_policy, halfcheetah_policies.real_random_policy]
+
 
 REGISTRY["ant_init_translator"] = ant_translator.GameDescriber
 REGISTRY["ant_basic_translator"] = ant_translator.BasicStateSequenceTranslator
