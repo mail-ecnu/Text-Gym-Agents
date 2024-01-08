@@ -115,3 +115,9 @@ print(info["labels"])
 If everything runs smoothly, you have successfully imported the Atari ROMs and set up your environment.
 
 Reference: [StackOverflow answer](https://stackoverflow.com/a/68143504/38626)
+
+### support new env
+We also support other new env using Gym format, for new env you need to 
+1. Translate your Gym env to TextGym env, make `<your_env>_translator.py, <your_env>policies.py`, put them into `./envs/`, and add your env in `./envs/__init__.py`.
+2. Add the PPO performance (best or expert) of your env in `./record_reflexion.csv`
+3. Test it using shell command (recommend using COT, SPP, self-reflexion, and exe under L1&L3 level). Testing examples can be found in `./shell`.
