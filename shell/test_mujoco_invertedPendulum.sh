@@ -1,14 +1,14 @@
 # InvertedPendulum-v4
 
 # COT
-python main_reflexion.py --env_name InvertedPendulum-v1 --init_summarizer invertedPendulum_init_translator --curr_summarizer invertedPendulum_basic_translator --decider cot_actor --prompt_level 1 --num_trails 1
+python main_reflexion.py --env_name InvertedPendulum-v4 --init_summarizer invertedPendulum_init_translator --curr_summarizer invertedPendulum_basic_translator --decider cot_actor --prompt_level 1 --num_trails 1
 
-python main_reflexion.py --env_name InvertedPendulum-v1 --init_summarizer invertedPendulum_init_translator --curr_summarizer invertedPendulum_basic_translator --decider cot_actor --prompt_level 3 --num_trails 5 --distiller traj_distiller 
+python main_reflexion.py --env_name InvertedPendulum-v4 --init_summarizer invertedPendulum_init_translator --curr_summarizer invertedPendulum_basic_translator --decider cot_actor --prompt_level 3 --num_trails 5 --distiller traj_distiller 
 
 # SPP
-python main_reflexion.py --env_name InvertedPendulum-v1 --init_summarizer invertedPendulum_init_translator --curr_summarizer invertedPendulum_basic_translator --decider spp_actor --prompt_level 1 --num_trails 1
+python main_reflexion.py --env_name InvertedPendulum-v4 --init_summarizer invertedPendulum_init_translator --curr_summarizer invertedPendulum_basic_translator --decider spp_actor --prompt_level 1 --num_trails 1
 
-python main_reflexion.py --env_name InvertedPendulum-v1 --init_summarizer invertedPendulum_init_translator --curr_summarizer invertedPendulum_basic_translator --decider spp_actor --prompt_level 3 --num_trails 5 --distiller traj_distiller 
+python main_reflexion.py --env_name InvertedPendulum-v4 --init_summarizer invertedPendulum_init_translator --curr_summarizer invertedPendulum_basic_translator --decider spp_actor --prompt_level 3 --num_trails 5 --distiller traj_distiller 
 
 
 
