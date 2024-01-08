@@ -1,5 +1,17 @@
 # Walker2d-v4
 
+# COT
+python main_reflexion.py --env_name Walker2d-v4 --init_summarizer walker2d_init_translator --curr_summarizer walker2d_basic_translator --decider cot_actor --prompt_level 1 --num_trails 1
+
+python main_reflexion.py --env_name Walker2d-v4 --init_summarizer walker2d_init_translator --curr_summarizer walker2d_basic_translator --decider cot_actor --prompt_level 3 --num_trails 5 --distiller traj_distiller 
+
+# SPP
+python main_reflexion.py --env_name Walker2d-v4 --init_summarizer walker2d_init_translator --curr_summarizer walker2d_basic_translator --decider spp_actor --prompt_level 1 --num_trails 1
+
+python main_reflexion.py --env_name Walker2d-v4 --init_summarizer walker2d_init_translator --curr_summarizer walker2d_basic_translator --decider spp_actor --prompt_level 3 --num_trails 5 --distiller traj_distiller 
+
+
+
 # REFLEXION
 python main_reflexion.py --env_name Walker2d-v4 --init_summarizer walker2d_init_translator --curr_summarizer walker2d_basic_translator --decider reflexion_actor --prompt_level 1 --num_trails 1 --distiller reflect_distiller 
 
