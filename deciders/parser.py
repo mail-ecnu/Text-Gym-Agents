@@ -7,10 +7,10 @@ class DisActionModel(BaseModel):
     @classmethod
     def create_validator(cls, max_action):
         @validator('action', allow_reuse=True)
-        def action_is_valid(cls, field):
-            if field not in range(1, max_action + 1):
+        def action_is_valid(cls, info):
+            if info not in range(1, max_action + 1):
                 raise ValueError(f"Action is not valid ([1, {max_action}])!")
-            return field
+            return info
         return action_is_valid
 
 # Generate classes dynamically
