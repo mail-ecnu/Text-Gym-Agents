@@ -116,8 +116,29 @@ If everything runs smoothly, you have successfully imported the Atari ROMs and s
 
 Reference: [StackOverflow answer](https://stackoverflow.com/a/68143504/38626)
 
+
 ### support new env
 We also support other new env using Gym format, for new env you need to 
 1. Translate your Gym env to TextGym env, make `<your_env>_translator.py, <your_env>policies.py`, put them into `./envs/`, and add your env in `./envs/__init__.py`.
 2. Add the PPO performance (best or expert) of your env in `./record_reflexion.csv`
 3. Test it using shell command (recommend using COT, SPP, self-reflexion, and exe under L1&L3 level). Testing examples can be found in `./shell`.
+
+### Visulization with Gradio
+
+> Gradio is an open-source Python package that allows you to quickly build a demo or web application for your machine learning model, API, or any arbitary Python function. You can then share a link to your demo or web application in just a few seconds using Gradio’s built-in sharing features. No JavaScript, CSS, or web hosting experience needed! [from https://www.gradio.app/guides/quickstart]
+
+Prerequisite: Gradio requires Python 3.8 or higher
+
+Run this in your terminal or command prompt:
+
+```shell
+pip install gradio
+```
+
+And then run the following Python file in the root directory:
+
+```shell
+python gradio_reflexion.py
+```
+
+The visulization web application will open in a browser on http://server-ip-address:7860 if running from a file. If you are running within a notebook, the demo will appear embedded within the notebook.
