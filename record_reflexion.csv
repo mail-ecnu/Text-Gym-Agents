@@ -10,5 +10,10 @@ FrozenLake-v1,1,expert,200.0
 MountainCarContinuous-v0,1,expert,200.0
 RepresentedBoxing-v0,1,expert,200.0
 RepresentedPong-v0,1,expert,200.0
-Ant-v4,1,expert,5000
+Ant-v4,1,expert,5000.2
+HalfCheetah-v4,1,expert,12138.8
+Hopper-v4,1,expert,3542.2
+Walker2d-v4,1,expert,5000.0
+Swimmer-v4,1,expert,44.4
+Reacher-v4,1,expert,-2.6
 

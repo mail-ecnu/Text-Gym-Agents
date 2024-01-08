@@ -100,6 +100,11 @@ REGISTRY["RepresentedPong_basic_policies"] = [
 
 from .mujoco import invertedPendulum_translator, invertedPendulum_policies
 from .mujoco import invertedDoublePendulum_translator, invertedDoublePendulum_policies
+
+from .mujoco import swimmer_translator, swimmer_policies
+
+from .mujoco import reacher_translator, reacher_policies
+
 from .mujoco import hopper_translator, hopper_policies
 from .mujoco import walker2d_translator, walker2d_policies
 
@@ -109,16 +114,22 @@ from .mujoco import ant_translator, ant_policies
 REGISTRY["invertedPendulum_init_translator"] = invertedPendulum_translator.GameDescriber
 REGISTRY["invertedPendulum_basic_translator"] = invertedPendulum_translator.BasicStateSequenceTranslator
 REGISTRY["invertedPendulum_policies"] = [invertedPendulum_policies.pseudo_random_policy, invertedPendulum_policies.real_random_policy]
-
 REGISTRY["invertedDoublePendulum_init_translator"] = invertedDoublePendulum_translator.GameDescriber
 REGISTRY["invertedDoublePendulum_basic_translator"] = invertedDoublePendulum_translator.BasicStateSequenceTranslator
 REGISTRY["invertedDoublePendulum_policies"] = [invertedDoublePendulum_policies.pseudo_random_policy, invertedDoublePendulum_policies.real_random_policy]
 
 
+REGISTRY["swimmer_init_translator"] = swimmer_translator.GameDescriber
+REGISTRY["swimmer_basic_translator"] = swimmer_translator.BasicStateSequenceTranslator
+REGISTRY["swimmer_policies"] = [swimmer_policies.pseudo_random_policy, swimmer_policies.real_random_policy]
+
+REGISTRY["reacher_init_translator"] = reacher_translator.GameDescriber
+REGISTRY["reacher_basic_translator"] = reacher_translator.BasicStateSequenceTranslator
+REGISTRY["reacher_policies"] = [reacher_policies.pseudo_random_policy, reacher_policies.real_random_policy]
+
 REGISTRY["hopper_init_translator"] = hopper_translator.GameDescriber
 REGISTRY["hopper_basic_translator"] = hopper_translator.BasicStateSequenceTranslator
 REGISTRY["hopper_policies"] = [hopper_policies.pseudo_random_policy, hopper_policies.real_random_policy]
-
 REGISTRY["walker2d_init_translator"] = walker2d_translator.GameDescriber
 REGISTRY["walker2d_basic_translator"] = walker2d_translator.BasicStateSequenceTranslator
 REGISTRY["walker2d_policies"] = [walker2d_policies.pseudo_random_policy, walker2d_policies.real_random_policy]
