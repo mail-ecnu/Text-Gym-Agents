@@ -187,3 +187,6 @@ test*.py
 *.zip
 test_
 *.ipynb
+
+# gradio
+flagged
