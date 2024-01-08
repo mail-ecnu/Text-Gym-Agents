@@ -108,8 +108,9 @@ from .mujoco import reacher_translator, reacher_policies
 from .mujoco import hopper_translator, hopper_policies
 from .mujoco import walker2d_translator, walker2d_policies
 
-from .mujoco import halfcheetah_translator, halfcheetah_policies
-from .mujoco import ant_translator, ant_policies
+
+
+
 
 REGISTRY["invertedPendulum_init_translator"] = invertedPendulum_translator.GameDescriber
 REGISTRY["invertedPendulum_basic_translator"] = invertedPendulum_translator.BasicStateSequenceTranslator
@@ -135,12 +136,17 @@ REGISTRY["walker2d_basic_translator"] = walker2d_translator.BasicStateSequenceTr
 REGISTRY["walker2d_policies"] = [walker2d_policies.pseudo_random_policy, walker2d_policies.real_random_policy]
 
 
-
+from .mujoco import halfcheetah_translator, halfcheetah_policies
 REGISTRY["halfcheetah_init_translator"] = halfcheetah_translator.GameDescriber
 REGISTRY["halfcheetah_basic_translator"] = halfcheetah_translator.BasicStateSequenceTranslator
 REGISTRY["halfcheetah_policies"] = [halfcheetah_policies.pseudo_random_policy, halfcheetah_policies.real_random_policy]
 
+from .mujoco import pusher_translator, pusher_policies
+REGISTRY["pusher_init_translator"] = pusher_translator.GameDescriber
+REGISTRY["pusher_basic_translator"] = pusher_translator.BasicStateSequenceTranslator
+REGISTRY["pusher_policies"] = [pusher_policies.pseudo_random_policy, pusher_policies.real_random_policy]
 
+from .mujoco import ant_translator, ant_policies
 REGISTRY["ant_init_translator"] = ant_translator.GameDescriber
 REGISTRY["ant_basic_translator"] = ant_translator.BasicStateSequenceTranslator
 REGISTRY["ant_policies"] = [ant_policies.pseudo_random_policy, ant_policies.real_random_policy]
