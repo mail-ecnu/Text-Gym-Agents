@@ -4,6 +4,8 @@ on:
   push:
     branches: [hf_space]
 
+  workflow_dispatch:
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
