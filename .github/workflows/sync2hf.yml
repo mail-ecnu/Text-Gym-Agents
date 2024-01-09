@@ -16,7 +16,7 @@ jobs:
           # A repo with this name will be created if it doesn't exist. Required.
           # The github username is not included. ex: not like this 'username/reponame', but like this: 'reponame'
           # the key of huggingface_repo can be omitted. If the key is commented out, it defaults to the same name as the Github repository. 
-          # huggingface_repo: 'ChatGPT'
+          huggingface_repo: 'MAIL-CS-ECNU/Text-Gym-Agents'
 
           # Hugging Face token with write access. Required.
           # Here, we provide a token that we called `HF_TOKEN` when we added the secret to our GitHub repo.
