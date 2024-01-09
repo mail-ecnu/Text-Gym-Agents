@@ -260,6 +260,8 @@ def main_progress(
 
 if __name__ == "__main__":
 
+    # Github action test
+    
     # install Atari ROMs
     subprocess.run(['AutoROM', '--accept-license'])
 
