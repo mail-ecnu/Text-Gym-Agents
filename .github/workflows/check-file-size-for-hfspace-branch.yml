@@ -1,6 +1,6 @@
 name: Check file size
 on:               # or directly `on: [push]` to run the action on every push on any branch
-  pull_request:
+  push:
     branches:
       - 'hf_space'
 
