@@ -7,9 +7,16 @@ class BasicLevelTranslator:
     def translate(self, state):
         res = (
             f"Position of the cart: {state[0]:.2f} m\n"
-            f"Vertical angle of the pole: {state[1]:.2f} rad\n"
-            f"Linear velocity of the cart: {state[2]:.2f} m/s\n"
-            f"Angular velocity of the pole: {state[3]:.2f} rad/s"
+            f"Sine of the angle between cart and first pole: {state[1]:.2f}\n"
+            f"Sine of the angle between two poles: {state[2]:.2f}\n"
+            f"Cosine of the angle between cart and first pole: {state[3]:.2f}\n"
+            f"Cosine of the angle between two poles: {state[4]:.2f}\n"
+            f"Velocity of the cart: {state[5]:.2f} m/s\n"
+            f"Angular velocity of angle between cart and first pole: {state[6]:.2f} rad/s\n"
+            f"Angular velocity of angle between two poles: {state[7]:.2f} rad/s\n"
+            f"Constraint Force 1: {state[8]:.2f} N\n"
+            f"Constraint Force 2: {state[9]:.2f} N\n"
+            f"Constraint Force 3: {state[10]:.2f} N"
         )
         return res
 
@@ -18,7 +25,7 @@ class GameDescriber:
         self.is_only_local_obs = args.is_only_local_obs == 1
         self.max_episode_len = args.max_episode_len
         self.action_desc_dict = {
-            0: "Apply a force in the range [-1, 1] to the cart to control its motion.",
+            0: "Apply a force in the range [-3, 3] to the cart to control its motion.",
         }
         self.reward_desc_dict = {}
     
@@ -30,24 +37,22 @@ class GameDescriber:
     
     def describe_goal(self):
         return (
-            "The goal in the Inverted Pendulum environment is to balance the pole on top of the cart "\
-            "by applying continuous forces to the cart, keeping it upright."
+            "The goal in the InvertedDoublePendulum environment is to balance the two poles "\
+            "on top of the cart by applying continuous forces on the cart."
         )
 
     def describe_game(self):
         return (
-            "In the Inverted Pendulum environment, you control a cart that can move linearly with a pole "\
-            "attached to it. Your objective is to balance the pole on top of the cart by applying forces "\
-            "to the cart in a way that keeps the pole upright. "\
-            "The environment provides observations of the cart's position, pole angle, velocities, "\
-            "and angular velocities. The goal is to maintain balance as long as possible."
+            "In the InvertedDoublePendulum environment, you control a system with a cart and two poles. "\
+            "Your objective is to balance the two poles on top of the cart by applying continuous forces "\
+            "to the cart. The environment provides observations of the cart's position, angles of the poles, "\
+            "and their angular velocities. The episode ends when certain termination conditions are met."
         )
 
     def describe_action(self):
         return (
-            "Your next move: \n Please provide a numerical value for the force to be applied to the cart. "\
-            "This value should be within the range of [-3, 3], where a positive value indicates applying force "\
-            "in the right direction, and a negative value indicates applying force in the left direction."
+            "Your next move: \n Please provide a numerical value within the range of [-3,3], "\
+            "representing the force to be applied to the cart."
         )
 
 class BasicStateSequenceTranslator(BasicLevelTranslator):
