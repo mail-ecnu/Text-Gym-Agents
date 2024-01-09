@@ -260,7 +260,6 @@ def main_progress(
 
 if __name__ == "__main__":
 
-
     # install Atari ROMs
     subprocess.run(['AutoROM', '--accept-license'])
 
@@ -357,6 +356,12 @@ if __name__ == "__main__":
                  "FrozenLake-v1",
                  "MountainCarContinuous-v0",
                  "Ant-v4",
+                 "HalfCheetah-v4",
+                 "Hopper-v4",
+                 "Walker2d-v4",
+                 "Swimmer-v4",
+                 "Reacher-v4",
+                 "Pusher-v4",
                  "RepresentedBoxing-v0", 
                  "RepresentedPong-v0", 
                  "RepresentedMsPacman-v0", 
