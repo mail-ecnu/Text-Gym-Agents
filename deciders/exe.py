@@ -20,8 +20,8 @@ from loguru import logger
 
 
 class EXE(NaiveAct):
-    def __init__(self, action_space, args, prompts, distiller, temperature=0., max_tokens=None, logger=None, fixed_suggestion=None, fixed_insight=None):
-        super().__init__(action_space, args, prompts, distiller, temperature, max_tokens, logger)
+    def __init__(self, openai_key, action_space, args, prompts, distiller, temperature=0., max_tokens=None, logger=None, fixed_suggestion=None, fixed_insight=None):
+        super().__init__(openai_key, action_space, args, prompts, distiller, temperature, max_tokens, logger)
         self.pre_memory = []
         self.post_memory = []
         self.is_first = True

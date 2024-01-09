@@ -18,24 +18,25 @@ from .atari import mspacman_policies, mspacman_translator
 from .atari import montezumarevenge_policies, montezumarevenge_translator
 register_environments()
 
+from .mujoco import ant_translator, ant_policies
 
 REGISTRY = {}
 REGISTRY["sampling_wrapper"] = SettableStateEnv
 REGISTRY["base_env"] = BaseEnv
-REGISTRY["cart_init_translator"] = cartpole_translator.GameDescriber
-REGISTRY["cart_basic_translator"] = cartpole_translator.BasicStateSequenceTranslator
+REGISTRY["cartpole_init_translator"] = cartpole_translator.GameDescriber
+REGISTRY["cartpole_basic_translator"] = cartpole_translator.BasicStateSequenceTranslator
 REGISTRY["acrobot_init_translator"] = acrobot_translator.GameDescriber
 REGISTRY["acrobot_basic_translator"] = acrobot_translator.BasicStateSequenceTranslator
 REGISTRY["mountaincar_init_translator"] = mountaincar_translator.GameDescriber
 REGISTRY["mountaincar_basic_translator"] = mountaincar_translator.BasicStateSequenceTranslator
 
-REGISTRY["cart_policies"] = [cartpole_policies.dedicated_1_policy, cartpole_policies.dedicated_2_policy, cartpole_policies.pseudo_random_policy, cartpole_policies.real_random_policy]
+REGISTRY["cartpole_policies"] = [cartpole_policies.dedicated_1_policy, cartpole_policies.dedicated_2_policy, cartpole_policies.pseudo_random_policy, cartpole_policies.real_random_policy]
 REGISTRY["acrobot_policies"] = [acrobot_policies.dedicated_1_policy, acrobot_policies.dedicated_2_policy, acrobot_policies.dedicated_3_policy, acrobot_policies.pseudo_random_policy, acrobot_policies.real_random_policy]
 REGISTRY["mountaincar_policies"] = [mountaincar_policies.dedicated_1_policy, mountaincar_policies.dedicated_2_policy, mountaincar_policies.dedicated_3_policy, mountaincar_policies.pseudo_random_policy, mountaincar_policies.real_random_policy]
 
-REGISTRY["lunarLander_init_translator"] = LunarLander_translator.GameDescriber
-REGISTRY["lunarLander_basic_translator"] = LunarLander_translator.BasicStateSequenceTranslator
-REGISTRY["lunarLander_policies"] = [LunarLander_policies.dedicated_1_policy, LunarLander_policies.dedicated_2_policy, LunarLander_policies.dedicated_3_policy,LunarLander_policies.dedicated_4_policy, LunarLander_policies.pseudo_random_policy, LunarLander_policies.real_random_policy]
+REGISTRY["lunarlander_init_translator"] = LunarLander_translator.GameDescriber
+REGISTRY["lunarlander_basic_translator"] = LunarLander_translator.BasicStateSequenceTranslator
+REGISTRY["lunarlander_policies"] = [LunarLander_policies.dedicated_1_policy, LunarLander_policies.dedicated_2_policy, LunarLander_policies.dedicated_3_policy,LunarLander_policies.dedicated_4_policy, LunarLander_policies.pseudo_random_policy, LunarLander_policies.real_random_policy]
 
 REGISTRY["blackjack_init_translator"] = blackjack_translator.GameDescriber
 REGISTRY["blackjack_basic_translator"] = blackjack_translator.BasicStateSequenceTranslator
@@ -54,9 +55,9 @@ REGISTRY["frozenlake_basic_translator"] = frozenlake_translator.BasicStateSequen
 REGISTRY["frozenlake_policies"] = [frozenlake_policies.dedicated_1_policy, frozenlake_policies.dedicated_2_policy, frozenlake_policies.dedicated_3_policy, frozenlake_policies.dedicated_4_policy, frozenlake_policies.pseudo_random_policy, frozenlake_policies.real_random_policy]
 
 
-REGISTRY["mountaincarContinuous_init_translator"] = mountaincarContinuous_translator.GameDescriber
-REGISTRY["mountaincarContinuous_basic_translator"] = mountaincarContinuous_translator.BasicStateSequenceTranslator
-REGISTRY["mountaincarContinuous_policies"] = [mountaincarContinuous_policies.pseudo_random_policy, mountaincarContinuous_policies.real_random_policy]
+REGISTRY["mountaincarcontinuous_init_translator"] = mountaincarContinuous_translator.GameDescriber
+REGISTRY["mountaincarcontinuous_basic_translator"] = mountaincarContinuous_translator.BasicStateSequenceTranslator
+REGISTRY["mountaincarcontinuous_policies"] = [mountaincarContinuous_policies.pseudo_random_policy, mountaincarContinuous_policies.real_random_policy]
 
 
 REGISTRY["RepresentedBoxing_init_translator"] = Boxing_translator.GameDescriber
@@ -138,47 +139,6 @@ REGISTRY["RepresentedMontezumaRevenge_basic_policies"] = [
     montezumarevenge_policies.dedicated_18_policy,
 ]
 
-REGISTRY["RepresentedMsPacman_init_translator"] = mspacman_translator.GameDescriber
-REGISTRY["RepresentedMsPacman_basic_translator"] = mspacman_translator.BasicStateSequenceTranslator
-REGISTRY["RepresentedMsPacman_basic_policies"] = [
-    mspacman_policies.real_random_policy,
-    mspacman_policies.pseudo_random_policy,
-    mspacman_policies.dedicated_1_policy,
-    mspacman_policies.dedicated_2_policy,
-    mspacman_policies.dedicated_3_policy,
-    mspacman_policies.dedicated_4_policy,
-    mspacman_policies.dedicated_5_policy,
-    mspacman_policies.dedicated_6_policy,
-    mspacman_policies.dedicated_7_policy,
-    mspacman_policies.dedicated_8_policy,
-    mspacman_policies.dedicated_9_policy,
-]
-
-REGISTRY["RepresentedMontezumaRevenge_init_translator"] = montezumarevenge_translator.GameDescriber
-REGISTRY["RepresentedMontezumaRevenge_basic_translator"] = montezumarevenge_translator.BasicStateSequenceTranslator
-REGISTRY["RepresentedMontezumaRevenge_basic_policies"] = [
-    montezumarevenge_policies.real_random_policy,
-    montezumarevenge_policies.pseudo_random_policy,
-    montezumarevenge_policies.dedicated_1_policy,
-    montezumarevenge_policies.dedicated_2_policy,
-    montezumarevenge_policies.dedicated_3_policy,
-    montezumarevenge_policies.dedicated_4_policy,
-    montezumarevenge_policies.dedicated_5_policy,
-    montezumarevenge_policies.dedicated_6_policy,
-    montezumarevenge_policies.dedicated_7_policy,
-    montezumarevenge_policies.dedicated_8_policy,
-    montezumarevenge_policies.dedicated_9_policy,
-    montezumarevenge_policies.dedicated_10_policy,
-    montezumarevenge_policies.dedicated_11_policy,
-    montezumarevenge_policies.dedicated_12_policy,
-    montezumarevenge_policies.dedicated_13_policy,
-    montezumarevenge_policies.dedicated_14_policy,
-    montezumarevenge_policies.dedicated_15_policy,
-    montezumarevenge_policies.dedicated_16_policy,
-    montezumarevenge_policies.dedicated_17_policy,
-    montezumarevenge_policies.dedicated_18_policy,
-]
-
 ## For mujoco env
 
 
@@ -196,12 +156,12 @@ from .mujoco import walker2d_translator, walker2d_policies
 
 
 
-REGISTRY["invertedPendulum_init_translator"] = invertedPendulum_translator.GameDescriber
-REGISTRY["invertedPendulum_basic_translator"] = invertedPendulum_translator.BasicStateSequenceTranslator
-REGISTRY["invertedPendulum_policies"] = [invertedPendulum_policies.pseudo_random_policy, invertedPendulum_policies.real_random_policy]
-REGISTRY["invertedDoublePendulum_init_translator"] = invertedDoublePendulum_translator.GameDescriber
-REGISTRY["invertedDoublePendulum_basic_translator"] = invertedDoublePendulum_translator.BasicStateSequenceTranslator
-REGISTRY["invertedDoublePendulum_policies"] = [invertedDoublePendulum_policies.pseudo_random_policy, invertedDoublePendulum_policies.real_random_policy]
+REGISTRY["invertedpendulum_init_translator"] = invertedPendulum_translator.GameDescriber
+REGISTRY["invertedpendulum_basic_translator"] = invertedPendulum_translator.BasicStateSequenceTranslator
+REGISTRY["invertedpendulum_policies"] = [invertedPendulum_policies.pseudo_random_policy, invertedPendulum_policies.real_random_policy]
+REGISTRY["inverteddoublependulum_init_translator"] = invertedDoublePendulum_translator.GameDescriber
+REGISTRY["inverteddoublependulum_basic_translator"] = invertedDoublePendulum_translator.BasicStateSequenceTranslator
+REGISTRY["inverteddoublependulum_policies"] = [invertedDoublePendulum_policies.pseudo_random_policy, invertedDoublePendulum_policies.real_random_policy]
 
 
 REGISTRY["swimmer_init_translator"] = swimmer_translator.GameDescriber

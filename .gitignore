@@ -156,7 +156,7 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 images/ 
-gpt.py
+# gpt.py
 test.ipynb
 results
 wandb/
@@ -190,3 +190,6 @@ test_
 
 # gradio
 flagged
+
+# hf
+policy.pth

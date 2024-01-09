@@ -17,8 +17,8 @@ from .utils import run_chain
 
 
 class ChainOfThought(NaiveAct):
-    def __init__(self, action_space, args, prompts, distiller, temperature=0.1, max_tokens=None, logger=None):
-        super().__init__(action_space, args, prompts, distiller, temperature, max_tokens,logger)
+    def __init__(self, openai_key, action_space, args, prompts, distiller, temperature=0.1, max_tokens=None, logger=None):
+        super().__init__(openai_key, action_space, args, prompts, distiller, temperature, max_tokens,logger)
 
     def act(
         self,

@@ -19,8 +19,30 @@ Model = Literal["gpt-4", "gpt-35-turbo", "text-davinci-003"]
 # from .gpt import gpt
 # gpt().__init__()
 
-import timeout_decorator
-@timeout_decorator.timeout(30)
+# import timeout_decorator
+# @timeout_decorator.timeout(30)
+# def run_chain(chain, *args, **kwargs):
+#     return chain.run(*args, **kwargs)
+import concurrent.futures
+
+def timeout_decorator(timeout):
+    def decorator(function):
+        def wrapper(*args, **kwargs):
+            with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+                future = executor.submit(function, *args, **kwargs)
+                try:
+                    return future.result(timeout)
+                except concurrent.futures.TimeoutError:
+                    raise RuntimeError(
+                        f"Function '{function.__name__}' timed out after {timeout} seconds"
+                    )
+                except Exception as e:
+                    raise e
+        return wrapper
+    return decorator
+
+
+@timeout_decorator(30)
 def run_chain(chain, *args, **kwargs):
     return chain.run(*args, **kwargs)
 
@@ -87,4 +109,3 @@ def get_chat(prompt: str, api_type: str = "azure", model: str = "gpt-35-turbo", 
             # request_timeout = 1
         )
         return response.choices[0]["message"]["content"]
-

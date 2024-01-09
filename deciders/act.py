@@ -26,7 +26,7 @@ class RandomAct():
         return action, '', '', '', 0, 0
 
 class NaiveAct(gpt):
-    def __init__(self, action_space, args, prompts, distiller, temperature=0.0, max_tokens=2048, logger=None):
+    def __init__(self, openai_key, action_space, args, prompts, distiller, temperature=0.0, max_tokens=2048, logger=None):
         self.action_space = action_space
         self.temperature = temperature
         self.action_desc_dict = args.action_desc_dict
@@ -39,7 +39,7 @@ class NaiveAct(gpt):
         else:
             model = args.gpt_version
         self.encoding = tiktoken.encoding_for_model(model)
-        super().__init__(args)
+        super().__init__(args, openai_key)
         self.distiller = distiller
         self.fewshot_example_initialization(args.prompt_level, args.prompt_path, distiller = self.distiller)
         if isinstance(self.action_space, Discrete):

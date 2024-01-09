@@ -1,0 +1,10 @@
+swig
+libosmesa6-dev 
+libgl1-mesa-glx 
+libglfw3
+libglew-dev
+patchelf
+libxrender1 
+libgl1-mesa-dev
+xpra
+libglfw3-dev
