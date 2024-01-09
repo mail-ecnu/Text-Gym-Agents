@@ -1,3 +1,16 @@
+---
+title: Text-Gym-Agents
+emoji: 🦾
+colorFrom: pink
+colorTo: indigo
+sdk: gradio
+# python_version: 3.8.16
+# sdk_version: 4.13.0
+app_file: app.py
+pinned: false
+license: apache-2.0
+---
+
 # Bench LLM Deciders with gym translators 
 This project provides a set of translators to convert OpenAI Gym environments into text-based environments. It is designed to investigate the capabilities of large language models in decision-making tasks within these text-based environments.
 
