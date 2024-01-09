@@ -1,0 +1,22 @@
+name: Sync to Hugging Face hub
+on:
+  push:
+    branches:
+      - 'hf_space'
+
+  # to run this workflow manually from the Actions tab
+  # workflow_dispatch:
+
+jobs:
+  sync-to-hub:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: true
+      - name: Push to hub
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      - run: git checkout hf_space
+      - run: git push https://MAIL-CS-ECNU:$HF_TOKEN@huggingface.co/spaces/MAIL-CS-ECNU/Text-Gym-Agents hf_space:main
