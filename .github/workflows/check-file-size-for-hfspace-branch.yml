@@ -1,6 +1,6 @@
 name: Check file size
 on:               # or directly `on: [push]` to run the action on every push on any branch
-  push:
+  pull_request:
     branches:
       - 'hf_space'
 
@@ -12,6 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check large files
-        uses: ActionsDesk/lfs-warning@v@v2.0
+        uses: ActionsDesk/lfs-warning@v2.0
         with:
           filesizelimit: 10485760 # this is 10MB so we can sync to HF Spaces
