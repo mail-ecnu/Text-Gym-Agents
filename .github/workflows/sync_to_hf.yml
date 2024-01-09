@@ -18,4 +18,5 @@ jobs:
       - name: Push to hub
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: git push https://MAIL-CS-ECNU:$HF_TOKEN@huggingface.co/spaces/MAIL-CS-ECNU/Text-Gym-Agents hf_space:main
+      - run: git checkout hf_space
+      - run: git push https://MAIL-CS-ECNU:$HF_TOKEN@huggingface.co/spaces/MAIL-CS-ECNU/Text-Gym-Agents hf_space:main
