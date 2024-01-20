@@ -1,6 +1,6 @@
 import os
 import sys
-import openai # 0.27.8
+import openai 
 from tenacity import (
     retry,
     stop_after_attempt, # type: ignore
@@ -24,66 +24,66 @@ import timeout_decorator
 def run_chain(chain, *args, **kwargs):
     return chain.run(*args, **kwargs)
 
-# @retry(wait=wait_random_exponential(min=1, max=60), stop=stop_after_attempt(6))
-def get_completion(prompt: str, api_type: str = "azure", engine: str = "gpt-35-turbo", temperature: float = 0.0, max_tokens: int = 256, stop_strs: Optional[List[str]] = None) -> str:
-    if api_type == "azure":
-        response = openai.Completion.create(
-                    engine=engine,
-                    prompt=prompt,
-                    temperature=temperature,
-                    max_tokens=max_tokens,
-                    top_p=1,
-                    frequency_penalty=0.0,
-                    presence_penalty=0.0,
-                    stop=stop_strs,
-                    # request_timeout = 1
-                )
-        return response.choices[0].text
-    elif api_type == "openai":
-        messages = [
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ]
-        response = openai.ChatCompletion.create(
-            model=engine,
-            messages=messages,
-            max_tokens=max_tokens,
-            stop=stop_strs,
-            temperature=temperature,
-            # request_timeout = 1
-        )
-        return response.choices[0]["message"]["content"]
 
-# @retry(wait=wait_random_exponential(min=1, max=60), stop=stop_after_attempt(6))
-def get_chat(prompt: str, api_type: str = "azure", model: str = "gpt-35-turbo", engine: str = "gpt-35-turbo", temperature: float = 0.0, max_tokens: int = 256, stop_strs: Optional[List[str]] = None, is_batched: bool = False) -> str:
+def get_chat(messages: list, api_type: str = "azure", model: str = "gpt-35-turbo", temperature: float = 0.0, max_tokens: int = 256, seed: int = 1, stop_strs: Optional[List[str]] = None, is_batched: bool = False) -> str:
     assert model != "text-davinci-003"
-    messages = [
-        {
-            "role": "user",
-            "content": prompt
-        }
-    ]
     if api_type == "azure":
-        response = openai.ChatCompletion.create(
+        response = openai.chat.completions.create(
             model=model,
-            engine=engine,
             messages=messages,
             max_tokens=max_tokens,
             stop=stop_strs,
             temperature=temperature,
+            seed=seed
             # request_timeout = 1
         )
-        return response.choices[0]["message"]["content"]
     elif api_type == "openai":
-        response = openai.ChatCompletion.create(
+        response = openai.chat.completions.create(
             model=model,
             messages=messages,
             max_tokens=max_tokens,
             stop=stop_strs,
             temperature=temperature,
+            seed=seed
             # request_timeout = 1
         )
-        return response.choices[0]["message"]["content"]
+    usgae = response.usage
+    total_token, cost = openai_api_calculate_cost(usgae, model)
+    return response.choices[0].message.content, {"token": total_token, "cost": cost}
 
+
+def openai_api_calculate_cost(usage, model="gpt-4-1106-preview"):
+    pricing = {
+        'gpt-3.5-turbo-1106': {
+            'prompt': 0.001,
+            'completion': 0.002,
+        },
+        'gpt-4-1106-preview': {
+            'prompt': 0.01,
+            'completion': 0.03,
+        },
+        'gpt-4': {
+            'prompt': 0.03,
+            'completion': 0.06,
+        }, 
+        'gpt-35-turbo': {
+            'prompt': 0.001,
+            'completion': 0.002,
+        },
+    }
+    try:
+        model_pricing = pricing[model]
+    except KeyError:
+        raise ValueError("Invalid model specified")
+    total_token = usage.total_tokens
+    prompt_cost = usage.prompt_tokens * model_pricing['prompt'] / 1000
+    completion_cost = usage.completion_tokens * model_pricing['completion'] / 1000
+
+    total_cost = prompt_cost + completion_cost
+    # round to 6 decimals
+    total_cost = round(total_cost, 6)
+
+    # print(f"\nTokens used:  {usage.prompt_tokens:,} prompt + {usage.completion_tokens:,} completion = {usage.total_tokens:,} tokens")
+    # print(f"Total cost for {model}: ${total_cost:.4f}\n")
+
+    return total_token, total_cost

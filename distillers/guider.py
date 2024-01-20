@@ -1,4 +1,4 @@
-from deciders.utils import get_completion, get_chat
+from deciders.utils import get_chat
 
 from typing import List, Dict, Any
 from loguru import logger
@@ -7,6 +7,7 @@ import json
 class Guidance_Generator():
     def __init__(self,logfile="",args=None):
         self.args = args
+        self.seed = args.seed
         with open("./distillers/guidance_summary_few_shot_examples.txt", 'r') as f:
             self.SUMMARY_FEW_SHOT_EXAMPLES = f.read()
         self.insight = ""
@@ -67,7 +68,7 @@ class Guidance_Generator():
 
     def generate_summary(self, traj, post_memory):
         query = self._generate_summary_query(traj, post_memory)
-        summary = get_chat(query, api_type=self.args.api_type, model=self.args.gpt_version, engine=self.args.gpt_version)
+        summary = get_chat(query, api_type=self.args.api_type, model=self.args.gpt_version, )
         logger.info(f'[Reflexion Memory]The summary prompt is: {query}.')
         logger.info(f'[Reflexion Memory]The summary response is: {summary}.')
         return summary
@@ -78,7 +79,7 @@ class Guidance_Generator():
             for i, m in enumerate(post_memory):
                 query += f'Episode #{i}: {m}\n'
         query += '\n Identify and summarize the key information that can be exploited to improve performance of the player.'
-        insight = get_chat(query, api_type=self.args.api_type, model=self.args.gpt_version, engine=self.args.gpt_version)
+        insight = get_chat(query, api_type=self.args.api_type, model=self.args.gpt_version, )
         # import pdb;pdb.set_trace()
         logger.info(f'[Reflexion Memory]The insight prompt is: {query}.')
         logger.info(f'[Reflexion Memory]The insight response is: {insight}.')
@@ -96,7 +97,7 @@ class Guidance_Generator():
         query += f"\n The main aim for you is to help the human player win the game in the last episode. He has only {max(max_num_trials-len(post_memory), 1)} episodes left to try.You can give suggestions before each episode. Then what is your suggestion for his next episode? Please provide simple, concise answers suitable for a six-year-old child, focusing on the following in item list format: 1. What game-relevant knowledge is critical to determine the optimal policy. Notice that the knowledge should be obtainable by interacting with the environment and helpful for the decisions.\n 2. How should the player conduct exploration in the next episode to acquire this information?\n3. How can the player exploit the information obtained to achieve higher performance in subsequent episodes?\n 4. How should exploration and exploitation be balanced to improve performance in the next episode?\n"
 
         # TODO: consider the inconsistency between past suggestion and past memory.
-        suggestion = get_chat(query, api_type=self.args.api_type, model=self.args.gpt_version, engine=self.args.gpt_version)
+        suggestion = get_chat(query, api_type=self.args.api_type, model=self.args.gpt_version, )
         self.suggestion = suggestion
         logger.info(f'[Reflexion Memory]The suggestion prompt is: {query}.')
         logger.info(f'[Reflexion Memory]The suggestion response is: {suggestion}.')
@@ -107,7 +108,7 @@ class Guidance_Generator():
             reflection_query = self._generate_summary_query(traj, memory[-max_len_mem:])
         else:
             reflection_query = self._generate_summary_query(traj, memory)
-        reflection = get_completion(reflection_query, api_type=self.args.api_type, engine=self.args.gpt_version)
+        reflection = get_chat(reflection_query, api_type=self.args.api_type,  seed=self.seed)
         logger.info(f'[Reflexion Memory]The reflexion prompt is: {reflection_query}.')
         logger.info(f'[Reflexion Memory]The reflexion response is: {reflection}.')
         return reflection
