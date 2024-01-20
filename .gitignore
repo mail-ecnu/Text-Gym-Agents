@@ -186,3 +186,7 @@ main_jarvis.sh
 test*.py
 *.zip
 test_
+*.ipynb
+
+# gradio
+flagged

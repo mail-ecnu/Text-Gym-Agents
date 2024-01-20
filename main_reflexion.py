@@ -17,6 +17,9 @@ import random
 import numpy as np
 import datetime
 from loguru import logger
+from gym.spaces import Discrete
+
+
 
 
 def set_seed(seed):
@@ -109,9 +112,6 @@ def _run(translator, environment, decider, max_episode_len, logfile, args, trail
                     logfile
                 )
 
-                if "Continuous" in args.env_name:
-                    action = [action]
-
                 state_description, reward, termination, truncation, env_info = environment.step_llm(
                     action
                 )
@@ -137,10 +137,7 @@ def _run(translator, environment, decider, max_episode_len, logfile, args, trail
                     logger.debug(f"Error: {e}, Retry! ({error_i+1}/{retry_num})")
                 continue
         if error_flag:
-            if "Continuous" in args.env_name:
-                action = [decider.default_action]
-            else:
-                action = decider.default_action
+            action = decider.default_action
             state_description, reward, termination, truncation, env_info = environment.step_llm(
                     action
                 )
@@ -164,7 +161,7 @@ def _run(translator, environment, decider, max_episode_len, logfile, args, trail
             logger.info(f"current_total_cost: {current_total_cost}")
             logger.info(f"Now it is round {round}.")
 
-        frames.append(environment.render())
+        # frames.append(environment.render())
         if termination or truncation:
             if logger:
                 logger.info(f"Terminated!")
@@ -221,7 +218,7 @@ if __name__ == "__main__":
         help="The actor used to select action",
     )
     parser.add_argument(
-        "--gpt_version", type=str, default="gpt-35-turbo", help="The version of GPT to use"
+        "--gpt_version", type=str, default="gpt-3.5-turbo", help="The version of GPT to use"
     )
     parser.add_argument(
         "--render", type=str, default="rgb_array", help="The render mode"
@@ -295,7 +292,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "--api_type",
         type=str,
-        default="azure",
+        default="openai",
+        choices=["azure", "openai"],
         help="choose api type, now support azure and openai"
     )
     args = parser.parse_args()

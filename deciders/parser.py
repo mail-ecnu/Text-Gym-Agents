@@ -1,72 +1,54 @@
 from pydantic import BaseModel, Field, validator
+from typing import List
 
-# Define your desired data structure.
-class TwoAction(BaseModel):
-    action: int = Field(description="the choosed action to perform")
+class DisActionModel(BaseModel):
+    action: int = Field(description="the chosen action to perform")
+
+    @classmethod
+    def create_validator(cls, max_action):
+        @validator('action', allow_reuse=True)
+        def action_is_valid(cls, info):
+            if info not in range(1, max_action + 1):
+                raise ValueError(f"Action is not valid ([1, {max_action}])!")
+            return info
+        return action_is_valid
+
+# Generate classes dynamically
+def generate_action_class(max_action):
+    return type(f"{max_action}Action", (DisActionModel,), {'action_is_valid': DisActionModel.create_validator(max_action)})
     
-    # You can add custom validation logic easily with Pydantic.
-    @validator('action')
-    def action_is_valid(cls, field):
-        if field not in [1, 2]:
-            raise ValueError("Action is not valid ([1, 2])!")
-        return field
-    
-class ThreeAction(BaseModel):
-    action: int = Field(description="the choosed action to perform")
-    
-    # You can add custom validation logic easily with Pydantic.
-    @validator('action')
-    def action_is_valid(cls, field):
-        if field not in [1, 2, 3]:
-            raise ValueError("Action is not valid ([1, 2, 3])!")
-        return field
-    
-class FourAction(BaseModel):
-    action: int = Field(description="the choosed action to perform")
-    
-    # You can add custom validation logic easily with Pydantic.
-    @validator('action')
-    def action_is_valid(cls, field):
-        if field not in [1, 2, 3, 4]:
-            raise ValueError("Action is not valid ([1, 2, 3, 4])!")
-        return field
-    
-class SixAction(BaseModel):
-    action: int = Field(description="the choosed action to perform")
-    
-    # You can add custom validation logic easily with Pydantic.
-    @validator('action')
-    def action_is_valid(cls, field):
-        if field not in [1, 2, 3, 4, 5, 6]:
-            raise ValueError("Action is not valid ([1, 2, 3, 4, 5, 6])!")
-        return field
+# Dictionary of parsers with dynamic class generation
+DISPARSERS = {num: generate_action_class(num) for num in [2, 3, 4, 6, 9, 18]}
+
+class ContinuousActionBase(BaseModel):
+    action: List[float] = Field(description="the chosen continuous actions to perform")
+
+    @classmethod
+    def set_expected_length(cls, length):
+        cls.expected_length = length
+
+    @validator('action', pre=True)
+    def validate_length(cls, action):
+        if len(action) != cls.expected_length:
+            raise ValueError(f"The action list must have exactly {cls.expected_length} items.")
+        return action
+
+    @validator('action', each_item=True)
+    def action_is_valid(cls, item):
+        if not -1 <= item <= 1:
+            raise ValueError("Each action dimension must be in the range [-1, 1]!")
+        return item
+
+# Generate classes dynamically
+def generate_continuous_action_class(expected_length):
+    NewClass = type(
+        f"{expected_length}DContinuousAction",
+        (ContinuousActionBase,),
+        {}
+    )
+    NewClass.set_expected_length(expected_length)
+    return NewClass
 
 
-class NineAction(BaseModel):
-    action: int = Field(description="the choosed action to perform")
-
-    # You can add custom validation logic easily with Pydantic.
-    @validator('action')
-    def action_is_valid(cls, field):
-        if field not in [1, 2, 3, 4, 5, 6, 7, 8, 9]:
-            raise ValueError("Action is not valid ([1, 2, 3, 4, 5, 6, 7, 8, 9])!")
-        return field
-
-class FullAtariAction(BaseModel):
-    action: int = Field(description="the choosed action to perform")
-    @validator('action')
-    def action_is_valid(cls, info):
-        if info not in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]:
-            raise ValueError("Action is not valid ([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18])!")
-        return info
-    
-class ContinuousAction(BaseModel):
-    action: float = Field(description="the choosed action to perform")
-    # You can add custom validation logic easily with Pydantic.
-    @validator('action')
-    def action_is_valid(cls, field):
-        if not (field >= -1 and field <= 1):
-            raise ValueError("Action is not valid ([-1,1])!")
-        return field
-    
-PARSERS = {1:ContinuousAction, 2: TwoAction, 3: ThreeAction, 4: FourAction, 6: SixAction, 9:NineAction, 18: FullAtariAction}
+# Dictionary of parsers with dynamic class generation
+CONPARSERS = {length: generate_continuous_action_class(length) for length in range(1, 17)}

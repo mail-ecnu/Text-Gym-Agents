@@ -3,7 +3,7 @@
 import openai
 from .gpt import gpt 
 from loguru import logger
-from .parser import PARSERS
+from .parser import DISPARSERS, CONPARSERS
 from langchain.output_parsers import PydanticOutputParser
 from langchain.output_parsers import OutputFixingParser
 from langchain.chat_models import AzureChatOpenAI, ChatOpenAI
@@ -11,14 +11,19 @@ from memory.env_history import EnvironmentHistory
 import tiktoken
 import json
 import re
-from .utils import run_chain
+from .utils import run_chain, get_completion, get_chat
+from gym.spaces import Discrete
 
 class RandomAct():
     def __init__(self, action_space):
         self.action_space = action_space
     
     def act(self, state_description, action_description, env_info, game_description=None, goal_description=None):
-        return self.action_space.sample()+1, '', '', '', 0, 0
+        if isinstance(self.action_space, Discrete):
+            action = self.action_space.sample()+1
+        else:
+            action = self.action_space.sample()
+        return action, '', '', '', 0, 0
 
 class NaiveAct(gpt):
     def __init__(self, action_space, args, prompts, distiller, temperature=0.0, max_tokens=2048, logger=None):
@@ -37,7 +42,10 @@ class NaiveAct(gpt):
         super().__init__(args)
         self.distiller = distiller
         self.fewshot_example_initialization(args.prompt_level, args.prompt_path, distiller = self.distiller)
-        self.default_action = 1
+        if isinstance(self.action_space, Discrete):
+            self.default_action = 1
+        else:
+            self.default_action = [0 for ind in range(self.action_space.shape[0])]
         self.parser = self._parser_initialization()
         self.irr_game_description = ''
         self.memory = []
@@ -82,11 +90,12 @@ class NaiveAct(gpt):
 
 
     def _parser_initialization(self):
-        if hasattr(self.action_space, 'n'):
-            assert self.action_space.n in PARSERS.keys(), f'Action space {self.action_space} is not supported.'
+        if isinstance(self.action_space, Discrete): 
+            PARSERS = DISPARSERS
             num_action = self.action_space.n
-        else:
-            num_action = 1
+        else: 
+            PARSERS = CONPARSERS
+            num_action = self.action_space.shape[0]
 
         if self.args.api_type == "azure":
             autofixing_chat = AzureChatOpenAI(
@@ -147,12 +156,15 @@ class NaiveAct(gpt):
             prompt = f"{game_description}\n{goal_description}\n{fewshot_examples}\nCurrent {state_description}\n{action_description} "
         prompt += "Please select an action based on the current game state and the information you get. You must select the appropriate action from the given action descriptions and cannot refrain from taking action or performing any prohibited actions. Your Action is: "
         print(f"prompt is {prompt}")
-        res = openai.Completion.create(
-                engine=self.args.gpt_version,
-                prompt=prompt,
-                temperature=self.temperature,
-                max_tokens=self.max_tokens,
-            )
+        # res = get_chat(prompt, self.args.api_type, self.args.gpt_version, self.temperature, self.max_tokens)
+        res = get_chat(prompt, api_type=self.args.api_type, model=self.args.gpt_version, engine=self.args.gpt_version, temperature=self.temperature, max_tokens=self.max_tokens)
+        # openai.ChatCompletion.create(
+        #         engine=self.args.gpt_version,
+        #         # model=self.args.gpt_version,
+        #         prompt=prompt,
+        #         temperature=self.temperature,
+        #         max_tokens=self.max_tokens,
+        #     )
         return prompt, res
     
     def _add_history_before_action(self, game_description, goal_description, state_description):
@@ -200,43 +212,17 @@ class NaiveAct(gpt):
                 my_mem += f"\nBelow are the latest {min(self.mem_num, len(self.env_history))} historical data entries:\n"
                 my_mem += f"{self.env_history.get_histories(self.mem_num)}"
 
-        while asking_round < 3: 
-            prompt, res = self.response(state_description, action_description, env_info, game_description, goal_description, my_mem)
-            action_str = res.choices[0].text.strip()
-            print(f'my anwser is {action_str}')
-            # import pdb; pdb.set_trace()
-            try: 
-                if "Continuous" in self.args.env_name:
-                    action = float(re.findall(r"[-+]?\d*\.\d+", action_str)[0])
-                    
-                else:
-                    action = int(re.findall(r"\d+", action_str)[0])
-            except: 
-                action = None
-                asking_round += 1
-                continue
-
-            if "Continuous" not in self.args.env_name:
-                if (action-1) in self.action_space:
-                    break
-                else:
-                    asking_round += 1
-                    action = None
-            else:
-                if action >= self.action_space.low and action <= self.action_space.high:
-                    break
-                else:
-                    asking_round += 1
-                    action = None
-                
-        if action is None: 
-            print('err on selecting action')
-            action = self.default_action
+        
+        prompt, response = self.response(state_description, action_description, env_info, game_description, goal_description, my_mem)
+        action_str = response
+        print(f'my anwser is {action_str}')
+        action = self.parser.parse(response).action
         self._add_history_after_action(action)
-        self.logger.info(f'\n{prompt}')
-        self.logger.info(f'The GPT response is: {res}.')
+        self.logger.info(f'The GPT response is: {response}.')
         self.logger.info(f'The optimal action is: {action}.')
-        return action, prompt, res, 0, 0
+        if env_info.get('history'):
+            self.logger.info(f'History: {history_to_str(env_info["history"])}')
+        return action, prompt, response, 0, 0
 
     def _read_mem(self, ):
         memory = self.memory
