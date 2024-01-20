@@ -210,13 +210,14 @@ class NaiveAct(gpt):
         print(f'my anwser is {action_str}')
         action = self.parser.parse(response).action
         self._add_history_after_action(action)
-        if env_info.get('history'):
-            self.logger.info(f'History: {history_to_str(env_info["history"])}')
         self.logger.info(f'The GPT response is: {response}.')
         self.logger.info(f'The action is: {action}.')
-        self.logger.info(f'Token Usage: {usage["token"]}; Cost Usage: {usage["cost"]} $.')
-        self.cum_token_usage += usage["token"]
-        self.cum_cost_usage += usage["cost"] 
+        if env_info.get('history'):
+            self.logger.info(f'History: {history_to_str(env_info["history"])}')
+        token, cost = usage["token"], usage["cost"]
+        self.logger.info(f'Token Usage: {token}; Cost Usage: {cost} $.')
+        self.cum_token_usage += token
+        self.cum_cost_usage += cost
         self.logger.info(f'Cummulative Token Usage: {self.cum_token_usage}; Cummulative Cost Usage: {self.cum_cost_usage} $.')
         return action, messages, response, self.cum_token_usage, self.cum_cost_usage
 

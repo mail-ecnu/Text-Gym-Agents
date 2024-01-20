@@ -3,7 +3,7 @@ from .misc import history_to_str
 from langchain_openai import AzureChatOpenAI, ChatOpenAI
 from loguru import logger
 from .act import NaiveAct
-from .utils import run_chain
+from .utils import run_chain, get_chat  
 
 
 class ChainOfThought(NaiveAct):
@@ -42,30 +42,37 @@ class ChainOfThought(NaiveAct):
         if self.prompt_level in [2, 3, 4]:
             if self.memory:
                 if self.prompt_level == 2:
-                role_name = "example_user with random policy"
+                    role_name = "example_user with random policy"
                 elif self.prompt_level == 3:
                     role_name = "example_user"
                 elif self.prompt_level == 4:
                     role_name = "example_user with expert policy"
                 for mem in self._read_mem():
-                    example_messages.append({"role": "system", "name": role_name,  "content": mem})
+                    messages.append({"role": "system", "name": role_name,  "content": mem})
 
         if self.use_short_mem:
             if len(self.env_history) > 1:
-                example_messages.append({"role": "user",  "content":  f"{self.env_history.get_histories(self.mem_num)}"})
+                messages.append({"role": "user",  "content":  f"{self.env_history.get_histories(self.mem_num)}"})
 
         instruction = "Please select an action based on the current game state and the information you get. You must select the appropriate action from the given action descriptions and cannot refrain from taking action or performing any prohibited actions. Please note that you need to carefully lay out your thought process on the question, not just give an answer. You need to write the corresponding logic of your thinking following the example above. Your Action is: "
         messages.append({"role": "user", "content": f"{state_description}.{action_description}\n{instruction}"})
 
-        res = get_chat(messages, api_type=self.args.api_type, model=self.args.gpt_version, temperature=self.temperature, max_tokens=self.max_tokens, seed=self.seed)
+        response, usage = get_chat(messages, api_type=self.args.api_type, model=self.args.gpt_version, temperature=self.temperature, max_tokens=self.max_tokens, seed=self.seed)
+        action_str = response
+        print(f'my anwser is {action_str}')
+        action = self.parser.parse(response).action
         if not self.logger:
             logger.remove()
             self.logger = logger.add(logfile, colorize=True, enqueue=True)
-        action = self.parser.parse(response).action
         self._add_history_after_action(action)
         self.logger.info(f'The GPT response is: {response}.')
         self.logger.info(f'The optimal action is: {action}.')
         if env_info.get('history'):
             self.logger.info(f'History: {history_to_str(env_info["history"])}')
+        token, cost = usage["token"], usage["cost"]
+        self.logger.info(f'Token Usage: {token}; Cost Usage: {cost} $.')
+        self.cum_token_usage += token
+        self.cum_cost_usage += cost
+        self.logger.info(f'Cummulative Token Usage: {self.cum_token_usage}; Cummulative Cost Usage: {self.cum_cost_usage} $.')
 
-        return action, texts, response, total_tokens, total_cost
+        return action, messages, response, token, cost
