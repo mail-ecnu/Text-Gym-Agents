@@ -236,7 +236,7 @@ if __name__ == "__main__":
         help="The maximum number of tokens when querying",
     )
     parser.add_argument(
-        "--max_tokens",
+        "--max_generate_tokens",
         type=int,
         default=2000,
         help="The maximum number of tokens when responding",
@@ -356,6 +356,6 @@ if __name__ == "__main__":
 
     logger.add(logfile, colorize=True, enqueue=True, filter=lambda x: '[Reflexion Memory]' not in x['message'])
 
-    decider = decider_class(environment.env.action_space, args, prompts_class, my_distiller, temperature=0.0, logger=logger, max_tokens=args.max_tokens)
+    decider = decider_class(environment.env.action_space, args, prompts_class, my_distiller, temperature=0.0, logger=logger, max_tokens=args.max_generate_tokens)
     # Evaluate the translator
     evaluate_translator(translator, environment, decider, args.max_episode_len, logfile, args)

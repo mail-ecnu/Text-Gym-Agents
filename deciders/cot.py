@@ -23,10 +23,6 @@ class ChainOfThought(NaiveAct):
         self._add_history_before_action(game_description, goal_description, state_description)
         messages = []
         messages.append({"role": "system", "content": f"You are a helpful assistant. You must carefully understand the Chain-of-Thought method you will use and apply it to the following task. You are in a game. {game_description}\n {goal_description} " })
-
-        reply_format_description = \
-            "Your response should choose an optimal action from a valid action list and terminate with the following format: "
-
         
         # task-irrelevant SystemMessage
         if self.irr_few_shot_examples:
@@ -42,11 +38,11 @@ class ChainOfThought(NaiveAct):
         if self.prompt_level in [2, 3, 4]:
             if self.memory:
                 if self.prompt_level == 2:
-                    role_name = "example_user with random policy"
+                    role_name = "example_user_with_random_policy"
                 elif self.prompt_level == 3:
                     role_name = "example_user"
                 elif self.prompt_level == 4:
-                    role_name = "example_user with expert policy"
+                    role_name = "example_user_with_expert_policy"
                 for mem in self._read_mem():
                     messages.append({"role": "system", "name": role_name,  "content": mem})
 
@@ -57,7 +53,7 @@ class ChainOfThought(NaiveAct):
         instruction = "Please select an action based on the current game state and the information you get. You must select the appropriate action from the given action descriptions and cannot refrain from taking action or performing any prohibited actions. Please note that you need to carefully lay out your thought process on the question, not just give an answer. You need to write the corresponding logic of your thinking following the example above. Your Action is: "
         messages.append({"role": "user", "content": f"{state_description}.{action_description}\n{instruction}"})
 
-        response, usage = get_chat(messages, api_type=self.args.api_type, model=self.args.gpt_version, temperature=self.temperature, max_tokens=self.max_tokens, seed=self.seed)
+        response, usage = get_chat(messages, api_type=self.args.api_type, model=self.args.gpt_version, temperature=self.temperature, max_tokens=self.max_generate_tokens, seed=self.seed)
         action_str = response
         print(f'my anwser is {action_str}')
         action = self.parser.parse(response).action

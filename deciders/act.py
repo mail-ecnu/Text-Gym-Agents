@@ -33,7 +33,7 @@ class NaiveAct(gpt):
         self.args = args
         self.seed = args.seed 
         self.prompts = prompts
-        self.max_tokens = max_tokens
+        self.max_generate_tokens = args.max_generate_tokens
         self.cum_token_usage = 0
         self.cum_cost_usage = 0
         self.prompt_level = args.prompt_level
@@ -109,11 +109,11 @@ class NaiveAct(gpt):
                 openai_api_key=openai.api_key,
                 model=self.args.gpt_version,
                 temperature=self.temperature,
-                max_tokens=self.max_tokens,
+                max_tokens=self.max_generate_tokens,
                 seed=self.seed
             )
         elif self.args.api_type == "openai":
-            autofixing_chat = ChatOpenAI(temperature=self.temperature, openai_api_key=openai.api_key,model=self.args.gpt_version, seed=self.seed)
+            autofixing_chat = ChatOpenAI(temperature=self.temperature, openai_api_key=openai.api_key,model=self.args.gpt_version, seed=self.seed, max_tokens=self.max_generate_tokens)
 
         parser = PydanticOutputParser(pydantic_object=PARSERS[num_action])
         autofixing_parser = OutputFixingParser.from_llm(
@@ -161,7 +161,7 @@ class NaiveAct(gpt):
             messages.append(my_msg)
         messages.append({"role": "user", "content": f"{state_description}.{action_description}\n{instruction}"})
     
-        res, usage = get_chat(messages, api_type=self.args.api_type, model=self.args.gpt_version, temperature=self.temperature, max_tokens=self.max_tokens, seed=self.seed)
+        res, usage = get_chat(messages, api_type=self.args.api_type, model=self.args.gpt_version, temperature=self.temperature, max_tokens=self.max_generate_tokens, seed=self.seed)
         return messages, res, usage
     
     def _add_history_before_action(self, game_description, goal_description, state_description):
@@ -192,11 +192,11 @@ class NaiveAct(gpt):
                     example_messages.append({"role": "system", "name":"example_assistant",  "content": examples['answer']})
         elif self.args.prompt_level in [2,3,4]:
             if self.prompt_level == 2:
-                role_name = "example_user with random policy"
+                role_name = "example_user_with_random_policy"
             elif self.prompt_level == 3:
                 role_name = "example_user"
             elif self.prompt_level == 4:
-                role_name = "example_user with expert policy"
+                role_name = "example_user_with_expert_policy"
             for mem in self._read_mem():
                 example_messages.append({"role": "system", "name": role_name,  "content": mem})
         
@@ -228,7 +228,7 @@ class NaiveAct(gpt):
             memory = memory[-5:]
         if len(memory) > 0:
             for i, m in enumerate(memory):
-                mem_lst.append(f'\nTrial {i}:\n{m.strip()}')
+                mem_lst.append(f'\nTrial {i}: {m}')
         return mem_lst
         
     def _add_history_after_action(self, action):

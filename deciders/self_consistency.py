@@ -43,7 +43,7 @@ class SelfConsistency(NaiveAct):
                 openai_api_key=openai.api_key,
                 deployment_name=self.args.gpt_version,
                 temperature=self.temperature,
-                max_tokens=self.max_tokens
+                max_tokens=self.max_generate_tokens
             )
         elif self.args.api_type == "openai":
             chat = ChatOpenAI(temperature=self.temperature, openai_api_key=openai.api_key, model=self.args.gpt_version)

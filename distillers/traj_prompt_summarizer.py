@@ -56,6 +56,6 @@ class TrajPromptSummarizer():
         else:
             reflection_messages = self._generate_summary_query(traj, memory)
         reflection = get_chat(reflection_messages, api_type=self.args.api_type, model=self.args.gpt_version, seed=self.seed)
-        logger.info(f'[Reflexion Memory]The reflexion prompt is: {reflection_query}.')
+        logger.info(f'[Reflexion Memory]The reflexion prompt is: {reflection_messages}.')
         logger.info(f'[Reflexion Memory]The reflexion response is: {reflection}.')
         return reflection
