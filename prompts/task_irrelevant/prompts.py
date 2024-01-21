@@ -154,58 +154,7 @@ class SPP:
         Final answer: 6 * (1 + 1) + 12 = 24
                    """
             },
-            {
-                "question":
-                    """
-        Write a poem that meets the following requirements: (1) the poem has seven lines and the first letters of each line forms the word "CHATGPT"; (2) the poem is about explaining what is a quantum computer. (3) the poem needs to be easy to understand by a ten years old kid.
-        """,
-                "answer":
-                    """
-        Participants: AI Assistant (you); Poet; Computer Scientist; Ten year old child
-        
-        Poet: Make sure that you write the poem with seven lines, and the first letters of the lines should be C, H, A, T, G, P, T.
-        Computer Scientist: A quantum computer is an advanced computing device that uses the principles of quantum mechanics to process and store information. Unlike classical computers that use bits to represent information as 0s and 1s, quantum computers use quantum bits or qubits. Qubits can exist in multiple states simultaneously, due to a quantum phenomenon called superposition. You can consider using these information for the poem.
-        Ten year old child: I hope the poem to be fun and easy to understanding. I don't want to see a lot of jargons or complicated concepts.
-        AI Assistant (you): Thanks for the guidance! Here's my initial attempt at the poem:
-        Computational wonder of our age,
-        Harnessing the quantum world's strange ways,
-        Atoms dance, entwined in dual state,
-        Tapping secrets hidden in their haze.
-        
-        Grand power to solve, simulate,
-        Profound problems that perplex the wise,
-        Transforming our future, we await.
-        
-        Poet: Let's verify if the poem meets the requirements. The first letters are CHATGPT which is correct! And the poem rhymes well. Good job!
-        Computer Scientist: Everything looks good to me!
-        Ten year old child: I don't know what does perplex mean. Can you make the use of words easier to understand?
-        AI Assistant (you): Sure, let me revise the poem by using more common words. Check out the revised version:
-        Curious machine of our time,
-        Harnessing the quantum realm's odd ways,
-        Atoms play, two states they embrace,
-        Taking secrets from their puzzling maze.
-        
-        Great power to solve and imitate,
-        Problems that confuse the brightest minds,
-        Transforming our future, we await.
-        
-        Poet: Let's check again if the poem meets the requirements. The first letters are C H A T G P T. And now the poem is more accessible to children. Everything looks good to me.
-        Computer Scientist: Looking good!
-        Ten year old child: I like this version a lot!
-        
-        Finish collaboration!
-        
-        Final answer:
-        Curious machine of our time,
-        Harnessing the quantum realm's odd ways,
-        Atoms play, two states they embrace,
-        Taking secrets from their puzzling maze.
-        
-        Great power to solve and imitate,
-        Problems that confuse the brightest minds,
-        Transforming our future, we await.
-                   """
-            }]
+        ]
         
 class REFLEXION:
     def __init__(self):

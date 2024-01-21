@@ -1,10 +1,10 @@
-from deciders.utils import get_chat
+from deciders.utils import get_chat, num_tokens_from_string
 
 from typing import List, Dict, Any
 from loguru import logger
 import random 
 import json
-class RefletionGenerator():
+class ReflectionGenerator():
     def __init__(self,logfile="",args=None):
         self.args = args
         self.seed = args.seed
@@ -13,11 +13,6 @@ class RefletionGenerator():
         if logfile:
             # logger.remove()
             logger.add(logfile, colorize=True, enqueue=True, filter=lambda x: '[Reflexion Memory]' in x['message'])
-    
-    def num_tokens_from_string(self,string: str) -> int:
-        """Returns the number of tokens in a text string."""
-        num_tokens = len(self.encoding.encode(string))
-        return num_tokens
 
     def generate_from_file(self, file_path,max_step_num=200):
         mem = []
@@ -26,8 +21,11 @@ class RefletionGenerator():
 
         traj_lst = []
         for traj in data: 
-            traj_text = traj[0]['game_description']+'\n'
-            traj_text += traj[0]['goal_description']+'\n'
+            game_description = traj[0]['game_description']
+            goal_description = traj[0]['goal_description']
+            action_description = traj[0]['action_description']
+
+            traj_text = ""
             for transition in traj[-max_step_num:]: 
                 traj_text += transition['observation']+'\n'
                 if type(eval(str(transition['action']))) == type([]):
@@ -36,12 +34,12 @@ class RefletionGenerator():
                     action = transition['action']
                 traj_text += f"Action: {action}\n"
                 traj_text += f"Reward: {transition['reward']}\n"
-                if num_tokens_from_string(traj_text) > 0.9*self.args.max_query_tokens:
+                if num_tokens_from_string(self.args.model, traj_text) > 0.3*self.args.max_query_tokens:
                     traj_lst.append(traj_text)
                     traj_text = ""
             traj_text += f"Your performance is: {transition['cum_reward']}\n"
             traj_lst.append(traj_text)
-            reflection = self.generate(traj_lst, mem, max_len_mem=5)
+            reflection = self.generate(traj_lst, mem, game_description, goal_description, action_description, max_len_mem=5)
             mem.append(reflection)
         return mem
 
@@ -51,7 +49,7 @@ class RefletionGenerator():
         messages.append({"role": "system",  "content": """ You will be given the history of a past experience in which you were placed in an environment and given a task to complete. You were unsuccessful in completing the task. Do not summarize your environment, but rather think about the strategy and path you took to attempt to complete the task. Think step by step what mistakes you made leading the failure. Then devise a concise, new plan of action that accounts for your mistake with reference to specific actions that you should have taken. For example, if you tried A and B but forgot C, then you should reason that the forgetting C is the key mistake. After that you devise a plan to achieve C with environment-specific actions. You remind yourself the plan your will take in the next trail and Give your plan after "Plan". """})
         messages.append({"role": "system", "name": "example_assitant", "content": self.FEW_SHOT_EXAMPLES})
     
-        messages.append({"role": "system", "content": "You are in a game. {game_description} \n {goal_description} \n {action_description}" })
+        messages.append({"role": "system", "content": f"You are in a game. {game_description} \n {goal_description} \n {action_description}" })
         if len(memory) > 0:
             for i, m in enumerate(memory):
                 query = f'Recent Plans. Trial #{i}: {m}\n'
@@ -64,6 +62,10 @@ class RefletionGenerator():
                 query = traj
             messages.append({"role": "user", "content": query})
             i_traj += 1
+        for i in range(len(messages)):
+            if num_tokens_from_string(self.args.model, messages[:i]) > 0.98*self.args.max_query_tokens:
+                messages = messages[:i-1]
+                break
         messages.append({"role": "user", "content": "Please give your new plan"})
         
         return messages

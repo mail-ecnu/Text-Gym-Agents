@@ -11,7 +11,7 @@ from memory.env_history import EnvironmentHistory
 import tiktoken
 import json
 import re
-from .utils import run_chain, get_chat
+from .utils import run_chain, get_chat, num_tokens_from_string
 from gym.spaces import Discrete
 
 class RandomAct():
@@ -41,7 +41,7 @@ class NaiveAct(gpt):
             model = "gpt-3.5-turbo"
         else:
             model = args.gpt_version
-        self.encoding = tiktoken.encoding_for_model(model)
+        self.args.model = model
         super().__init__(args)
         self.distiller = distiller
         self.fewshot_example_initialization(args.prompt_level, args.prompt_path, distiller = self.distiller)
@@ -64,26 +64,19 @@ class NaiveAct(gpt):
             self.use_short_mem = False
             self.mem_num = 0
         
-
-    def num_tokens_from_string(self,string: str) -> int:
-        """Returns the number of tokens in a text string."""
-        num_tokens = len(self.encoding.encode(string))
-        return num_tokens
-
     def update_mem(self,):
-        traj = "Firstly, the description and the goal of the task will be provided. Please pay close attention to comprehend the information presented below.\n"
-        traj += "Task Description: " + self.game_description + '\n'
-        traj += "Goal Description: " + self.goal_description + '\n'
-        traj += self.action_description
-        traj += "Below is the historical data for this round of the game, which includes the state and corresponding action for each step.\n"
-        traj += str(self.env_history)
-        # print(traj)
-        self._update_mem(traj)
+        traj = self.game_description 
+        traj += self.goal_description
+        one_history_token = num_tokens_from_string(self.args.model, self.env_history.get_one_history())
+        history_num = self.args.max_query_tokens // one_history_token
+        traj_lst = self.env_history.get_lastest_histories_list(history_num)
+        self._update_mem(traj_lst)
 
-    def _update_mem(self, traj):
-        my_reflection = self.distiller.generate(traj, self.memory)
+    def _update_mem(self, traj_lst):
+        my_reflection = self.distiller.generate(traj_lst, self.memory, self.game_description, self.goal_description, self.action_description)
         self.memory.append(my_reflection)
         self.env_history.reset()
+
 
     def clear_mem(self):
         self.update_mem()
@@ -136,25 +129,10 @@ class NaiveAct(gpt):
             json_file = f'{path}_l{level}.json'
             with open(json_file, 'r') as infile:
                 data = json.load(infile)
-            max_step_num = 0
-            for traj in data: 
-                traj_text = traj[0]['game_description']
-                traj_text += traj[0]['goal_description']
-                for i, transition in enumerate(traj): 
-                    traj_text += transition['observation']
-                    traj_text += f"> {transition['action']}"
-                    traj_text += f"{transition.get('reward','')}\n"
-                    one_traj_token = self.num_tokens_from_string(traj_text)
-                    if one_traj_token > self.args.max_query_tokens:
-                        max_step_num = i+1
-                        break
-                traj_text += f"Your performance is: {transition['cum_reward']}"
-            if not max_step_num:
-                max_step_num = self.args.max_episode_len
-            self.summarized_fewshot_example = self.distiller.generate_from_file(json_file,max_step_num=max_step_num)
+            self.summarized_fewshot_example = self.distiller.generate_from_file(json_file)
 
     def response(self, state_description, action_description, env_info, game_description=None, goal_description=None, fewshot_examples=None):
-        instruction = "Please select an action based on the current game state and the information you get. You must select the appropriate action from the given action descriptions and cannot refrain from taking action or performing any prohibited actions. Your Action is: "
+        instruction = "Please suggest an action based on the current game state and the information you get. You must select the appropriate action from the given action descriptions and cannot refrain from taking action or performing any prohibited actions. Your Suggested Action is: "
         messages = []
         messages.append({"role": "system", "content": f"You are a helpful assistant. You are in a game. {game_description}\n {goal_description}"})
         for my_msg in fewshot_examples:
@@ -171,7 +149,7 @@ class NaiveAct(gpt):
 
         # limit the token used, or it may exceed the max token
         if len(self.env_history):
-            one_history_token = self.num_tokens_from_string(self.env_history.get_one_history())
+            one_history_token = num_tokens_from_string(self.args.model, self.env_history.get_one_history())
             self.env_history.set_history(self.args.max_query_tokens // one_history_token)
 
     def act(self, state_description, action_description, env_info, game_description=None, goal_description=None, logfile=None):

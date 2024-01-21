@@ -1,5 +1,6 @@
 import os
 import sys
+import tiktoken
 import openai 
 from tenacity import (
     retry,
@@ -18,6 +19,11 @@ Model = Literal["gpt-4", "gpt-35-turbo", "text-davinci-003"]
 
 # from .gpt import gpt
 # gpt().__init__()
+def num_tokens_from_string(model, string) -> int:
+    """Returns the number of tokens in a text string."""
+    enc = tiktoken.encoding_for_model(model)
+    num_tokens = len(enc.encode(str(string)))
+    return num_tokens
 
 import timeout_decorator
 @timeout_decorator.timeout(30)

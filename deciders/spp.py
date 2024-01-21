@@ -2,7 +2,7 @@ import openai
 from .misc import history_to_str
 from loguru import logger
 from .act import NaiveAct
-from .utils import get_chat
+from .utils import get_chat, num_tokens_from_string
 
 class SPP(NaiveAct):
     def __init__(self, action_space, args, prompts, distiller, temperature=0.1, max_tokens=None, logger=None):
@@ -49,8 +49,13 @@ class SPP(NaiveAct):
             if len(self.env_history) > 1:
                 messages.append({"role": "user",  "content":  f"{self.env_history.get_histories(self.mem_num)}"})
 
-        instruction = "Please select an action based on the current game state and the information you get. You must select the appropriate action from the given action descriptions and cannot refrain from taking action or performing any prohibited actions. Please note that you need to carefully lay out the participants who will contribute to solving the task and initiate a multi-round collaboration process until a final solution is reached. Now, identify the participants and collaboratively solve the following task step by step. Also, please keep in mind not to answer with any redundant and irrelevant content. Your Action is: "
-        messages.append({"role": "user", "content": f"{state_description}.{action_description}\n{instruction}"})
+        instruction = f"{state_description}.{action_description}\n Please suggest an action based on the current game state and the information you get. You must select the appropriate action from the given action descriptions and cannot refrain from taking action or performing any prohibited actions. Please note that you need to carefully lay out the participants who will contribute to solving the task and initiate a multi-round collaboration process until a final solution is reached. Now, identify the participants and collaboratively solve the following task step by step. Also, please keep in mind not to answer with any redundant and irrelevant content. Make sure you give an valid action! Your Suggested Action is: "
+        instruction_msg = {"role": "user", "content": instruction}
+        for i in range(len(messages)):
+            if num_tokens_from_string(self.args.model, messages[:i]) > self.args.max_query_tokens-num_tokens_from_string(self.args.model, instruction_msg):
+                messages = messages[:i-1]
+                break
+        messages.append(instruction_msg)
 
         response, usage = get_chat(messages, api_type=self.args.api_type, model=self.args.gpt_version, temperature=self.temperature, max_tokens=self.max_generate_tokens, seed=self.seed)
         action_str = response
@@ -60,6 +65,7 @@ class SPP(NaiveAct):
             logger.remove()
             self.logger = logger.add(logfile, colorize=True, enqueue=True)
         self._add_history_after_action(action)
+        self.logger.info(f'The GPT prompt is: {messages}.')
         self.logger.info(f'The GPT response is: {response}.')
         self.logger.info(f'The optimal action is: {action}.')
         if env_info.get('history'):
