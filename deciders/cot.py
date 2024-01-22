@@ -2,7 +2,7 @@ import openai
 from .misc import history_to_str
 from loguru import logger
 from .act import NaiveAct
-from .utils import run_chain, get_chat  
+from .utils import run_chain, get_chat, num_tokens_from_string
 
 
 class ChainOfThought(NaiveAct):
