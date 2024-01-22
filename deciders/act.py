@@ -103,10 +103,10 @@ class NaiveAct(gpt):
                 model=self.args.gpt_version,
                 temperature=self.temperature,
                 max_tokens=self.max_generate_tokens,
-                seed=self.seed
+                model_kwargs={"seed": self.seed}
             )
         elif self.args.api_type == "openai":
-            autofixing_chat = ChatOpenAI(temperature=self.temperature, openai_api_key=openai.api_key,model=self.args.gpt_version, seed=self.seed, max_tokens=self.max_generate_tokens)
+            autofixing_chat = ChatOpenAI(temperature=self.temperature, openai_api_key=openai.api_key,model=self.args.gpt_version, seed=self.seed, max_tokens=self.max_generate_tokens, model_kwargs={"seed": self.seed})
 
         parser = PydanticOutputParser(pydantic_object=PARSERS[num_action])
         autofixing_parser = OutputFixingParser.from_llm(

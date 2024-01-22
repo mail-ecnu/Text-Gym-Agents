@@ -1,6 +1,5 @@
 import openai
 from .misc import history_to_str
-from langchain_openai import AzureChatOpenAI, ChatOpenAI
 from loguru import logger
 from .act import NaiveAct
 from .utils import run_chain, get_chat  
