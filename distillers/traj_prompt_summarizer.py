@@ -76,8 +76,9 @@ class TrajPromptSummarizer():
             reflection_messages = self._generate_summary_query(traj_lst, memory[-max_len_mem:], game_description, goal_description, action_description)
         else:
             reflection_messages = self._generate_summary_query(traj_lst, memory, game_description, goal_description, action_description)
-        reflection = get_chat(reflection_messages, api_type=self.args.api_type,  seed=self.seed)
+        reflection, relfexion_usage = get_chat(reflection_messages, api_type=self.args.api_type,  seed=self.seed)
         logger.info(f'[Traj Summary Memory]The summary prompt is: {reflection_messages}.')
         logger.info(f'[Traj Summary Memory]The summary response is: {reflection}.')
+        logger.info(f'[Traj Summary Memory]The summary usage is: {relfexion_usage}.')
         return reflection
 

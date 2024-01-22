@@ -75,7 +75,8 @@ class ReflectionGenerator():
             reflection_messages = self._generate_reflection_query(traj_lst, memory[-max_len_mem:], game_description, goal_description, action_description)
         else:
             reflection_messages = self._generate_reflection_query(traj_lst, memory, game_description, goal_description, action_description)
-        reflection = get_chat(reflection_messages, api_type=self.args.api_type,  seed=self.seed)
+        reflection, relfexion_usage = get_chat(reflection_messages, api_type=self.args.api_type,  seed=self.seed)
         logger.info(f'[Reflexion Memory]The reflexion prompt is: {reflection_messages}.')
         logger.info(f'[Reflexion Memory]The reflexion response is: {reflection}.')
+        logger.info(f'[Reflexion Memory]The reflexion usage is: {relfexion_usage}.')
         return reflection
