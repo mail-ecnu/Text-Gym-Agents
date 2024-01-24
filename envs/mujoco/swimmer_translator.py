@@ -4,7 +4,7 @@ Action Space Box(-1.0, 1.0, (2,), float32)
 Observation Space Box(-inf, inf, (8,), float64)
 '''
 
-class BasicLevelTranslator:
+class ObsTranslator:
     def translate(self, state):
         res = (
             f"Angle of the front tip: {state[0]:.2f} rad\n"
@@ -59,21 +59,21 @@ class GameDescriber:
         )
 
 
-class BasicStateSequenceTranslator(BasicLevelTranslator):
+class TransitionTranslator(ObsTranslator):
     def translate(self, infos, is_current=False):
         descriptions = []
         if is_current:
-            state_desc = BasicLevelTranslator().translate(infos[-1]['state'])
+            state_desc = ObsTranslator().translate(infos[-1]['state'])
             return state_desc
         for i, info in enumerate(infos):
             assert 'state' in info, "info should contain state information"
-            state_desc = BasicLevelTranslator().translate(info['state'])
+            state_desc = ObsTranslator().translate(info['state'])
             action_desc = (
                 "Torques Applied: "
                 f"Rotor 1: {info['action'][0]:.2f}, Rotor 2: {info['action'][1]:.2f}"
             )
             reward_desc = f"Result: Reward of {info['reward']:.2f}"
-            next_state_desc = BasicLevelTranslator().translate(info['next_state'])
+            next_state_desc = ObsTranslator().translate(info['next_state'])
             descriptions.append(
                 f"{state_desc}\n{action_desc}\n{reward_desc}\nTransit to\n{next_state_desc}"
             )

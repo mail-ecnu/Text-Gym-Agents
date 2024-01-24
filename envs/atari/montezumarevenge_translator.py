@@ -1,4 +1,4 @@
-class BasicLevelTranslator:
+class ObsTranslator:
     def __init__(self):
         self.player_direction_map = {
             72: "facing left",
@@ -112,22 +112,22 @@ of 6 lives.""")
         description += "Please choose an action from the list above."
         return description
 
-class BasicStateSequenceTranslator(BasicLevelTranslator):
+class TransitionTranslator(ObsTranslator):
     def __init__(self):
         super().__init__()
 
     def translate(self, infos, is_current=False):
         descriptions = []
         if is_current:
-            state_desc = BasicLevelTranslator().translate(infos[-1]['state'])
+            state_desc = ObsTranslator().translate(infos[-1]['state'])
             return state_desc
         for i, info in enumerate(infos):
             assert 'state' in info, "info should contain state information"
 
-            state_desc = BasicLevelTranslator().translate(info['state'])
+            state_desc = ObsTranslator().translate(info['state'])
             action_desc = f'Take Action: {["No Operation", "Move Right", "Move Left", "Move Down", "Move Up", "Move Right + Climb Down", "Move Left + Climb Down", "Move Right + Climb Up", "Move Left + Climb Up", "Jump","Jump Right", "Jump Left", "Jump Down", "Jump Up", "Jump Right + Climb Down", "Jump Left + Climb Down", "Jump Right + Climb Up", "Jump Left + Climb Up"][info["action"]]} ({info["action"]}).'
             reward_desc = f"Result: Reward of {info['reward']}"
-            next_state_desc = BasicLevelTranslator().translate(info['next_state'])
+            next_state_desc = ObsTranslator().translate(info['next_state'])
             descriptions.append(f"{state_desc}\n"
                                 f"{action_desc}\n"
                                 f"{reward_desc}\n"

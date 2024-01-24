@@ -1,6 +1,6 @@
 # [Translator classes and functions for Atari Boxing environment]
 #'labels': {'player_y': 109, 'player_x': 188, 'enemy_y': 20, 'enemy_x': 64, 'ball_x': 0, 'ball_y': 0, 'enemy_score': 0, 'player_score': 0}
-class BasicLevelTranslator:
+class ObsTranslator:
     def __init__(self, ):
         pass
 
@@ -39,16 +39,16 @@ class GameDescriber:
                "from the valid action list, i.e., [1, 2, 3, 4, 5, 6]."
 
 
-class BasicStateSequenceTranslator(BasicLevelTranslator):
+class TransitionTranslator(ObsTranslator):
     def translate(self, infos, is_current=False):
         descriptions = []
         if is_current:
-            state_desc = BasicLevelTranslator().translate(infos[-1]['state'])
+            state_desc = ObsTranslator().translate(infos[-1]['state'])
             return state_desc
         for i, info in enumerate(infos):
             assert 'state' in info, "info should contain state information"
 
-            state_desc = BasicLevelTranslator().translate(info['state'])
+            state_desc = ObsTranslator().translate(info['state'])
             if info['action'] == 1:
                 action_desc = f"Take Action: 'Do nothing'"
             elif info['action'] == 2:
@@ -62,6 +62,6 @@ class BasicStateSequenceTranslator(BasicLevelTranslator):
             else:
                 action_desc = f"Take Action: 'Move left while hiting the ball'"
             reward_desc = f"Result: Reward of {info['reward']}, "
-            next_state_desc = BasicLevelTranslator().translate(info['next_state'])
+            next_state_desc = ObsTranslator().translate(info['next_state'])
             descriptions.append(f"{state_desc}.\n {action_desc} \n {reward_desc} \n Transit to {next_state_desc}")
         return descriptions
