@@ -52,7 +52,7 @@ class SPP(NaiveAct):
         instruction = f"{state_description}.{action_description}\n Please suggest an action based on the current game state and the information you get. You must select the appropriate action from the given action descriptions and cannot refrain from taking action or performing any prohibited actions. Please note that you need to carefully lay out the participants who will contribute to solving the task and initiate a multi-round collaboration process until a final solution is reached. Now, identify the participants and collaboratively solve the following task step by step. Also, please keep in mind not to answer with any redundant and irrelevant content. Make sure you give an valid action! Your Suggested Action is: "
         instruction_msg = {"role": "user", "content": instruction}
         for i in range(len(messages)):
-            if num_tokens_from_string(self.args.model, messages[:i]) > self.args.max_query_tokens-num_tokens_from_string(self.args.model, instruction_msg):
+            if num_tokens_from_string(self.args.gpt_version, messages[:i]) > self.args.max_query_tokens-num_tokens_from_string(self.args.gpt_version, instruction_msg):
                 messages = messages[:i-1]
                 break
         messages.append(instruction_msg)

@@ -34,7 +34,7 @@ class TrajPromptSummarizer():
                     action = transition['action']
                 traj_text += f"Action: {action}\n"
                 traj_text += f"Reward: {transition['reward']}\n"
-                if num_tokens_from_string(self.args.model, traj_text) > 0.3*self.args.max_query_tokens:
+                if num_tokens_from_string(self.args.gpt_version, traj_text) > 0.3*self.args.max_query_tokens:
                     traj_lst.append(traj_text)
                     traj_text = ""
             traj_text += f"Your performance is: {transition['cum_reward']}\n"
@@ -65,7 +65,7 @@ class TrajPromptSummarizer():
         # truncat messages to make sure the number of tokens of messages are less than self.args.query_token
         instruction_msg = {"role": "user", "content": "Please give your new plan"}
         for i in range(len(messages)):
-            if num_tokens_from_string(self.args.model, messages[:i-1]) > 0.98*self.args.max_query_tokens:
+            if num_tokens_from_string(self.args.gpt_version, messages[:i-1]) > 0.98*self.args.max_query_tokens:
                 messages = messages[:i]
                 break
         messages.append(instruction_msg)
