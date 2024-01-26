@@ -34,7 +34,7 @@ class TrajPromptSummarizer():
                     action = transition['action']
                 traj_text += f"Action: {action}\n"
                 traj_text += f"Reward: {transition['reward']}\n"
-                if num_tokens_from_string(self.args.model, traj_text) > 0.3*self.args.max_query_tokens:
+                if num_tokens_from_string(self.args.gpt_version, traj_text) > 0.3*self.args.max_query_tokens:
                     traj_lst.append(traj_text)
                     traj_text = ""
             traj_text += f"Your performance is: {transition['cum_reward']}\n"
@@ -65,7 +65,7 @@ class TrajPromptSummarizer():
         # truncat messages to make sure the number of tokens of messages are less than self.args.query_token
         instruction_msg = {"role": "user", "content": "Please give your new plan"}
         for i in range(len(messages)):
-            if num_tokens_from_string(self.args.model, messages[:i-1]) > 0.98*self.args.max_query_tokens:
+            if num_tokens_from_string(self.args.gpt_version, messages[:i-1]) > 0.98*self.args.max_query_tokens:
                 messages = messages[:i]
                 break
         messages.append(instruction_msg)
@@ -76,7 +76,7 @@ class TrajPromptSummarizer():
             reflection_messages = self._generate_summary_query(traj_lst, memory[-max_len_mem:], game_description, goal_description, action_description)
         else:
             reflection_messages = self._generate_summary_query(traj_lst, memory, game_description, goal_description, action_description)
-        reflection, relfexion_usage = get_chat(reflection_messages, api_type=self.args.api_type,  seed=self.seed)
+        reflection, relfexion_usage = get_chat(reflection_messages, api_type=self.args.api_type, seed=self.seed, model=self.args.gpt_version, )
         logger.info(f'[Traj Summary Memory]The summary prompt is: {reflection_messages}.')
         logger.info(f'[Traj Summary Memory]The summary response is: {reflection}.')
         logger.info(f'[Traj Summary Memory]The summary usage is: {relfexion_usage}.')

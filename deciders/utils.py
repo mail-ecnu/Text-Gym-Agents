@@ -34,6 +34,8 @@ def run_chain(chain, *args, **kwargs):
 def get_chat(messages: list, api_type: str = "azure", model: str = "gpt-35-turbo", temperature: float = 0.0, max_tokens: int = 256, seed: int = 1, stop_strs: Optional[List[str]] = None, is_batched: bool = False) -> str:
     assert model != "text-davinci-003"
     if api_type == "azure":
+        if model == "gpt-3.5-turbo":
+            model = "gpt-3.5-turbo"
         response = openai.chat.completions.create(
             model=model,
             messages=messages,
@@ -72,6 +74,10 @@ def openai_api_calculate_cost(usage, model="gpt-4-1106-preview"):
             'prompt': 0.03,
             'completion': 0.06,
         }, 
+        'gpt-3.5-turbo': {
+            'prompt': 0.001,
+            'completion': 0.002,
+        },
         'gpt-35-turbo': {
             'prompt': 0.001,
             'completion': 0.002,

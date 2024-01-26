@@ -37,11 +37,6 @@ class NaiveAct(gpt):
         self.cum_token_usage = 0
         self.cum_cost_usage = 0
         self.prompt_level = args.prompt_level
-        if args.gpt_version == "gpt-35-turbo":
-            model = "gpt-3.5-turbo"
-        else:
-            model = args.gpt_version
-        self.args.model = model
         super().__init__(args)
         self.distiller = distiller
         self.fewshot_example_initialization(args.prompt_level, args.prompt_path, distiller = self.distiller)
@@ -67,7 +62,7 @@ class NaiveAct(gpt):
     def update_mem(self,):
         traj = self.game_description 
         traj += self.goal_description
-        one_history_token = num_tokens_from_string(self.args.model, self.env_history.get_one_history())
+        one_history_token = num_tokens_from_string(self.args.gpt_version, self.env_history.get_one_history())
         history_num = self.args.max_query_tokens // one_history_token
         traj_lst = self.env_history.get_lastest_histories_list(history_num)
         self._update_mem(traj_lst)
@@ -149,7 +144,7 @@ class NaiveAct(gpt):
 
         # limit the token used, or it may exceed the max token
         if len(self.env_history):
-            one_history_token = num_tokens_from_string(self.args.model, self.env_history.get_one_history())
+            one_history_token = num_tokens_from_string(self.args.gpt_version, self.env_history.get_one_history())
             self.env_history.set_history(self.args.max_query_tokens // one_history_token)
 
     def act(self, state_description, action_description, env_info, game_description=None, goal_description=None, logfile=None):

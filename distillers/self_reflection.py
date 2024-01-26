@@ -34,7 +34,7 @@ class ReflectionGenerator():
                     action = transition['action']
                 traj_text += f"Action: {action}\n"
                 traj_text += f"Reward: {transition['reward']}\n"
-                if num_tokens_from_string(self.args.model, traj_text) > 0.3*self.args.max_query_tokens:
+                if num_tokens_from_string(self.args.gpt_version, traj_text) > 0.3*self.args.max_query_tokens:
                     traj_lst.append(traj_text)
                     traj_text = ""
             traj_text += f"Your performance is: {transition['cum_reward']}\n"
@@ -63,7 +63,7 @@ class ReflectionGenerator():
             messages.append({"role": "user", "content": query})
             i_traj += 1
         for i in range(len(messages)):
-            if num_tokens_from_string(self.args.model, messages[:i]) > 0.98*self.args.max_query_tokens:
+            if num_tokens_from_string(self.args.gpt_version, messages[:i]) > 0.98*self.args.max_query_tokens:
                 messages = messages[:i-1]
                 break
         messages.append({"role": "user", "content": "Please give your new plan"})
@@ -75,7 +75,7 @@ class ReflectionGenerator():
             reflection_messages = self._generate_reflection_query(traj_lst, memory[-max_len_mem:], game_description, goal_description, action_description)
         else:
             reflection_messages = self._generate_reflection_query(traj_lst, memory, game_description, goal_description, action_description)
-        reflection, relfexion_usage = get_chat(reflection_messages, api_type=self.args.api_type,  seed=self.seed)
+        reflection, relfexion_usage = get_chat(reflection_messages, api_type=self.args.api_type,  seed=self.seed, model=self.args.gpt_version)
         logger.info(f'[Reflexion Memory]The reflexion prompt is: {reflection_messages}.')
         logger.info(f'[Reflexion Memory]The reflexion response is: {reflection}.')
         logger.info(f'[Reflexion Memory]The reflexion usage is: {relfexion_usage}.')

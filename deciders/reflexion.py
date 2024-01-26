@@ -15,7 +15,7 @@ class Reflexion(NaiveAct):
     # def update_mem(self,):
     #     traj = self.game_description 
     #     traj += self.goal_description
-    #     one_history_token = num_tokens_from_string(self.args.model, self.env_history.get_one_history())
+    #     one_history_token = num_tokens_from_string(self.args.gpt_version, self.env_history.get_one_history())
     #     history_num = self.args.max_query_tokens // one_history_token
     #     traj_lst = self.env_history.get_lastest_histories_list(history_num)
     #     self._update_mem(traj_lst)
@@ -72,7 +72,7 @@ class Reflexion(NaiveAct):
         instruction =  f"{state_description}.{action_description}\n Please suggest an action based on the current game state and the information you get. You must select the appropriate action from the given action descriptions and cannot refrain from taking action or performing any prohibited actions. Please note that you need to carefully lay out your thought process on the question, not just give an answer. You need to write the corresponding logic of your thinking following the example above. Your Suggested Action is: "
         instruction_msg = {"role": "user", "content": instruction}
         for i in range(len(messages)):
-            if num_tokens_from_string(self.args.model, messages[:i]) > self.args.max_query_tokens-num_tokens_from_string(self.args.model, instruction_msg):
+            if num_tokens_from_string(self.args.gpt_version, messages[:i]) > self.args.max_query_tokens-num_tokens_from_string(self.args.gpt_version, instruction_msg):
                 messages = messages[:i-1]
                 break
         messages.append(instruction_msg)
