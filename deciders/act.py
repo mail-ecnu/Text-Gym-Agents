@@ -88,6 +88,7 @@ class NaiveAct(gpt):
         else: 
             PARSERS = CONPARSERS
             num_action = self.action_space.shape[0]
+            scale = int(self.action_space.high[0])
 
         if self.args.api_type == "azure":
             autofixing_chat = AzureChatOpenAI(
@@ -102,8 +103,11 @@ class NaiveAct(gpt):
             )
         elif self.args.api_type == "openai":
             autofixing_chat = ChatOpenAI(temperature=self.temperature, openai_api_key=openai.api_key,model=self.args.gpt_version, max_tokens=self.max_generate_tokens, model_kwargs={"seed": self.seed})
-
-        parser = PydanticOutputParser(pydantic_object=PARSERS[num_action])
+        if isinstance(self.action_space, Discrete): 
+            parser = PydanticOutputParser(pydantic_object=PARSERS[num_action])
+        else: 
+            parser = PydanticOutputParser(pydantic_object=PARSERS[num_action][scale])
+        
         autofixing_parser = OutputFixingParser.from_llm(
             llm=autofixing_chat, parser=parser)
         return autofixing_parser
