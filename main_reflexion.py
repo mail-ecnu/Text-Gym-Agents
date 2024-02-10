@@ -242,6 +242,13 @@ if __name__ == "__main__":
         help="The maximum number of tokens when responding",
     )
     parser.add_argument(
+        "--frameskip",
+        type=int,
+        default=4,
+        help="The frameskip for atari environments",
+    )
+
+    parser.add_argument(
         "--distiller",
         type=str,
         default="traj_distiller",
@@ -333,9 +340,14 @@ if __name__ == "__main__":
     translator = Translator(
         init_summarizer, curr_summarizer, future_summarizer, env=sampling_env
     )
-    environment = env_class(
-        gym.make(args.env_name, render_mode=args.render), translator
-    )
+    if 'Represented' in args.env_name:
+        environment = env_class(
+            gym.make(args.env_name, render_mode=args.render, frameskip=args.frameskip), translator
+        )
+    else:
+        environment = env_class(
+            gym.make(args.env_name, render_mode=args.render), translator
+        )
 
     logfile = (
         f"llm.log/output-{args.env_name}-{args.decider}-{args.gpt_version}-l{args.prompt_level}"

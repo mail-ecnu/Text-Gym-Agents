@@ -82,6 +82,10 @@ def openai_api_calculate_cost(usage, model="gpt-4-1106-preview"):
             'prompt': 0.001,
             'completion': 0.002,
         },
+        'gpt-3.5-turbo-0125': {
+            'prompt': 0.0005,
+            'completion': 0.0015 ,
+        },
     }
     try:
         model_pricing = pricing[model]
