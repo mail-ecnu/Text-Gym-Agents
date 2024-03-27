@@ -5,7 +5,7 @@ class RawPromptGenerator():
         self.args = args
         pass 
     
-    def generate_from_file(self, file_path, choice_num=1):
+    def generate_from_file(self, client, file_path, choice_num=1):
         with open(file_path, 'r') as infile:
             data = json.load(infile)
         result = []

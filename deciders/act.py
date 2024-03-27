@@ -6,12 +6,12 @@ from loguru import logger
 from .parser import PARSERS
 from langchain.output_parsers import PydanticOutputParser
 from langchain.output_parsers import OutputFixingParser
-from langchain.chat_models import AzureChatOpenAI, ChatOpenAI
+from langchain_community.chat_models import AzureChatOpenAI, ChatOpenAI
 from memory.env_history import EnvironmentHistory
 import tiktoken
 import json
 import re
-from .utils import run_chain
+from .utils import run_chain, get_chat
 
 class RandomAct():
     def __init__(self, action_space):
@@ -33,8 +33,46 @@ class NaiveAct(gpt):
             model = "gpt-3.5-turbo"
         else:
             model = args.gpt_version
-        self.encoding = tiktoken.encoding_for_model(model)
+        if args.api_type == "gemma":
+            self.encoding = tiktoken.encoding_for_model('gpt-3.5-turbo')
+        else:
+            self.encoding = tiktoken.encoding_for_model(model)
         super().__init__(args)
+        if self.args.api_type == "azure":
+            self.chat = AzureChatOpenAI(
+                openai_api_type=openai.api_type,
+                openai_api_version=openai.api_version,
+                azure_endpoint=openai.azure_endpoint,
+                openai_api_key=openai.api_key,
+                deployment_name=self.args.gpt_version,
+                temperature=self.temperature,
+                max_tokens=self.max_tokens,
+                streaming=True,
+            )
+            from openai import AzureOpenAI
+            self.client =  AzureOpenAI(
+                api_key=openai.api_key,
+                api_version=openai.api_version,
+                azure_endpoint=openai.azure_endpoint,
+            )
+        elif self.args.api_type == "openai":
+            self.chat = ChatOpenAI(temperature=self.temperature, openai_api_key=openai.api_key, model=self.args.gpt_version)
+            from openai import OpenAI
+            self.client =  OpenAI(
+                api_key=openai.api_key,
+            )
+        elif self.args.api_type == "qwen":
+            self.chat = ChatOpenAI(
+                openai_api_key=openai.api_key,
+                base_url=openai.base_url,
+                model_name="qwen/Qwen-14B-Chat",
+                model_kwargs={"stop": ["<|im_end|>"]}
+            )
+            from openai import OpenAI
+            self.client = OpenAI(
+                api_key=openai.api_key,
+                base_url=openai.base_url,
+            )
         self.distiller = distiller
         self.fewshot_example_initialization(args.prompt_level, args.prompt_path, distiller = self.distiller)
         self.default_action = 1
@@ -52,6 +90,7 @@ class NaiveAct(gpt):
         else:
             self.use_short_mem = False
             self.mem_num = 0
+
     
     def num_tokens_from_string(self,string: str) -> int:
         """Returns the number of tokens in a text string."""
@@ -69,7 +108,7 @@ class NaiveAct(gpt):
         self._update_mem(traj)
 
     def _update_mem(self, traj):
-        my_reflection = self.distiller.generate(traj, self.memory)
+        my_reflection = self.distiller.generate(self.client, traj, self.memory)
         self.memory.append(my_reflection)
         self.env_history.reset()
 
@@ -92,14 +131,22 @@ class NaiveAct(gpt):
             autofixing_chat = AzureChatOpenAI(
                 openai_api_type=openai.api_type,
                 openai_api_version=openai.api_version,
-                openai_api_base=openai.api_base,
+                azure_endpoint=openai.azure_endpoint,
                 openai_api_key=openai.api_key,
                 deployment_name=self.args.gpt_version,
                 temperature=self.temperature,
-                max_tokens=self.max_tokens
+                max_tokens=self.max_tokens,
+                streaming=True,
             )
         elif self.args.api_type == "openai":
             autofixing_chat = ChatOpenAI(temperature=self.temperature, openai_api_key=openai.api_key,model=self.args.gpt_version)
+        elif self.args.api_type == "qwen":
+            autofixing_chat = ChatOpenAI(
+                openai_api_key=openai.api_key,
+                base_url=openai.base_url,
+                model_name="qwen/Qwen-14B-Chat",
+                model_kwargs={"stop": ["<|im_end|>"]}
+            )
 
         parser = PydanticOutputParser(pydantic_object=PARSERS[num_action])
         autofixing_parser = OutputFixingParser.from_llm(
@@ -138,7 +185,7 @@ class NaiveAct(gpt):
                 traj_text += f"Your performance is: {transition['cum_reward']}"
             if not max_step_num:
                 max_step_num = self.args.max_episode_len
-            self.summarized_fewshot_example = self.distiller.generate_from_file(json_file,max_step_num=max_step_num)
+            self.summarized_fewshot_example = self.distiller.generate_from_file(self.client, json_file,max_step_num=max_step_num)
 
     def response(self, state_description, action_description, env_info, game_description=None, goal_description=None, fewshot_examples=None):
         if env_info['future_summary']:
@@ -147,12 +194,7 @@ class NaiveAct(gpt):
             prompt = f"{game_description}\n{goal_description}\n{fewshot_examples}\nCurrent {state_description}\n{action_description} "
         prompt += "Please select an action based on the current game state and the information you get. You must select the appropriate action from the given action descriptions and cannot refrain from taking action or performing any prohibited actions. Your Action is: "
         print(f"prompt is {prompt}")
-        res = openai.Completion.create(
-                engine=self.args.gpt_version,
-                prompt=prompt,
-                temperature=self.temperature,
-                max_tokens=self.max_tokens,
-            )
+        res = get_chat(self.client, prompt, self.args.api_type, temperature=self.temperature, max_tokens=self.max_tokens)
         return prompt, res
     
     def _add_history_before_action(self, game_description, goal_description, state_description):
@@ -166,6 +208,7 @@ class NaiveAct(gpt):
             self.env_history.set_history(self.args.max_query_tokens // one_history_token)
 
     def act(self, state_description, action_description, env_info, game_description=None, goal_description=None, logfile=None):
+        self.action_description = action_description
         self._add_history_before_action(game_description, goal_description, state_description)
         asking_round = 0
         res = None
@@ -202,7 +245,7 @@ class NaiveAct(gpt):
 
         while asking_round < 3: 
             prompt, res = self.response(state_description, action_description, env_info, game_description, goal_description, my_mem)
-            action_str = res.choices[0].text.strip()
+            action_str = res.strip()
             print(f'my anwser is {action_str}')
             # import pdb; pdb.set_trace()
             try: 

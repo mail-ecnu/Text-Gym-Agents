@@ -1,17 +1,17 @@
 import openai
 from .misc import history_to_str
-from langchain.chat_models import AzureChatOpenAI, ChatOpenAI
+from langchain_community.chat_models import AzureChatOpenAI, ChatOpenAI
 from langchain.prompts.chat import (
-    PromptTemplate,
     ChatPromptTemplate,
     SystemMessagePromptTemplate,
     HumanMessagePromptTemplate,
 )
+from langchain import PromptTemplate
 from langchain.prompts.few_shot import FewShotPromptTemplate
 from langchain import LLMChain
 from loguru import logger
 from langchain.callbacks import FileCallbackHandler
-from langchain.callbacks import get_openai_callback
+from langchain_community.callbacks import get_openai_callback
 from .act import NaiveAct
 from .utils import run_chain
 

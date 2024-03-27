@@ -43,9 +43,9 @@ def save_frames_as_gif(frames, path="./", filename="gym_animation.gif"):
 
 def evaluate_translator(translator, environment, decider, max_episode_len, logfile, args):
     utilities = []
-    df = pd.read_csv('record_reflexion.csv', sep=',')
-    filtered_df = df[(df['env'] == args.env_name) & (df['decider'] == 'expert') & (df['level'] == 1)]
-    expert_score = filtered_df['avg_score'].item()
+    # df = pd.read_csv('record_reflexion.csv', sep=',')
+    # filtered_df = df[(df['env'] == args.env_name) & (df['decider'] == 'expert') & (df['level'] == 1)]
+    # expert_score = filtered_df['avg_score'].item()
     seeds = [i for i in range(1000)]
     # prompt_file = "prompt.txt"
     # f = open(prompt_file,"w+")
@@ -65,7 +65,7 @@ def evaluate_translator(translator, environment, decider, max_episode_len, logfi
             # TODO: set env sucess utility threshold
             if trail < num_trails -1:
                 if args.decider in ['reflexion']:
-                    if utility < expert_score: 
+                    # if utility < expert_score: 
                         decider.update_mem() 
                 else:
                     decider.update_mem() 
@@ -296,13 +296,10 @@ if __name__ == "__main__":
         "--api_type",
         type=str,
         default="azure",
-        choices=["azure", "openai"],
+        choices=["azure", "openai", "qwen"],
         help="choose api type, now support azure and openai"
     )
     args = parser.parse_args()
-
-    if args.api_type != "azure" and args.api_type != "openai":
-        raise ValueError(f"The {args.api_type} is not supported, please use 'azure' or 'openai' !")
     
     # Please note when using "azure", the model name is gpt-35-turbo while using "openai", the model name is "gpt-3.5-turbo"
     if args.api_type == "azure":
