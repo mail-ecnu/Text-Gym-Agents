@@ -1,5 +1,5 @@
 
-class BasicLevelTranslator:
+class ObsTranslator:
     def __init__(self,):
         pass
 
@@ -40,18 +40,18 @@ class GameDescriber:
     def describe_action(self):
         return "Type '1' to push the cart to the left or '2' to push the cart to the right. Ensure you only provide the action number from the valid action list, i.e., [1, 2]."
 
-class BasicStateSequenceTranslator(BasicLevelTranslator):
+class TransitionTranslator(ObsTranslator):
     def translate(self, infos, is_current=False):
         descriptions = []
         if is_current: 
-            state_desc = BasicLevelTranslator().translate(infos[-1]['state'])
+            state_desc = ObsTranslator().translate(infos[-1]['state'])
             return state_desc
         for i, info in enumerate(infos):
             assert 'state' in info, "info should contain state information"
         
-            state_desc = BasicLevelTranslator().translate(info['state'])
+            state_desc = ObsTranslator().translate(info['state'])
             action_desc = f"Take Action: Push {'right' if info['action'] == 2 else 'left'} ({info['action']})."
             reward_desc = f"Result: Reward of {info['reward']}, "
-            next_state_desc = BasicLevelTranslator().translate(info['next_state'])
+            next_state_desc = ObsTranslator().translate(info['next_state'])
             descriptions.append(f"{state_desc}.\n {action_desc} \n {reward_desc} \n Transit to {next_state_desc}")
         return descriptions

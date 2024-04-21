@@ -31,7 +31,6 @@ class SelfAskAct(NaiveAct):
     ):
         self.action_description = action_description
         self._add_history_before_action(game_description, goal_description, state_description)
-
         suffix_flag = False
         reply_format_description = \
             "Your response should choose an optimal action from a valid action list and terminate with the following format: "

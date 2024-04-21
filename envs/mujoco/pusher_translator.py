@@ -4,7 +4,7 @@ Observation Space Box(-inf, inf, (23,), float64)
 '''
 import math
 
-class BasicLevelTranslator:
+class ObsTranslator:
     def __init__(self):
         pass
 
@@ -70,16 +70,16 @@ class GameDescriber:
                 "representing the torques applied to the robot's joints (shoulder, elbow, forearm, and wrist).")
 
 
-class BasicStateSequenceTranslator(BasicLevelTranslator):
+class TransitionTranslator(ObsTranslator):
     def translate(self, infos, is_current=False):
         descriptions = []
         if is_current:
-            state_desc = BasicLevelTranslator().translate(infos[-1]['state'])
+            state_desc = ObsTranslator().translate(infos[-1]['state'])
             return state_desc
         for info in infos:
             assert 'state' in info, "info should contain state information"
 
-            state_desc = BasicLevelTranslator().translate(info['state'])
+            state_desc = ObsTranslator().translate(info['state'])
             action_desc = ("Take Action: Apply Torques - "
                            "Shoulder Pan: {:.2f}, Shoulder Lift: {:.2f}, Shoulder Roll: {:.2f}, "
                            "Elbow Flex: {:.2f}, Forearm Roll: {:.2f}, Wrist Flex: {:.2f}, Wrist Roll: {:.2f}"
@@ -87,7 +87,7 @@ class BasicStateSequenceTranslator(BasicLevelTranslator):
                                     info['action'][4], info['action'][5], info['action'][6])
 
             reward_desc = f"Result: Reward of {info['reward']:.2f}"
-            next_state_desc = BasicLevelTranslator().translate(info['next_state'])
+            next_state_desc = ObsTranslator().translate(info['next_state'])
             descriptions.append(f"{state_desc}\n{action_desc}\n{reward_desc}\nTransit to {next_state_desc}")
         return descriptions
 

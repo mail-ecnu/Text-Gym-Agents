@@ -7,8 +7,8 @@ from typing import Optional, Union
 
 
 class RepresentedAtariEnv(gym.Wrapper):
-    def __init__(self, env_name, render_mode=None):
-        super().__init__(AtariARIWrapper(gym.make(env_name, render_mode=render_mode)))
+    def __init__(self, env_name, render_mode=None, frameskip=4):
+        super().__init__(AtariARIWrapper(gym.make(env_name, render_mode=render_mode, frameskip=frameskip)))
         self.metadata = self.env.metadata
         self.env_name = env_name
         self.observation = None
@@ -40,124 +40,105 @@ class RepresentedAtariEnv(gym.Wrapper):
     def render(self, render_mode=None):
         return self.env.render()
 
-
 class RepresentedMsPacman(RepresentedAtariEnv):
-    def __init__(self, render_mode: Optional[str]=None):
-        env_name = "MsPacmanNoFrameskip-v4"
-        super().__init__(env_name=env_name, render_mode=render_mode)
-
+    def __init__(self, render_mode: Optional[str]=None, frameskip: int=4):
+        env_name = "MsPacmanDeterministic-v4"
+        super().__init__(env_name=env_name, render_mode=render_mode, frameskip=frameskip)
 
 class RepresentedBowling(RepresentedAtariEnv):
-    def __init__(self, render_mode: Optional[str]=None):
-        env_name = "BowlingNoFrameskip-v4"
-        super().__init__(env_name=env_name, render_mode=render_mode)
-
+    def __init__(self, render_mode: Optional[str]=None, frameskip: int=4):
+        env_name = "BowlingDeterministic-v4"
+        super().__init__(env_name=env_name, render_mode=render_mode, frameskip=frameskip)
 
 class RepresentedBoxing(RepresentedAtariEnv):
-    def __init__(self, render_mode: Optional[str]=None):
-        env_name = "BoxingNoFrameskip-v4"
-        super().__init__(env_name=env_name, render_mode=render_mode)
-
+    def __init__(self, render_mode: Optional[str]=None, frameskip: int=4):
+        env_name = "BoxingDeterministic-v4"
+        super().__init__(env_name=env_name, render_mode=render_mode, frameskip=frameskip)
 
 class RepresentedBreakout(RepresentedAtariEnv):
-    def __init__(self, render_mode: Optional[str]=None):
-        env_name = "BreakoutNoFrameskip-v4"
-        super().__init__(env_name=env_name, render_mode=render_mode)
-
+    def __init__(self, render_mode: Optional[str]=None, frameskip: int=4):
+        env_name = "BreakoutDeterministic-v4"
+        super().__init__(env_name=env_name, render_mode=render_mode, frameskip=frameskip)
 
 class RepresentedDemonAttack(RepresentedAtariEnv):
-    def __init__(self, render_mode: Optional[str]=None):
-        env_name = "DemonAttackNoFrameskip-v4"
-        super().__init__(env_name=env_name, render_mode=render_mode)
-
+    def __init__(self, render_mode: Optional[str]=None, frameskip: int=4):
+        env_name = "DemonAttackDeterministic-v4"
+        super().__init__(env_name=env_name, render_mode=render_mode, frameskip=frameskip)
 
 class RepresentedFreeway(RepresentedAtariEnv):
-    def __init__(self, render_mode: Optional[str]=None):
-        env_name = "FreewayNoFrameskip-v4"
-        super().__init__(env_name=env_name, render_mode=render_mode)
-
+    def __init__(self, render_mode: Optional[str]=None, frameskip: int=4):
+        env_name = "FreewayDeterministic-v4"
+        super().__init__(env_name=env_name, render_mode=render_mode, frameskip=frameskip)
 
 class RepresentedFrostbite(RepresentedAtariEnv):
-    def __init__(self, render_mode: Optional[str]=None):
-        env_name = "FrostbiteNoFrameskip-v4"
-        super().__init__(env_name=env_name, render_mode=render_mode)
-
+    def __init__(self, render_mode: Optional[str]=None, frameskip: int=4):
+        env_name = "FrostbiteDeterministic-v4"
+        super().__init__(env_name=env_name, render_mode=render_mode, frameskip=frameskip)
 
 class RepresentedHero(RepresentedAtariEnv):
-    def __init__(self, render_mode: Optional[str]=None):
-        env_name = "HeroNoFrameskip-v4"
-        super().__init__(env_name=env_name, render_mode=render_mode)
-
+    def __init__(self, render_mode: Optional[str]=None, frameskip: int=4):
+        env_name = "HeroDeterministic-v4"
+        super().__init__(env_name=env_name, render_mode=render_mode, frameskip=frameskip)
 
 class RepresentedMontezumaRevenge(RepresentedAtariEnv):
-    def __init__(self, render_mode: Optional[str]=None):
-        env_name = "MontezumaRevengeNoFrameskip-v4"
-        super().__init__(env_name=env_name, render_mode=render_mode)
-
+    def __init__(self, render_mode: Optional[str]=None, frameskip: int=4):
+        env_name = "MontezumaRevengeDeterministic-v4"
+        super().__init__(env_name=env_name, render_mode=render_mode, frameskip=frameskip)
 
 class RepresentedPitfall(RepresentedAtariEnv):
-    def __init__(self, render_mode: Optional[str]=None):
-        env_name = "PitfallNoFrameskip-v4"
-        super().__init__(env_name=env_name, render_mode=render_mode)
-
+    def __init__(self, render_mode: Optional[str]=None, frameskip: int=4):
+        env_name = "PitfallDeterministic-v4"
+        super().__init__(env_name=env_name, render_mode=render_mode, frameskip=frameskip)
 
 class RepresentedPong(RepresentedAtariEnv):
-    def __init__(self, render_mode: Optional[str]=None):
-        env_name = "PongNoFrameskip-v4"
-        super().__init__(env_name=env_name, render_mode=render_mode)
-
+    def __init__(self, render_mode: Optional[str]=None, frameskip: int=4):
+        env_name = "PongDeterministic-v4"
+        super().__init__(env_name=env_name, render_mode=render_mode, frameskip=frameskip)
 
 class RepresentedPrivateEye(RepresentedAtariEnv):
-    def __init__(self, render_mode: Optional[str]=None):
-        env_name = "PrivateEyeNoFrameskip-v4"
-        super().__init__(env_name=env_name, render_mode=render_mode)
-
+    def __init__(self, render_mode: Optional[str]=None, frameskip: int=4):
+        env_name = "PrivateEyeDeterministic-v4"
+        super().__init__(env_name=env_name, render_mode=render_mode, frameskip=frameskip)
 
 class RepresentedQbert(RepresentedAtariEnv):
-    def __init__(self, render_mode: Optional[str]=None):
-        env_name = "QbertNoFrameskip-v4"
-        super().__init__(env_name=env_name, render_mode=render_mode)
-
+    def __init__(self, render_mode: Optional[str]=None, frameskip: int=4):
+        env_name = "QbertDeterministic-v4"
+        super().__init__(env_name=env_name, render_mode=render_mode, frameskip=frameskip)
 
 class RepresentedRiverraid(RepresentedAtariEnv):
-    def __init__(self, render_mode: Optional[str]=None):
-        env_name = "RiverraidNoFrameskip-v4"
-        super().__init__(env_name=env_name, render_mode=render_mode)
-
+    def __init__(self, render_mode: Optional[str]=None, frameskip: int=4):
+        env_name = "RiverraidDeterministic-v4"
+        super().__init__(env_name=env_name, render_mode=render_mode, frameskip=frameskip)
 
 class RepresentedSeaquest(RepresentedAtariEnv):
-    def __init__(self, render_mode: Optional[str]=None):
-        env_name = "SeaquestNoFrameskip-v4"
-        super().__init__(env_name=env_name, render_mode=render_mode)
-
+    def __init__(self, render_mode: Optional[str]=None, frameskip: int=4):
+        env_name = "SeaquestDeterministic-v4"
+        super().__init__(env_name=env_name, render_mode=render_mode, frameskip=frameskip)
 
 class RepresentedSpaceInvaders(RepresentedAtariEnv):
-    def __init__(self, render_mode: Optional[str]=None):
-        env_name = "SpaceInvadersNoFrameskip-v4"
-        super().__init__(env_name=env_name, render_mode=render_mode)
-
+    def __init__(self, render_mode: Optional[str]=None, frameskip: int=4):
+        env_name = "SpaceInvadersDeterministic-v4"
+        super().__init__(env_name=env_name, render_mode=render_mode, frameskip=frameskip)
 
 class RepresentedTennis(RepresentedAtariEnv):
-    def __init__(self, render_mode: Optional[str]=None):
-        env_name = "TennisNoFrameskip-v4"
-        super().__init__(env_name=env_name, render_mode=render_mode)
-
+    def __init__(self, render_mode: Optional[str]=None, frameskip: int=4):
+        env_name = "TennisDeterministic-v4"
+        super().__init__(env_name=env_name, render_mode=render_mode, frameskip=frameskip)
 
 class RepresentedVenture(RepresentedAtariEnv):
-    def __init__(self, render_mode: Optional[str]=None):
-        env_name = "VentureNoFrameskip-v4"
-        super().__init__(env_name=env_name, render_mode=render_mode)
-
+    def __init__(self, render_mode: Optional[str]=None, frameskip: int=4):
+        env_name = "VentureDeterministic-v4"
+        super().__init__(env_name=env_name, render_mode=render_mode, frameskip=frameskip)
 
 class RepresentedVideoPinball(RepresentedAtariEnv):
-    def __init__(self, render_mode: Optional[str]=None):
-        env_name = "VideoPinballNoFrameskip-v4"
-        super().__init__(env_name=env_name, render_mode=render_mode)
+    def __init__(self, render_mode: Optional[str]=None, frameskip: int=4):
+        env_name = "VideoPinballDeterministic-v4"
+        super().__init__(env_name=env_name, render_mode=render_mode, frameskip=frameskip)
 
 
 def env_factory(env_class):
-    def _create_instance(render_mode=None):
-        return env_class(render_mode=render_mode)
+    def _create_instance(render_mode=None, frameskip=4):
+        return env_class(render_mode=render_mode, frameskip=frameskip)
     return _create_instance
 
 

@@ -1,4 +1,4 @@
-class BasicLevelTranslator:
+class ObsTranslator:
     def __init__(self):
         pass
     
@@ -62,16 +62,16 @@ class GameDescriber:
             "and front foot rotor respectively."
         )
 
-class BasicStateSequenceTranslator(BasicLevelTranslator):
+class TransitionTranslator(ObsTranslator):
     def translate(self, infos, is_current=False):
         descriptions = []
         if is_current:
-            state_desc = BasicLevelTranslator().translate(infos[-1]['state'])
+            state_desc = ObsTranslator().translate(infos[-1]['state'])
             return state_desc
         for i, info in enumerate(infos):
             assert 'state' in info, "info should contain state information"
 
-            state_desc = BasicLevelTranslator().translate(info['state'])
+            state_desc = ObsTranslator().translate(info['state'])
             action_desc = (
                 "Take Action: "
                 "Apply Back Thigh Torque: {:.2f}, "
@@ -88,6 +88,6 @@ class BasicStateSequenceTranslator(BasicLevelTranslator):
             reward_desc = f"Result: Forward Reward of {info['forward_reward']:.2f}, "
             ctrl_cost_desc = f"Control Cost of {info['ctrl_cost']:.2f}, "
             total_reward_desc = f"Total Reward of {info['reward']:.2f}, "
-            next_state_desc = BasicLevelTranslator().translate(info['next_state'])
+            next_state_desc = ObsTranslator().translate(info['next_state'])
             descriptions.append(f"{state_desc}.\\n {action_desc} \\n {reward_desc} {ctrl_cost_desc} {total_reward_desc} \\n Transit to {next_state_desc}")
         return descriptions

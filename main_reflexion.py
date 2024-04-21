@@ -236,11 +236,18 @@ if __name__ == "__main__":
         help="The maximum number of tokens when querying",
     )
     parser.add_argument(
-        "--max_tokens",
+        "--max_generate_tokens",
         type=int,
         default=2000,
         help="The maximum number of tokens when responding",
     )
+    parser.add_argument(
+        "--frameskip",
+        type=int,
+        default=4,
+        help="The frameskip for atari environments",
+    )
+
     parser.add_argument(
         "--distiller",
         type=str,
@@ -330,9 +337,14 @@ if __name__ == "__main__":
     translator = Translator(
         init_summarizer, curr_summarizer, future_summarizer, env=sampling_env
     )
-    environment = env_class(
-        gym.make(args.env_name, render_mode=args.render), translator
-    )
+    if 'Represented' in args.env_name:
+        environment = env_class(
+            gym.make(args.env_name, render_mode=args.render, frameskip=args.frameskip), translator
+        )
+    else:
+        environment = env_class(
+            gym.make(args.env_name, render_mode=args.render), translator
+        )
 
     logfile = (
         f"llm.log/output-{args.env_name}-{args.decider}-{args.gpt_version}-l{args.prompt_level}"
@@ -353,6 +365,6 @@ if __name__ == "__main__":
 
     logger.add(logfile, colorize=True, enqueue=True, filter=lambda x: '[Reflexion Memory]' not in x['message'])
 
-    decider = decider_class(environment.env.action_space, args, prompts_class, my_distiller, temperature=0.0, logger=logger, max_tokens=args.max_tokens)
+    decider = decider_class(environment.env.action_space, args, prompts_class, my_distiller, temperature=0.0, logger=logger, max_tokens=args.max_generate_tokens)
     # Evaluate the translator
     evaluate_translator(translator, environment, decider, args.max_episode_len, logfile, args)

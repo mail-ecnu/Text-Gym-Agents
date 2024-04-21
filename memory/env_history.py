@@ -132,7 +132,34 @@ class EnvironmentHistory:
             if i != len(self._history) - 1:
                 s += '\n'
         return s
-    
+
+    def get_lastest_histories_list(self, num):
+        s = ''
+        state_num = 0
+        elements = set([ele['label'] for ele in self._history])
+        elements.discard('cummulative_reward')
+        state_num = len(elements)
+        history_num = state_num*num+1
+        history_list = []
+        for i, item in enumerate(self._history):
+            if item['label'] == 'action':
+                s += f'He takes action: {item["value"]}'
+            elif item['label'] == 'reward':
+                s += f'Reward after taking action: {item["value"]}'
+            elif item['label'] == 'cummulative_reward':
+                s += f'Performace: {item["value"]}'
+            elif item['label'] == 'observation':
+                s += item['value']
+            # NOT CURRENTLY SUPPORTED
+            elif item['label'] == 'human_edit':
+                s += f'[human edit]: {item["value"]}'
+            elif item['label'] == 'terminate_state':
+                s += f'{item["value"]}'
+            if (i+1) % history_num == 0 or i == len(self._history) - 1:
+                history_list.append(s)
+                s = ''
+        return history_list
+        
     def remove_invalid_state(self):
         self._history = self._history[:-1]
 

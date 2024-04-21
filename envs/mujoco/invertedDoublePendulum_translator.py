@@ -3,7 +3,7 @@ Action Space Box(-1.0, 1.0, (1,), float32)
 Observation Space Box(-inf, inf, (11,), float64)
 '''
 
-class BasicLevelTranslator:
+class ObsTranslator:
     def translate(self, state):
         res = (
             f"Position of the cart: {state[0]:.2f} m\n"
@@ -55,18 +55,18 @@ class GameDescriber:
             "representing the force to be applied to the cart."
         )
 
-class BasicStateSequenceTranslator(BasicLevelTranslator):
+class TransitionTranslator(ObsTranslator):
     def translate(self, infos, is_current=False):
         descriptions = []
         if is_current:
-            state_desc = BasicLevelTranslator().translate(infos[-1]['state'])
+            state_desc = ObsTranslator().translate(infos[-1]['state'])
             return state_desc
         for i, info in enumerate(infos):
             assert 'state' in info, "info should contain state information"
-            state_desc = BasicLevelTranslator().translate(info['state'])
+            state_desc = ObsTranslator().translate(info['state'])
             action_desc = f"Applied Force on Cart: {info['action'][0]:.2f}"
             reward_desc = f"Result: Reward of {info['reward']:.2f}"
-            next_state_desc = BasicLevelTranslator().translate(info['next_state'])
+            next_state_desc = ObsTranslator().translate(info['next_state'])
             descriptions.append(
                 f"{state_desc}\n{action_desc}\n{reward_desc}\nTransit to\n{next_state_desc}"
             )

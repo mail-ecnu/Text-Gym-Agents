@@ -3,7 +3,7 @@ Action Space Box(-1.0, 1.0, (8,), float32)
 Observation Space Box(-inf, inf, (27,), float64)
 '''
 
-class BasicLevelTranslator:
+class ObsTranslator:
     def __init__(self):
         pass
 
@@ -102,16 +102,16 @@ class GameDescriber:
             "Type torques at the eight hinge joints of the ant. It be a list with eight numerical values and each value is within the range of [-1,1]."
         )
 
-class BasicStateSequenceTranslator(BasicLevelTranslator):
+class TransitionTranslator(ObsTranslator):
     def translate(self, infos, is_current=False):
         descriptions = []
         if is_current:
-            state_desc = BasicLevelTranslator().translate(infos[-1]['state'])
+            state_desc = ObsTranslator().translate(infos[-1]['state'])
             return state_desc
         for i, info in enumerate(infos):
             assert 'state' in info, "info should contain state information"
 
-            state_desc = BasicLevelTranslator().translate(info['state'])
+            state_desc = ObsTranslator().translate(info['state'])
             action_desc = (
                 "Take Action: "
                 "Apply Front Left Hip Torque: {:.2f}, "
@@ -128,6 +128,6 @@ class BasicStateSequenceTranslator(BasicLevelTranslator):
             )
 
             reward_desc = f"Result: Reward of {info['reward']:.2f}, "
-            next_state_desc = BasicLevelTranslator().translate(info['next_state'])
+            next_state_desc = ObsTranslator().translate(info['next_state'])
             descriptions.append(f"{state_desc}.\\n {action_desc} \\n {reward_desc} \\n Transit to {next_state_desc}")
         return descriptions
