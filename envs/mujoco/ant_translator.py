@@ -99,7 +99,7 @@ class GameDescriber:
 
     def describe_action(self):
         return (
-            "Your next move: \n Please choose your action which applies torques at the eight hinge joints of the ant. It be a list of eight numerical values and  each value is within the range of [-1,1]."
+            "Type torques at the eight hinge joints of the ant. It be a list with eight numerical values and each value is within the range of [-1,1]."
         )
 
 class BasicStateSequenceTranslator(BasicLevelTranslator):

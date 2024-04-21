@@ -39,7 +39,7 @@ class GameDescriber:
                "end, and you will be punished."
     
     def describe_action(self):
-        return "Your Next Move: \n Please choose an action. Type '1' to do noting, '2' to fire left engine and make lander move to right, '3' to fire main engine and make lander move to up, " \
+        return "Type '1' to do noting, '2' to fire left engine and make lander move to right, '3' to fire main engine and make lander move to up, " \
                "or '4' to fire right engine and make lander move to left. Ensure you only provide the action number from the valid action list, i.e., [1, 2, 3, 4]."
 
 

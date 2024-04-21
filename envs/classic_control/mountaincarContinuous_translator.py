@@ -35,8 +35,7 @@ class GameDescriber:
                 f"or the length of the episode is {self.max_episode_len}.")
 
     def describe_action(self):
-        return ("Your Next Move:" 
-                "\n Please select a numerical value within the range of [-1,1], which represents the directional force being applied to the car. The action will be limited to the range of [-1,1], and then multiplied by a power of 0.0015.")
+        return ("Type a numerical value within the range of [-1,1], which represents the directional force being applied to the car. The action will be limited to the range of [-1,1], and then multiplied by a power of 0.0015.")
 
 class BasicStateSequenceTranslator(BasicLevelTranslator):
     def translate(self, infos, is_current=False):

@@ -38,7 +38,7 @@ class GameDescriber:
                "of the zone (-.2095, .2095), the round ends and the game is lost. "
     
     def describe_action(self):
-        return "Your Next Move: \n Please choose an action. Type '1' to push the cart to the left or '2' to push the cart to the right. Ensure you only provide the action number from the valid action list, i.e., [1, 2]."
+        return "Type '1' to push the cart to the left or '2' to push the cart to the right. Ensure you only provide the action number from the valid action list, i.e., [1, 2]."
 
 class BasicStateSequenceTranslator(BasicLevelTranslator):
     def translate(self, infos, is_current=False):

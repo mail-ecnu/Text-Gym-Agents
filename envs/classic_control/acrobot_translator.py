@@ -38,7 +38,7 @@ class GameDescriber:
     # https://colab.research.google.com/drive/1DdWsGi10232orUv-reY4wsTmT0VMoHaX?usp=sharing#scrollTo=4OfVmDKk7XvG
     # LLMs bias on 0 so make the actions 1, 2 and 3 instead.
     def describe_action(self):
-        return ("Your Next Move: \\n Please choose an action. Type '1' to apply -1 torque, '2' to apply 0 torque, or '3' to apply 1 torque. "
+        return ("Type '1' to apply -1 torque, '2' to apply 0 torque, or '3' to apply 1 torque. "
                 "Ensure you provide the action number from the valid action list, i.e., [1, 2, 3].")
 
 class BasicStateSequenceTranslator(BasicLevelTranslator):

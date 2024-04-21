@@ -6,7 +6,7 @@ from loguru import logger
 from .parser import DISPARSERS, CONPARSERS
 from langchain.output_parsers import PydanticOutputParser
 from langchain.output_parsers import OutputFixingParser
-from langchain.chat_models import AzureChatOpenAI, ChatOpenAI
+from langchain_openai import AzureChatOpenAI, ChatOpenAI
 from memory.env_history import EnvironmentHistory
 import tiktoken
 import json
@@ -35,11 +35,54 @@ class NaiveAct(gpt):
         self.max_tokens = max_tokens
         self.prompt_level = args.prompt_level
         if args.gpt_version == "gpt-35-turbo":
-            model = "gpt-3.5-turbo"
+            self.model = "gpt-3.5-turbo"
         else:
-            model = args.gpt_version
-        self.encoding = tiktoken.encoding_for_model(model)
+            self.model = args.gpt_version
+        if args.api_type == "gemma" or args.api_type == 'vllm':
+            self.encoding = tiktoken.encoding_for_model('gpt-3.5-turbo')
+        else:
+            self.encoding = tiktoken.encoding_for_model(self.model)
         super().__init__(args)
+        if self.args.api_type == "azure":
+            self.chat = AzureChatOpenAI(
+                openai_api_type=openai.api_type,
+                openai_api_version=openai.api_version,
+                azure_endpoint=openai.azure_endpoint,
+                openai_api_key=openai.api_key,
+                deployment_name=self.args.gpt_version,
+                temperature=self.temperature,
+                max_tokens=self.max_tokens,
+                streaming=True,
+            )
+            from openai import AzureOpenAI
+            self.client =  AzureOpenAI(
+                api_key=openai.api_key,
+                api_version=openai.api_version,
+                azure_endpoint=openai.azure_endpoint,
+            )
+        elif self.args.api_type == "openai":
+            self.chat = ChatOpenAI(temperature=self.temperature, base_url=openai.api_base, openai_api_key=openai.api_key, model=self.args.gpt_version)
+            from openai import OpenAI
+            self.client =  OpenAI(
+                api_key=openai.api_key,
+                base_url=openai.api_base,
+            )
+        elif self.args.api_type == "vllm":
+            if self.model == 'Meta-Llama-3-8B-Instruct':
+                stop_token = "<|eot_id|>"
+            else:
+                stop_token = "<|im_end|>"
+            self.chat = ChatOpenAI(
+                openai_api_key='EMPTY',
+                base_url='http://localhost:8000/v1',
+                model_name=self.model,
+                model_kwargs={"stop": [stop_token]}
+            )
+            from openai import OpenAI
+            self.client = OpenAI(
+                api_key='EMPTY',
+                base_url='http://localhost:8000/v1',
+            )
         self.distiller = distiller
         self.fewshot_example_initialization(args.prompt_level, args.prompt_path, distiller = self.distiller)
         if isinstance(self.action_space, Discrete):
@@ -60,6 +103,7 @@ class NaiveAct(gpt):
         else:
             self.use_short_mem = False
             self.mem_num = 0
+
     
     def num_tokens_from_string(self,string: str) -> int:
         """Returns the number of tokens in a text string."""
@@ -77,7 +121,7 @@ class NaiveAct(gpt):
         self._update_mem(traj)
 
     def _update_mem(self, traj):
-        my_reflection = self.distiller.generate(traj, self.memory)
+        my_reflection = self.distiller.generate(self.client, traj, self.memory)
         self.memory.append(my_reflection)
         self.env_history.reset()
 
@@ -101,15 +145,27 @@ class NaiveAct(gpt):
             autofixing_chat = AzureChatOpenAI(
                 openai_api_type=openai.api_type,
                 openai_api_version=openai.api_version,
-                openai_api_base=openai.api_base,
+                azure_endpoint=openai.azure_endpoint,
                 openai_api_key=openai.api_key,
                 deployment_name=self.args.gpt_version,
                 temperature=self.temperature,
-                max_tokens=self.max_tokens
+                max_tokens=self.max_tokens,
+                streaming=True,
             )
         elif self.args.api_type == "openai":
             autofixing_chat = ChatOpenAI(temperature=self.temperature, openai_api_key=openai.api_key,model=self.args.gpt_version)
-
+        elif self.args.api_type == "vllm":
+            if self.model == 'Meta-Llama-3-8B-Instruct':
+                stop_token = "<|eot_id|>"
+            else:
+                stop_token = "<|im_end|>"
+            autofixing_chat = ChatOpenAI(
+                openai_api_key='EMPTY',
+                base_url='http://localhost:8000/v1',
+                model_name=self.model,
+                # stop=["<|eot_id|>"],
+                model_kwargs={"stop": [stop_token]},
+            )
         parser = PydanticOutputParser(pydantic_object=PARSERS[num_action])
         autofixing_parser = OutputFixingParser.from_llm(
             llm=autofixing_chat, parser=parser)
@@ -147,24 +203,16 @@ class NaiveAct(gpt):
                 traj_text += f"Your performance is: {transition['cum_reward']}"
             if not max_step_num:
                 max_step_num = self.args.max_episode_len
-            self.summarized_fewshot_example = self.distiller.generate_from_file(json_file,max_step_num=max_step_num)
+            self.summarized_fewshot_example = self.distiller.generate_from_file(self.client, json_file,max_step_num=max_step_num)
 
-    def response(self, state_description, action_description, env_info, game_description=None, goal_description=None, fewshot_examples=None):
+    def _response(self, state_description, action_description, env_info, game_description=None, goal_description=None, fewshot_examples=None):
         if env_info['future_summary']:
             prompt = f"{game_description}\n{goal_description}\n{fewshot_examples}\n{state_description}\n{env_info['future_summary']}\n{action_description} "
         else:
             prompt = f"{game_description}\n{goal_description}\n{fewshot_examples}\nCurrent {state_description}\n{action_description} "
         prompt += "Please select an action based on the current game state and the information you get. You must select the appropriate action from the given action descriptions and cannot refrain from taking action or performing any prohibited actions. Your Action is: "
         print(f"prompt is {prompt}")
-        # res = get_chat(prompt, self.args.api_type, self.args.gpt_version, self.temperature, self.max_tokens)
-        res = get_chat(prompt, api_type=self.args.api_type, model=self.args.gpt_version, engine=self.args.gpt_version, temperature=self.temperature, max_tokens=self.max_tokens)
-        # openai.ChatCompletion.create(
-        #         engine=self.args.gpt_version,
-        #         # model=self.args.gpt_version,
-        #         prompt=prompt,
-        #         temperature=self.temperature,
-        #         max_tokens=self.max_tokens,
-        #     )
+        res = get_chat(self.client, prompt, api_type=self.args.api_type, model=self.model, temperature=self.temperature, max_tokens=self.max_tokens)
         return prompt, res
     
     def _add_history_before_action(self, game_description, goal_description, state_description):
@@ -178,6 +226,7 @@ class NaiveAct(gpt):
             self.env_history.set_history(self.args.max_query_tokens // one_history_token)
 
     def act(self, state_description, action_description, env_info, game_description=None, goal_description=None, logfile=None):
+        self.action_description = action_description
         self._add_history_before_action(game_description, goal_description, state_description)
         asking_round = 0
         res = None
@@ -213,10 +262,16 @@ class NaiveAct(gpt):
                 my_mem += f"{self.env_history.get_histories(self.mem_num)}"
 
         
-        prompt, response = self.response(state_description, action_description, env_info, game_description, goal_description, my_mem)
+        prompt, response = self._response(state_description, action_description, env_info, game_description, goal_description, my_mem)
         action_str = response
         print(f'my anwser is {action_str}')
-        action = self.parser.parse(response).action
+        action = None
+        for _ in range(10):
+            try:
+                action = self.parser.parse(response).action
+                break
+            except:
+                continue
         self._add_history_after_action(action)
         self.logger.info(f'The GPT response is: {response}.')
         self.logger.info(f'The optimal action is: {action}.')

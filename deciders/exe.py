@@ -1,16 +1,16 @@
 import openai
 from .misc import history_to_str
-from langchain.chat_models import AzureChatOpenAI, ChatOpenAI
+from langchain_openai import AzureChatOpenAI, ChatOpenAI
 from langchain.prompts.chat import (
-    PromptTemplate,
     ChatPromptTemplate,
     SystemMessagePromptTemplate,
     HumanMessagePromptTemplate,
 )
+from langchain import PromptTemplate
 from langchain.prompts.few_shot import FewShotPromptTemplate
 from langchain import LLMChain
 from langchain.callbacks import FileCallbackHandler
-from langchain.callbacks import get_openai_callback
+from langchain_community.callbacks import get_openai_callback
 from .act import NaiveAct
 from memory.env_history import EnvironmentHistory
 import tiktoken
@@ -59,16 +59,16 @@ class EXE(NaiveAct):
     def _update_mem(self, traj):
         if self.memory:
             self.post_memory = self.memory
-            self.insight = self.distiller.generate_insight(self.post_memory)
+            self.insight = self.distiller.generate_insight(self.client, self.post_memory)
         else:
             if not self.is_first:
-                summary = self.distiller.generate_summary(traj, self.post_memory)
+                summary = self.distiller.generate_summary(self.client, traj, self.post_memory)
                 self.post_memory.append(summary)
-                self.insight = self.distiller.generate_insight(self.post_memory)
+                self.insight = self.distiller.generate_insight(self.client, self.post_memory)
             else:
                 self.is_first = False
                 self.insight = ""
-        suggestion = self.distiller.generate_suggestion(self.game_description, self.goal_description, self.action_description, self.pre_memory, self.post_memory, self.insight, self.num_trails)
+        suggestion = self.distiller.generate_suggestion(self.client,self.game_description, self.goal_description, self.action_description, self.pre_memory, self.post_memory, self.insight, self.num_trails)
         if self.fixed_suggestion:
             suggestion = self.fixed_suggestion
         if self.fixed_insight:
@@ -97,18 +97,6 @@ class EXE(NaiveAct):
         self.goal_description = goal_description
         self.env_history.add("observation", state_description)
 
-        if self.args.api_type == "azure":
-            chat = AzureChatOpenAI(
-                openai_api_type=openai.api_type,
-                openai_api_version=openai.api_version,
-                openai_api_base=openai.api_base,
-                openai_api_key=openai.api_key,
-                deployment_name=self.args.gpt_version,
-                temperature=self.temperature,
-                max_tokens=self.max_tokens
-            )
-        elif self.args.api_type == "openai":
-            chat = ChatOpenAI(temperature=self.temperature, openai_api_key=openai.api_key, model=self.args.gpt_version)
         # print(self.logger)
         reply_format_description = \
             "Your response should choose an optimal action from valid action list, and terminated with following format: "        
@@ -143,27 +131,29 @@ class EXE(NaiveAct):
                     self.first_call = False
         handler = FileCallbackHandler(logfile)
         total_tokens, total_cost = 0, 0 
-        max_think_times = 1
+        chain = LLMChain(llm=self.chat, prompt=chat_prompt, callbacks=[handler], verbose=False)
+        with get_openai_callback() as cb:
+            response = run_chain(
+                chain,
+                game_description=game_description,
+                goal_description=goal_description,
+                action_description=action_description,
+                state_description = self.env_history.get_last_history(),
+                history=self.env_history.get_histories(self.mem_num),
+                format_instructions=self.parser.get_format_instructions(),
+                reply_format_description=reply_format_description,
+                max_token=self.max_tokens
+            )
 
-        for i_think in range(max_think_times):
-            # chain = LLMChain(llm=chat, prompt=chat_prompt, callbacks=[handler], verbose=True)
-            chain = LLMChain(llm=chat, prompt=chat_prompt, callbacks=[handler], verbose=False)
-            with get_openai_callback() as cb:
-                response = run_chain(
-                    chain,
-                    game_description=game_description,
-                    goal_description=goal_description,
-                    action_description=action_description,
-                    state_description = self.env_history.get_last_history(),
-                    history=self.env_history.get_histories(self.mem_num),
-                    format_instructions=self.parser.get_format_instructions(),
-                    reply_format_description=reply_format_description,
-                    max_token=self.max_tokens
-                )
-
-                total_tokens += cb.total_tokens
-                total_cost += cb.total_cost
-            action = self.parser.parse(response).action        
+            total_tokens += cb.total_tokens
+            total_cost += cb.total_cost
+        action = None
+        for _ in range(10):
+            try:
+                action = self.parser.parse(response).action
+                break
+            except:
+                continue
         self._add_history_after_action(action)
         self.logger.info(f'The GPT response is: {response}.')
         self.logger.info(f'The optimal action is: {action}.')

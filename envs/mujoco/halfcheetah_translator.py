@@ -56,9 +56,7 @@ class GameDescriber:
         )
 
     def describe_action(self):
-        return (
-            "Your next move: \n"
-            "Please select six numerical values, each one within the range of [-1,1], "
+        return ("Type six numerical values, each one within the range of [-1,1], "
             "which represents the torque being applied to the back thigh rotor, "
             "back shin rotor, back foot rotor, front thigh rotor, front shin rotor, "
             "and front foot rotor respectively."

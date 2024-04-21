@@ -59,7 +59,7 @@ class GameDescriber:
 
     def describe_action(self):
         return (
-            "Your next move: \nPlease provide a list of six numerical values, each within the range of [-1, 1], "
+            "Type six numerical values, each within the range of [-1, 1], "
             "representing the torques to be applied at the six hinge joints of the walker. These torques will help "
             "coordinate the walker's movements and make it walk in the desired direction."
         )

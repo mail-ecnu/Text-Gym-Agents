@@ -56,7 +56,7 @@ class GameDescriber:
         return ""
 
     def describe_action(self):
-        return "Your Next Move: \n Please choose an action. Each value corresponds to a directional input as follows: "\
+        return "Each value corresponds to a directional input as follows: "\
                "1 - NOOP, 2 - UP, 3 - RIGHT, 4 - LEFT, 5 - DOWN, 6 - UPRIGHT, 7 - UPLEFT, 8 - DOWNRIGHT, 9 - DOWNLEFT. "\
                "Ensure you only provide the action number from the valid action list, i.e., [1, 2, 3, 4, 5, 6, 7, 8, 9]."
 

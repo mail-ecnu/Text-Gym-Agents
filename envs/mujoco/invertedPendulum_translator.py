@@ -45,7 +45,7 @@ class GameDescriber:
 
     def describe_action(self):
         return (
-            "Your next move: \n Please provide a numerical value for the force to be applied to the cart. "\
+            "Type a numerical value for the force to be applied to the cart. "\
             "This value should be within the range of [-3, 3], where a positive value indicates applying force "\
             "in the right direction, and a negative value indicates applying force in the left direction."
         )

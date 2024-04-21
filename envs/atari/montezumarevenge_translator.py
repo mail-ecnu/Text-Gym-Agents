@@ -105,7 +105,7 @@ of 6 lives.""")
             18: "Jump Left + Climb Up",
         }
 
-        description = "Your Next Move:\n"
+        description = ""
         for action_number, action_name in actions.items():
             description += f"{action_number}: {action_name}\n"
 

@@ -1,17 +1,17 @@
 import openai
 from .misc import history_to_str
-from langchain.chat_models import AzureChatOpenAI, ChatOpenAI
+from langchain_openai import AzureChatOpenAI, ChatOpenAI
 from langchain.prompts.chat import (
-    PromptTemplate,
     ChatPromptTemplate,
     SystemMessagePromptTemplate,
     HumanMessagePromptTemplate,
 )
+from langchain import PromptTemplate
 from langchain.prompts.few_shot import FewShotPromptTemplate
 from langchain import LLMChain
 from loguru import logger
 from langchain.callbacks import FileCallbackHandler
-from langchain.callbacks import get_openai_callback
+from langchain_community.callbacks import get_openai_callback
 from .act import NaiveAct
 from .utils import run_chain
 
@@ -34,19 +34,6 @@ class SelfConsistency(NaiveAct):
         # print(self.temperature)
         self.action_description = action_description
         self._add_history_before_action(game_description, goal_description, state_description)
-
-        if self.args.api_type == "azure":
-            chat = AzureChatOpenAI(
-                openai_api_type=openai.api_type,
-                openai_api_version=openai.api_version,
-                openai_api_base=openai.api_base,
-                openai_api_key=openai.api_key,
-                deployment_name=self.args.gpt_version,
-                temperature=self.temperature,
-                max_tokens=self.max_tokens
-            )
-        elif self.args.api_type == "openai":
-            chat = ChatOpenAI(temperature=self.temperature, openai_api_key=openai.api_key, model=self.args.gpt_version)
 
         suffix_flag = False
         reply_format_description = \
@@ -120,7 +107,7 @@ class SelfConsistency(NaiveAct):
             self.logger = logger.add(logfile, colorize=True, enqueue=True)
         handler = FileCallbackHandler(logfile) 
 
-        chain = LLMChain(llm=chat, prompt=chat_prompt, callbacks=[handler], verbose=False)
+        chain = LLMChain(llm=self.chat, prompt=chat_prompt, callbacks=[handler], verbose=False)
 
         text_prompt = chat_prompt.format_messages(
             game_description=game_description,
@@ -149,12 +136,18 @@ class SelfConsistency(NaiveAct):
                     )
                     total_tokens = cb.total_tokens
                     total_cost = cb.total_cost
-                    action = self.parser.parse(response).action
-                    actions.append(action)
-                    response_dict[action] = response
+                    action = None
+                    for _ in range(10):
+                        try:
+                            action = self.parser.parse(response).action
+                            break
+                        except:
+                            continue
+                actions.append(action)
+                response_dict[action] = response
 
-                    self.logger.info(f'The GPT response is: {response}.')
-                    self.logger.info(f'The optimal action is: {action}.\n')
+                self.logger.info(f'The GPT response is: {response}.')
+                self.logger.info(f'The optimal action is: {action}.\n')
             except:
                 continue
         

@@ -41,7 +41,7 @@ class GameDescriber:
                 "drawing cards.")
 
     def describe_action(self):
-        return ("Your Next Move: \\n Please choose an action. Type '1' to stick (stop receiving cards) or '2' to hit (add a card). "
+        return ("Type '1' to stick (stop receiving cards) or '2' to hit (add a card). "
                 "Ensure you only provide the action number from the valid action list, i.e., [1, 2] in json format.")
 
 class BasicStateSequenceTranslator(BasicLevelTranslator):

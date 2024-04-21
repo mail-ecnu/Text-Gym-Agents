@@ -51,7 +51,7 @@ class GameDescriber:
 
     def describe_action(self):
         return (
-            "Your next move: \n Please provide a numerical value within the range of [-3,3], "\
+            "Type a numerical value within the range of [-3,3], "\
             "representing the force to be applied to the cart."
         )
 

@@ -1,5 +1,5 @@
 import random 
-from deciders.utils import get_completion
+from deciders.utils import get_completion, get_chat
 import json
 from loguru import logger
 
@@ -14,7 +14,7 @@ class TrajPromptSummarizer():
             # logger.remove()
             logger.add(logfile, colorize=True, enqueue=True, filter=lambda x: '[Reflexion Memory]' in x['message'])
 
-    def generate_from_file(self, file_path,max_step_num=200):
+    def generate_from_file(self, client, file_path,max_step_num=200):
         mem = []
         with open(file_path, 'r') as infile:
             data = json.load(infile)
@@ -30,7 +30,7 @@ class TrajPromptSummarizer():
                 traj_text += f"Action: {action}\n"
                 traj_text += f"Reward: {transition['reward']}\n"
             traj_text += f"Your performance is: {transition['cum_reward']}\n"
-            reflection = self.generate(traj_text, mem, max_len_mem=5)
+            reflection = self.generate(client, traj_text, mem, max_len_mem=5)
             mem.append(reflection)        
         return mem
 
@@ -49,12 +49,12 @@ class TrajPromptSummarizer():
         query += '\n\nSummary:'
         return query
 
-    def generate(self, traj, memory, max_len_mem=5):
+    def generate(self, client, traj, memory, max_len_mem=5):
         if len(memory)> max_len_mem:
             reflection_query = self._generate_summary_query(traj, memory[-max_len_mem:])
         else:
             reflection_query = self._generate_summary_query(traj, memory)
-        reflection = get_completion(reflection_query, api_type=self.args.api_type, engine=self.args.gpt_version)
+        reflection = get_chat(client, reflection_query, api_type=self.args.api_type, model=self.args.gpt_version,  temperature=0.0)
         logger.info(f'[Reflexion Memory]The reflexion prompt is: {reflection_query}.')
         logger.info(f'[Reflexion Memory]The reflexion response is: {reflection}.')
         return reflection

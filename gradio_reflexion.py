@@ -166,7 +166,7 @@ def main_progress(env_name, decider, prompt_level, num_trails, seed):
                         if "Cliff" in args.env_name or "Frozen" in args.env_name:
                             decider.env_history.add('reward', env_info['potential_state'] + environment.reward_desc_dict[reward])
                         else:
-                            decider.env_history.add('reward', f"The player get rewards {reward}.")
+                            decider.env_history.add('reward', f"You get rewards {reward}.")
                             
                         utility += reward
 

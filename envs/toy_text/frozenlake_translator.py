@@ -61,7 +61,7 @@ class GameDescriber:
                " when the player reaches the goal or falls into a hole."
 
     def describe_action(self):
-        return ("Your Next Move: \n Please choose an action. For current position ('x', 'y'), the action means the player try to step into the next position. The possible actions are:" \
+        return ("For current position ('x', 'y'), the action means the player try to step into the next position. The possible actions are:" \
                 "\n '1': Move left, which means ('x', 'y-1'), " \
                 "\n '2': Move down, which means ('x+1', 'y')," \
                 "\n '3': Move right, which means ('x', 'y+1')," \

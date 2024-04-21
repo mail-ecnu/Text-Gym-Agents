@@ -1,17 +1,17 @@
 import openai
 from .misc import history_to_str
-from langchain.chat_models import AzureChatOpenAI, ChatOpenAI
+from langchain_openai import AzureChatOpenAI, ChatOpenAI
 from langchain.prompts.chat import (
-    PromptTemplate,
     ChatPromptTemplate,
     SystemMessagePromptTemplate,
     HumanMessagePromptTemplate,
 )
+from langchain import PromptTemplate
 from langchain.prompts.few_shot import FewShotPromptTemplate
 from langchain import LLMChain
 from loguru import logger
 from langchain.callbacks import FileCallbackHandler
-from langchain.callbacks import get_openai_callback
+from langchain_community.callbacks import get_openai_callback
 from .act import NaiveAct
 from memory.env_history import EnvironmentHistory
 import tiktoken
@@ -36,7 +36,7 @@ class Reflexion(NaiveAct):
         self._update_mem(traj)
 
     def _update_mem(self, traj):
-        my_reflection = self.distiller.generate(traj, self.memory)
+        my_reflection = self.distiller.generate(self.client, traj, self.memory)
         self.memory.append(my_reflection)
         self.env_history.reset()
 
@@ -54,18 +54,6 @@ class Reflexion(NaiveAct):
         self.goal_description = goal_description
         self.env_history.add("observation", state_description)
 
-        if self.args.api_type == "azure":
-            chat = AzureChatOpenAI(
-                openai_api_type=openai.api_type,
-                openai_api_version=openai.api_version,
-                openai_api_base=openai.api_base,
-                openai_api_key=openai.api_key,
-                deployment_name=self.args.gpt_version,
-                temperature=self.temperature,
-                max_tokens=self.max_tokens
-            )
-        elif self.args.api_type == "openai":
-            chat = ChatOpenAI(temperature=self.temperature, openai_api_key=openai.api_key, model=self.args.gpt_version)
         suffix_flag = False
         reply_format_description = \
             "Your response should choose an optimal action from a valid action list and terminate with the following format: "
@@ -139,27 +127,31 @@ class Reflexion(NaiveAct):
                 self.first_call = False
         handler = FileCallbackHandler(logfile)
         total_tokens, total_cost = 0, 0 
-        max_think_times = 1
         # TODO: ADD REACT Support
         # print(str(self.env_history))
 
-        for i_think in range(max_think_times):
-            chain = LLMChain(llm=chat, prompt=chat_prompt, callbacks=[handler], verbose=False)
-            with get_openai_callback() as cb:
-                response = run_chain(
-                    chain,
-                    state_description=self.env_history.get_last_history(),
-                    game_description=game_description,
-                    goal_description=goal_description,
-                    action_description=action_description,
-                    format_instructions=self.parser.get_format_instructions(),
-                    reply_format_description=reply_format_description,
-                    max_token = self.max_tokens
-                )
+        chain = LLMChain(llm=self.chat, prompt=chat_prompt, callbacks=[handler], verbose=False)
+        with get_openai_callback() as cb:
+            response = run_chain(
+                chain,
+                state_description=self.env_history.get_last_history(),
+                game_description=game_description,
+                goal_description=goal_description,
+                action_description=action_description,
+                format_instructions=self.parser.get_format_instructions(),
+                reply_format_description=reply_format_description,
+                max_token = self.max_tokens
+            )
 
-                total_tokens += cb.total_tokens
-                total_cost += cb.total_cost
-            action = self.parser.parse(response).action
+            total_tokens += cb.total_tokens
+            total_cost += cb.total_cost
+        action = None
+        for _ in range(10):
+            try:
+                action = self.parser.parse(response).action
+                break
+            except:
+                continue
         text_prompt = chat_prompt.format_messages(
             state_description=self.env_history.get_last_history(),
             game_description=game_description,

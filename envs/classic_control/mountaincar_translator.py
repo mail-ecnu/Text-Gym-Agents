@@ -35,8 +35,7 @@ class GameDescriber:
                 f"or the length of the episode is {self.max_episode_len}.")
 
     def describe_action(self):
-        return ("Your Next Move:" 
-                "\n Please choose an action. Type '1' to accelerate to the left, '2' to not accelerate, or '3' to accelerate to the right."
+        return ("Type '1' to accelerate to the left, '2' to not accelerate, or '3' to accelerate to the right."
                 "Ensure you only provide the action number from the valid action list, i.e., [1, 2, 3].")
 
 class BasicStateSequenceTranslator(BasicLevelTranslator):

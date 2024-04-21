@@ -72,8 +72,7 @@ class GameDescriber:
 
     def describe_action(self):
         return (
-            "Your Next Move:\\n"
-            "Please choose an action. For current position ('x', 'y'), the action means the player try to step into the next position. Type '1' to move up, which means trying to step into ('x-1', 'y'), '2' to move right, which means ('x', 'y+1'), "
+            "Type a number to indicate the action. For current position ('x', 'y'), the action means the player try to step into the next position. Type '1' to move up, which means trying to step into ('x-1', 'y'), '2' to move right, which means ('x', 'y+1'), "
             "'3' to move down, which means ('x+1', 'y'), or '4' to move left, which means ('x', 'y-1'). Ensure you only provide "
             "the action number from the valid action list, i.e., [1, 2, 3, 4]."
         )

@@ -19,7 +19,7 @@ class EnvironmentHistory:
         s = ''
         for i, item in enumerate(self._history):
             if item['label'] == 'action':
-                s += f'He takes action: {item["value"]}'
+                s += f'The player take action: {item["value"]}'
             elif item['label'] == 'observation':
                 s += item['value']
             elif item['label'] == 'reward':
@@ -42,7 +42,7 @@ class EnvironmentHistory:
         state_num = len(elements)
         for i, item in enumerate(self._history[:state_num]):
             if item['label'] == 'action':
-                s += f'He takes action: {item["value"]}'
+                s += f'You take action: {item["value"]}'
             elif item['label'] == 'reward':
                 s += f'{item["value"]}'
             elif item['label'] == 'cummulative_reward':
@@ -67,7 +67,7 @@ class EnvironmentHistory:
         s = ''
         for i, item in enumerate(self._history[-1:]):
             if item['label'] == 'action':
-                s += f'He takes action: {item["value"]}'
+                s += f'You take action: {item["value"]}'
             elif item['label'] == 'reward':
                 s += f'{item["value"]}'
             elif item['label'] == 'cummulative_reward':
@@ -92,7 +92,7 @@ class EnvironmentHistory:
         history_num = state_num*num+1
         for i, item in enumerate(self._history[-history_num:-1]):
             if item['label'] == 'action':
-                s += f'He takes action: {item["value"]}'
+                s += f'You take action: {item["value"]}'
             elif item['label'] == 'reward':
                 s += f'{item["value"]}'
             elif item['label'] == 'cummulative_reward':
@@ -117,7 +117,7 @@ class EnvironmentHistory:
         history_num = state_num*num+1
         for i, item in enumerate(self._history[-history_num:]):
             if item['label'] == 'action':
-                s += f'He takes action: {item["value"]}'
+                s += f'You take action: {item["value"]}'
             elif item['label'] == 'reward':
                 s += f'Reward after taking action: {item["value"]}'
             elif item['label'] == 'cummulative_reward':

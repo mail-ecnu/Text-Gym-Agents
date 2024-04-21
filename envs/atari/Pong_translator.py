@@ -34,7 +34,7 @@ class GameDescriber:
                "The first player to score 21 points wins the game."
 
     def describe_action(self):
-        return "Your Next Move: \n Please choose an action. Type '1' for NOOP (no operation), '2' to hit the ball, " \
+        return "Type '1' for NOOP (no operation), '2' to hit the ball, " \
                "'3' to move right, '4' to move left, '5' to move right while hit the ball, '6' to move left while hit the ball. Ensure you only provide the action number " \
                "from the valid action list, i.e., [1, 2, 3, 4, 5, 6]."
 

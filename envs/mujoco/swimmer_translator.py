@@ -53,7 +53,7 @@ class GameDescriber:
 
     def describe_action(self):
         return (
-            "Your next move: \nPlease provide a list of two numerical values, each within the range of [-1, 1], "\
+            "Type two numerical values, each within the range of [-1, 1], "\
             "representing the torques to be applied to the two rotors of the swimmer. These torques will help "\
             "control the swimmer's movement and achieve efficient swimming."
         )

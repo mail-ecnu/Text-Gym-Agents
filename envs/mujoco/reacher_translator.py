@@ -44,7 +44,7 @@ class GameDescriber:
                 "Rewards are given based on the distance of the fingertip from the target and the magnitude of actions applied.")
 
     def describe_action(self):
-        return ("Your next move: \n Please provide two numerical values representing the torques applied at the two hinge joints. "\
+        return ("Type two numerical values representing the torques applied at the two hinge joints. "\
                 "Each value should be within the range of [-1, 1].")
 
 class BasicStateSequenceTranslator(BasicLevelTranslator):

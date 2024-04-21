@@ -66,7 +66,7 @@ class GameDescriber:
                 "and control penalties for large actions.")
 
     def describe_action(self):
-        return ("Your next move: \n Please provide a list of 7 numerical values within the range [-2, 2], "
+        return ("Type 7 numerical values within the range [-2, 2], "
                 "representing the torques applied to the robot's joints (shoulder, elbow, forearm, and wrist).")
 
 

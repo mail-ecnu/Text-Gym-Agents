@@ -6,7 +6,7 @@ class BasicLevelTranslator:
 
     def translate(self, state):
         player_x, player_y, enemy_x, enemy_y, enemy_score, clock, player_score = state
-        return f"The player is at position ({player_x, player_y}, your opponent is at position ({enemy_x, enemy_y}) ), " \
+        return f"You are at position ({player_x, player_y}, your opponent is at position ({enemy_x, enemy_y}) ), " \
                f"your oppoent's score is {enemy_score}, your score is {player_score}. Move left and right will change the player_x while move up and down will change the player_y"
 
 
@@ -38,7 +38,7 @@ class GameDescriber:
                " but if you're too far away, you can't land scoring punches. "
 
     def describe_action(self):
-        return "Your Next Move: \n Please choose an action. Type '1' for NOOP (no operation), '2' to hit your opponent, " \
+        return "Type '1' for NOOP (no operation), '2' to hit your opponent, " \
                "'3' to move up, '4' to move right, '5' to move left, '6' to move down, '7' to move up-right, " \
                "'8' to move up-left, '9' to move down-right, '10' to move down-left, '11' to hit your opponent and move up, " \
                "'12' to hit your opponent and move right, '13' to hit your opponent and move left, '14' to hit your opponent and move down, " \
