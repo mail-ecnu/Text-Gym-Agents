@@ -356,25 +356,4 @@ if __name__ == "__main__":
         environment = env_class(
             gym.make(args.env_name, render_mode=args.render), translator
         )
-    logfile = (
-        f"llm.log/output-{args.env_name}-{args.decider}-{args.gpt_version}-l{args.prompt_level}"
-        f"-{datetime.datetime.now().timestamp()}.log"
-    )
-
-    logfile_reflexion = (
-        f"llm.log/memory-{args.env_name}-{args.decider}-{args.gpt_version}-l{args.prompt_level}"
-        f"-{datetime.datetime.now().timestamp()}.log"
-    )
-    my_distiller = distiller_class(logfile=logfile_reflexion,args=args)
-
-    args.game_description = environment.game_description
-    args.goal_description = environment.goal_description
-    args.action_description = environment.action_description
-    args.action_desc_dict = environment.action_desc_dict
-    args.reward_desc_dict = environment.reward_desc_dict
-
-    logger.add(logfile, colorize=True, enqueue=True, filter=lambda x: '[Reflexion Memory]' not in x['message'])
-
-    decider = decider_class(environment.env.action_space, args, prompts_class, my_distiller, temperature=0.0, logger=logger, max_tokens=args.max_generate_tokens)
-    # Evaluate the translator
-    evaluate_translator(translator, environment, decider, args.max_episode_len, logfile, args)
+    print(f"Env: {args.env_name}\n Env keys: {environment.env.labels().keys()}")

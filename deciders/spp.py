@@ -32,7 +32,7 @@ class SPP(NaiveAct):
         self.action_description = action_description
         self._add_history_before_action(game_description, goal_description, state_description)
         messages = []
-        messages.append({"role": "system", "content": f"You are a helpful assistant. You must carefully understand the Chain-of-Thought method you will use and apply it to the following task. You are in a game. {game_description}\n {goal_description} " })
+        messages.append({"role": "system", "content": f"You are an expert-level game player. You must carefully understand the Chain-of-Thought method you will use and apply it to the following task. You are in a game. {game_description}\n {goal_description} " })
         
         # task-irrelevant SystemMessage
         if self.irr_few_shot_examples:
@@ -71,7 +71,14 @@ class SPP(NaiveAct):
         response, usage = get_chat(messages, api_type=self.args.api_type, model=self.args.gpt_version, temperature=self.temperature, max_tokens=self.max_generate_tokens, seed=self.seed)
         action_str = response
         print(f'my anwser is {action_str}')
-        action = self.parser.parse(response).action
+        for _ in range(5):
+            try:
+                action = self.reg_parse(response)
+                if action is None:
+                    action = self.parser.parse(response).action
+                break
+            except:
+                continue
         if not self.logger:
             logger.remove()
             self.logger = logger.add(logfile, colorize=True, enqueue=True)

@@ -117,9 +117,9 @@ class EnvironmentHistory:
         history_num = state_num*num+1
         for i, item in enumerate(self._history[-history_num:]):
             if item['label'] == 'action':
-                s += f'You take action: {item["value"]}'
+                s += f'You took action: {item["value"]},'
             elif item['label'] == 'reward':
-                s += f'Reward after taking action: {item["value"]}'
+                s += f'You obtained reward after taking the action: {item["value"]}'
             elif item['label'] == 'cummulative_reward':
                 s += f'Performace: {item["value"]}'
             elif item['label'] == 'observation':
@@ -143,9 +143,9 @@ class EnvironmentHistory:
         history_list = []
         for i, item in enumerate(self._history):
             if item['label'] == 'action':
-                s += f'He takes action: {item["value"]}'
+                s += f'You took action: {item["value"]},'
             elif item['label'] == 'reward':
-                s += f'Reward after taking action: {item["value"]}'
+                s += f'You obtained reward after taking the action: {item["value"]}'
             elif item['label'] == 'cummulative_reward':
                 s += f'Performace: {item["value"]}'
             elif item['label'] == 'observation':

@@ -148,9 +148,11 @@ class EXE(NaiveAct):
             total_tokens += cb.total_tokens
             total_cost += cb.total_cost
         action = None
-        for _ in range(10):
+        for _ in range(5):
             try:
-                action = self.parser.parse(response).action
+                action = self.reg_parse(response)
+                if action is None:
+                    action = self.parser.parse(response).action
                 break
             except:
                 continue

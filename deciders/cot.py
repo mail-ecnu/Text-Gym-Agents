@@ -31,7 +31,7 @@ class ChainOfThought(NaiveAct):
         self.action_description = action_description
         self._add_history_before_action(game_description, goal_description, state_description)
         messages = []
-        messages.append({"role": "system", "content": f"You are a helpful assistant. Your whole response should be in JSON format. You must carefully understand the Chain-of-Thought method you will use and apply it to the following task. You are in a game. {game_description}\n {goal_description} " })
+        messages.append({"role": "system", "content": f"You are an expert-level game player. Your whole response should be in JSON format. You must carefully understand the Chain-of-Thought method you will use and apply it to the following task. You are in a game. {game_description}\n {goal_description} " })
         
         # task-irrelevant SystemMessage
         if self.irr_few_shot_examples:
@@ -57,26 +57,27 @@ class ChainOfThought(NaiveAct):
 
         if self.use_short_mem:
             if len(self.env_history) > 1:
-                messages.append({"role": "user",  "content":  f"{self.env_history.get_histories(self.mem_num)}"})
+                messages.append({"role": "user",  "content":  f"Here is the last {min(self.mem_num, len(self.env_history))} history you have seen: {self.env_history.get_histories(self.mem_num)}"})
 
 
-        instruction = f"{state_description}.{action_description}\n Please suggest an action based on the current game state and the information you get. You must select the appropriate action from the given action descriptions and cannot refrain from taking action or performing any prohibited actions. Please note that you need to carefully lay out your thought process on the question, not just give an answer. You need to write the corresponding logic of your thinking following the example above. Make sure you give an valid action! Your Suggested Action is: "
+        instruction = f'Currently, {state_description}.{action_description}\n  You should first take a deep breath. Then you  should think step by step about the action selection and  lay out your thought process explicitly. After that you should decide an action based on the thought. For the whole response, you should use JSON format with two keys "thought process" and "action".'
         instruction_msg = {"role": "user", "content": instruction}
         for i in range(len(messages)):
             if num_tokens_from_string(self.args.gpt_version, messages[:i]) > self.args.max_query_tokens-num_tokens_from_string(self.args.gpt_version, instruction_msg):
                 messages = messages[:i-1]
                 break
         messages.append(instruction_msg)
-
         response, usage = get_chat(self.client, messages, api_type=self.args.api_type, model=self.args.gpt_version, temperature=self.temperature, max_tokens=self.max_generate_tokens, seed=self.seed)
         action_str = response
         print(f'my anwser is {action_str}')
         action = None
         for _ in range(5):
             try:
-                action = self.parser.parse(response).action
+                action = self.reg_parse(response)
+                if action is None:
+                    action = self.parser.parse(response).action
                 break
-            except Exception as e:
+            except:
                 continue
         if not self.logger:
             logger.remove()

@@ -16,6 +16,7 @@ from .atari import register_environments
 from .atari import Boxing_policies, Boxing_translator, Pong_policies, Pong_translator
 from .atari import mspacman_policies, mspacman_translator
 from .atari import montezumarevenge_policies, montezumarevenge_translator
+from .atari import Asteroids_translator, BattleZone_translator, Berzerk_translator, Bowling_translator, Breakout_translator, Skiing_translator
 register_environments()
 
 
@@ -57,6 +58,33 @@ REGISTRY["frozenlake_policies"] = [frozenlake_policies.dedicated_1_policy, froze
 REGISTRY["mountaincarContinuous_init_translator"] = mountaincarContinuous_translator.GameDescriber
 REGISTRY["mountaincarContinuous_basic_translator"] = mountaincarContinuous_translator.TransitionTranslator
 REGISTRY["mountaincarContinuous_policies"] = [mountaincarContinuous_policies.pseudo_random_policy, mountaincarContinuous_policies.real_random_policy]
+
+
+
+# Atari 
+REGISTRY["RepresentedAsteroids_init_translator"] = Asteroids_translator.GameDescriber
+REGISTRY["RepresentedAsteroids_basic_translator"] = Asteroids_translator.TransitionTranslator
+REGISTRY["RepresentedAsteroids_basic_policies"] = []
+
+REGISTRY["RepresentedBattleZone_init_translator"] = BattleZone_translator.GameDescriber
+REGISTRY["RepresentedBattleZone_basic_translator"] = BattleZone_translator.TransitionTranslator
+REGISTRY["RepresentedBattleZone_basic_policies"] = []
+
+REGISTRY["RepresentedBerzerk_init_translator"] = Berzerk_translator.GameDescriber
+REGISTRY["RepresentedBerzerk_basic_translator"] = Berzerk_translator.TransitionTranslator
+REGISTRY["RepresentedBerzerk_basic_policies"] = []
+
+REGISTRY["RepresentedBowling_init_translator"] = Bowling_translator.GameDescriber
+REGISTRY["RepresentedBowling_basic_translator"] = Bowling_translator.TransitionTranslator
+REGISTRY["RepresentedBowling_basic_policies"] = []
+
+REGISTRY["RepresentedBreakout_init_translator"] = Breakout_translator.GameDescriber
+REGISTRY["RepresentedBreakout_basic_translator"] = Breakout_translator.TransitionTranslator
+REGISTRY["RepresentedBreakout_basic_policies"] = []
+
+REGISTRY["RepresentedSkiing_init_translator"] = Skiing_translator.GameDescriber
+REGISTRY["RepresentedSkiing_basic_translator"] = Skiing_translator.TransitionTranslator
+REGISTRY["RepresentedSkiing_basic_policies"] = []
 
 
 REGISTRY["RepresentedBoxing_init_translator"] = Boxing_translator.GameDescriber

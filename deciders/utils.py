@@ -8,6 +8,19 @@ from tenacity import (
     wait_random_exponential, # type: ignore
 )
 
+class NewResponse:
+    def __init__(self, response):
+        self.choices = [Choice(response['body']['result'])]
+        self.usage = response['body']['usage']
+
+class Choice:
+    def __init__(self, content):
+        self.message = Message(content)
+
+class Message:
+    def __init__(self, content):
+        self.content = content
+
 from typing import Optional, List
 
 
@@ -15,9 +28,13 @@ from typing import Optional, List
 # gpt().__init__()
 def num_tokens_from_string(model, string) -> int:
     """Returns the number of tokens in a text string."""
-    if model == 'Meta-Llama-3-8B-Instruct':
+    if model == 'Meta-Llama-3-8B-Instruct' or model=='qwen-long':
         model = 'gpt-3.5-turbo'
-    enc = tiktoken.encoding_for_model(model)
+    try: 
+        enc = tiktoken.encoding_for_model(model)
+    except: 
+        model = 'gpt-3.5-turbo'
+        enc = tiktoken.encoding_for_model(model)
     num_tokens = len(enc.encode(str(string)))
     return num_tokens
 
@@ -78,13 +95,7 @@ def get_chat(client, messages: list, api_type: str = "azure", model: str = "gpt-
             presence_penalty=0.0,
             stop=stop_strs,
         )
-    elif api_type == "openai":
-        response = client.chat.completions.create(
-            temperature=temperature,
-            seed=seed
-            # request_timeout = 1
-        )
-    elif api_type == "openai":
+    elif api_type in ["openai"]:
         response = openai.chat.completions.create(
             model=model,
             messages=messages,
@@ -92,14 +103,45 @@ def get_chat(client, messages: list, api_type: str = "azure", model: str = "gpt-
             stop=stop_strs,
             temperature=temperature,
             seed=seed
-            # request_timeout = 1
         )
-    elif api_type == "vllm":
+    elif api_type in ["aistudio"]:
+        ori_msg_cnt = 1
+        msg_cnt = 1
+        new_messages = []   
+        while ori_msg_cnt < len(messages)+1:
+            message = messages[ori_msg_cnt-1]
+            if msg_cnt%2==1:
+                if 'user' in message["role"] or 'system' in message["role"]:
+                    message["role"] = "user" 
+                    new_messages.append(message)
+                    ori_msg_cnt += 1
+                else:
+                    new_messages.append({"role": "user", "content": " "})
+            elif msg_cnt%2==0 :
+                if "assistant" in message["role"]:
+                    message["role"] = "assistant"
+                    new_messages.append(message)
+                    ori_msg_cnt += 1
+                else:
+                    new_messages.append({"role": "assistant", "content": " "})
+            msg_cnt += 1
+        if msg_cnt%2==1:
+            new_messages.append({"role": "user", "content": "Anwser the question."}) 
+        response_dict = client.do(
+            messages=new_messages,
+            max_tokens=max_tokens,
+            temperature=max(temperature, 1e-5),
+            top_p=1,
+            frequency_penalty=0.0,
+            presence_penalty=0.0,
+        )
+        response = NewResponse(response_dict)
+
+    elif api_type in ["vllm", 'qwen'] :
         if model == 'Meta-Llama-3-8B-Instruct':
             stop_token = "<|eot_id|>"
         else:
             stop_token = "<|im_end|>"
-        # import pdb; pdb.set_trace()
         response = client.chat.completions.create(
             model=model,
             messages=messages,
@@ -114,45 +156,48 @@ def get_chat(client, messages: list, api_type: str = "azure", model: str = "gpt-
 
 
 def openai_api_calculate_cost(usage, model="gpt-4-1106-preview"):
-    pricing = {
-        'gpt-3.5-turbo-1106': {
-            'prompt': 0.001,
-            'completion': 0.002,
-        },
-        'gpt-4-1106-preview': {
-            'prompt': 0.01,
-            'completion': 0.03,
-        },
-        'gpt-4': {
-            'prompt': 0.03,
-            'completion': 0.06,
-        }, 
-        'gpt-3.5-turbo': {
-            'prompt': 0.001,
-            'completion': 0.002,
-        },
-        'gpt-35-turbo': {
-            'prompt': 0.001,
-            'completion': 0.002,
-        },
-        'gpt-3.5-turbo-0125': {
-            'prompt': 0.0005,
-            'completion': 0.0015 ,
-        },
-        'Meta-Llama-3-8B-Instruct': {
-            'prompt': 0.0001,
-            'completion': 0.0001,
-        }
-    }
+    # pricing = {
+    #     'gpt-3.5-turbo-1106': {
+    #         'prompt': 0.001,
+    #         'completion': 0.002,
+    #     },
+    #     'gpt-4-1106-preview': {
+    #         'prompt': 0.01,
+    #         'completion': 0.03,
+    #     },
+    #     'gpt-4': {
+    #         'prompt': 0.03,
+    #         'completion': 0.06,
+    #     }, 
+    #     'gpt-3.5-turbo': {
+    #         'prompt': 0.001,
+    #         'completion': 0.002,
+    #     },
+    #     'gpt-35-turbo': {
+    #         'prompt': 0.001,
+    #         'completion': 0.002,
+    #     },
+    #     'gpt-3.5-turbo-0125': {
+    #         'prompt': 0.0005,
+    #         'completion': 0.0015 ,
+    #     },
+    #     'Meta-Llama-3-8B-Instruct': {
+    #         'prompt': 0.0001,
+    #         'completion': 0.0001,
+    #     }
+    # }
+    # try:
+    #     model_pricing = pricing[model]
+    # except KeyError:
+    #     raise ValueError("Invalid model specified")
     try:
-        model_pricing = pricing[model]
-    except KeyError:
-        raise ValueError("Invalid model specified")
-    total_token = usage.total_tokens
-    prompt_cost = usage.prompt_tokens * model_pricing['prompt'] / 1000
-    completion_cost = usage.completion_tokens * model_pricing['completion'] / 1000
+        total_token = usage.total_tokens
+    except: 
+        total_token = usage['total_tokens']
+    # prompt_cost = usage.prompt_tokens * model_pricing['prompt'] / 1000
+    # completion_cost = usage.completion_tokens * model_pricing['completion'] / 1000
 
-    total_cost = prompt_cost + completion_cost
-    total_cost = round(total_cost, 6)
+    # total_cost = prompt_cost + completion_cost
+    # total_cost = round(total_cost, 6)
 
-    return total_token, total_cost
+    return total_token, -1

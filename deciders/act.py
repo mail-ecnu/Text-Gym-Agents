@@ -7,10 +7,13 @@ from .parser import DISPARSERS, CONPARSERS
 from langchain.output_parsers import PydanticOutputParser
 from langchain.output_parsers import OutputFixingParser
 from langchain_openai import AzureChatOpenAI, ChatOpenAI
+from langchain_community.chat_models.tongyi import ChatTongyi
+from langchain_community.chat_models import QianfanChatEndpoint
 from memory.env_history import EnvironmentHistory
 import tiktoken
 import json
 import re
+from openai import OpenAI
 from .utils import run_chain, get_chat, num_tokens_from_string
 from gym.spaces import Discrete
 
@@ -41,7 +44,7 @@ class NaiveAct(gpt):
             self.model = "gpt-3.5-turbo"
         else:
             self.model = args.gpt_version
-        if args.api_type == "gemma" or args.api_type == 'vllm':
+        if args.api_type == "gemma" or args.api_type == 'vllm' or args.api_type == 'qwen' or args.api_type == 'aistudio':
             self.encoding = tiktoken.encoding_for_model('gpt-3.5-turbo')
         else:
             self.encoding = tiktoken.encoding_for_model(self.model)
@@ -65,7 +68,6 @@ class NaiveAct(gpt):
             )
         elif self.args.api_type == "openai":
             self.chat = ChatOpenAI(temperature=self.temperature, base_url=openai.api_base, openai_api_key=openai.api_key, model=self.args.gpt_version)
-            from openai import OpenAI
             self.client =  OpenAI(
                 api_key=openai.api_key,
                 base_url=openai.api_base,
@@ -77,15 +79,21 @@ class NaiveAct(gpt):
                 stop_token = "<|im_end|>"
             self.chat = ChatOpenAI(
                 openai_api_key='EMPTY',
-                base_url='http://localhost:8000/v1',
+                base_url=f'http://localhost:{self.args.port}/v1',
                 model_name=self.model,
                 model_kwargs={"stop": [stop_token]}
             )
-            from openai import OpenAI
             self.client = OpenAI(
                 api_key='EMPTY',
-                base_url='http://localhost:8000/v1',
+                base_url=f'http://localhost:{self.args.port}/v1',
             )
+        elif self.args.api_type == 'qwen':
+            self.client = OpenAI(api_key = openai.api_key, base_url = openai.api_base)
+        elif self.args.api_type == "aistudio":
+            import qianfan
+            qianfan.get_config().AK = openai.qianfan_ak
+            qianfan.get_config().SK = openai.qianfan_sk
+            self.client = qianfan.ChatCompletion(model=self.args.gpt_version)
         self.distiller = distiller
         self.fewshot_example_initialization(args.prompt_level, args.prompt_path, distiller = self.distiller)
         if isinstance(self.action_space, Discrete):
@@ -116,7 +124,8 @@ class NaiveAct(gpt):
         self._update_mem(traj_lst)
 
     def _update_mem(self, traj_lst):
-        my_reflection = self.distiller.generate(traj_lst, self.memory, self.game_description, self.goal_description, self.action_description)
+        my_reflection = self.distiller.generate(self.client, traj_lst, self.memory, self.game_description, self.goal_description, self.action_description)
+
         self.memory.append(my_reflection)
         self.env_history.reset()
 
@@ -128,6 +137,16 @@ class NaiveAct(gpt):
         self.is_first = True
         self.env_history.reset()
 
+    def reg_parse(self, s):
+        if isinstance(self.action_space, Discrete): 
+            pattern = r'"action": (\d+)'
+        else:
+            pattern = r'"action": [-+]?\d*\.\d+'
+        match = re.search(pattern, s)
+        if match:
+            return int(match.group(1))
+        else:
+            return None
 
     def _parser_initialization(self):
         if isinstance(self.action_space, Discrete): 
@@ -159,11 +178,16 @@ class NaiveAct(gpt):
                 stop_token = "<|im_end|>"
             autofixing_chat = ChatOpenAI(
                 openai_api_key='EMPTY',
-                base_url='http://localhost:8000/v1',
+                base_url=f'http://localhost:{self.args.port}/v1',
                 model_name=self.model,
                 # stop=["<|eot_id|>"],
                 model_kwargs={"stop": [stop_token]},
             )
+        elif self.args.api_type == "qwen":
+#            breakpoint()
+            autofixing_chat = ChatTongyi(dashscope_api_key=openai.api_key, temperature=self.temperature)
+        elif self.args.api_type == "aistudio":
+            autofixing_chat = QianfanChatEndpoint(temperature=self.temperature, model=self.args.gpt_version, qianfan_ak=openai.qianfan_ak, qianfan_sk=openai.qianfan_sk)
         parser = PydanticOutputParser(pydantic_object=PARSERS[num_action])
         autofixing_parser = OutputFixingParser.from_llm(
             llm=autofixing_chat, parser=parser)
@@ -205,7 +229,7 @@ class NaiveAct(gpt):
     def response(self, state_description, action_description, env_info, game_description=None, goal_description=None, fewshot_examples=None):
         instruction = "Please suggest an action based on the current game state and the information you get. You must select the appropriate action from the given action descriptions and cannot refrain from taking action or performing any prohibited actions. Your Suggested Action is: "
         messages = []
-        messages.append({"role": "system", "content": f"You are a helpful assistant. You are in a game. {game_description}\n {goal_description}"})
+        messages.append({"role": "system", "content": f"You are an expert-level game player. Your whole response should be in JSON format. You are in a game. {game_description}\n {goal_description}"})
         for my_msg in fewshot_examples:
             messages.append(my_msg)
         messages.append({"role": "user", "content": f"{state_description}.{action_description}\n{instruction}"})
@@ -258,9 +282,11 @@ class NaiveAct(gpt):
         action_str = response
         print(f'my anwser is {action_str}')
         action = None
-        for _ in range(10):
+        for _ in range(5):
             try:
-                action = self.parser.parse(response).action
+                action = self.reg_parse(response)
+                if action is None:
+                    action = self.parser.parse(response).action
                 break
             except:
                 continue

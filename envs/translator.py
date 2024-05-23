@@ -123,7 +123,7 @@ class CurrSummarizer():
         
     def translate(self, infos):
         summary = ""
-        summary += prefix_current()
+        # summary += prefix_current()
         summary += self.base_summarizer.translate([infos[-1]], is_current=True) 
         return summary 
     

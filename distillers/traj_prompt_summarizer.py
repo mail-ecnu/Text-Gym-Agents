@@ -1,5 +1,5 @@
 import random 
-from deciders.utils import get_completion
+from deciders.utils import get_chat, num_tokens_from_string
 import json
 from loguru import logger
 
@@ -38,31 +38,42 @@ class TrajPromptSummarizer():
                     traj_lst.append(traj_text)
                     traj_text = ""
             traj_text += f"Your performance is: {transition['cum_reward']}\n"
-            reflection = self.generate(traj_text, mem, max_len_mem=5)
-            mem.append(reflection)        
+            traj_lst.append(traj_text)
+            reflection = self.generate(client, traj_lst, mem,  game_description, goal_description, action_description, max_len_mem=5)
+            mem.append(reflection)
         return mem
 
     def _generate_summary_query(self, traj_lst, memory, game_description, goal_description, action_description):
         """Allows the Agent to reflect upon a past experience."""
         messages = []
-        messages.append({"role": "system",  "content": """You will be given the history of a past experience in which you were placed in an environment and given a task to complete. Summarize your trajectory and reasoning the relation between your policy and the obtained result."""})
-        messages.append({"role": "system", "name": "example_assitant", "content": self.FEW_SHOT_EXAMPLES})
+        messages.append({"role": "system",  "content": """You are an analytic and game coach. You need to analyse the game and summarize the current strategy step by step."""})
+        # messages.append({"role": "system", "name": "example_assitant", "content": self.FEW_SHOT_EXAMPLES})
 
         messages.append({"role": "system", "content": f"You are in a game. {game_description} \n {goal_description} \n {action_description}" })
         if len(memory) > 0:
             for i, m in enumerate(memory):
-                query += f'Trial #{i}: {m}\n'
+                query = f'Recent Plans. Trial #{i}: {m}\n'
+                messages.append({"role": "system", "name": "previous_assistant", "content": query})
+        i_traj = 0 
+        for traj in traj_lst:
+            if i_traj == 0:
+                query = f'The current trajectory is: {traj}\n'
+            else:
+                query = traj
+            messages.append({"role": "user", "content": query})
+            i_traj += 1
+        # truncat messages to make sure the number of tokens of messages are less than self.args.query_token
+        instruction_msg = {"role": "user", "content": "Please answer the following questions directly, without additional explanation: 1. Summarize the strategy used in this trajectory and its performance. 2. Summary game-relevant knowledge accordingly that can help others play better. The whole response should be in JSON format with two keys 'Strategy' and 'Knowledge'."}
+        messages.append(instruction_msg)
+        return messages
 
-        query += '\n\nSummary:'
-        return query
-
-    def generate(self, traj, memory, max_len_mem=5):
+    def generate(self, client, traj_lst, memory, game_description, goal_description, action_description, max_len_mem=5):
         if len(memory)> max_len_mem:
             reflection_messages = self._generate_summary_query(traj_lst, memory[-max_len_mem:], game_description, goal_description, action_description)
         else:
-            reflection_query = self._generate_summary_query(traj, memory)
-        reflection = get_completion(reflection_query, api_type=self.args.api_type, engine=self.args.gpt_version)
-        logger.info(f'[Reflexion Memory]The reflexion prompt is: {reflection_query}.')
-        logger.info(f'[Reflexion Memory]The reflexion response is: {reflection}.')
+            reflection_messages = self._generate_summary_query(traj_lst, memory, game_description, goal_description, action_description)
+        reflection, relfexion_usage = get_chat(client, reflection_messages, api_type=self.args.api_type, seed=self.seed, model=self.args.gpt_version, )
+        logger.info(f'[Traj Summary Memory]The summary prompt is: {reflection_messages}.')
+        logger.info(f'[Traj Summary Memory]The summary response is: {reflection}.')
+        logger.info(f'[Traj Summary Memory]The summary usage is: {relfexion_usage}.')
         return reflection
-

@@ -18,7 +18,7 @@ def generate_action_class(max_action):
     return type(f"{max_action}Action", (DisActionModel,), {'action_is_valid': DisActionModel.create_validator(max_action)})
     
 # Dictionary of parsers with dynamic class generation
-DISPARSERS = {num: generate_action_class(num) for num in [2, 3, 4, 6, 9, 18]}
+DISPARSERS = {num: generate_action_class(num) for num in range(20)}
 
 class ContinuousActionBase(BaseModel):
     action: List[float] = Field(description="the chosen continuous actions to perform")

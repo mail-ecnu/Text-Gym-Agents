@@ -94,6 +94,12 @@ if __name__ == "__main__":
     parser.add_argument('--epoch', type=int, default=400, help='The number of epochs to train')
     parser.add_argument('--resume_path', type=str, default=None, help='The path to the policy to be resumed')
     parser.add_argument('--taxi_specific_env', action='store_true', default=False, help='Whether to use taxi specific env')
+    parser.add_argument(
+        "--frameskip",
+        type=int,
+        default=4,
+        help="The frameskip for atari environments",
+    )
     args = parser.parse_args()
     args_dict = vars(args)
 
@@ -126,7 +132,7 @@ if __name__ == "__main__":
             config=wandb_log_config,
         )
         random_name = logger.wandb_run.name
-        log_path = os.path.join('/home/ubuntu/LLM-Decider-Bench/RL_based/results', args.env_name, random_name)
+        log_path = os.path.join('./RL_based/results', args.env_name, random_name)
         writer = SummaryWriter(log_dir=log_path)
         writer.add_text("args", str(args))
         logger.load(writer)
@@ -141,8 +147,10 @@ if __name__ == "__main__":
     translator = Translator(
         init_summarizer, curr_summarizer, future_summarizer, env=sampling_env
     )
-    if args.taxi_specific_env:
-        environment = gym.make(args.env_name, render_mode=args.render)
+    if 'Represented' in args.env_name:
+        environment = env_class(
+            gym.make(args.env_name, render_mode=args.render, frameskip=args.frameskip), translator
+        )
     else:
         environment = env_class(
             gym.make(args.env_name, render_mode=args.render), translator
@@ -244,8 +252,8 @@ if __name__ == "__main__":
             test_collector_1.reset_buffer()
             policy.eval()
             result = test_collector_1.collect(n_episode=1)
-            print('sample results', f"/home/ubuntu/LLM-Decider-Bench/RL_based/checkpoints/{args.env_name}/output.txt")
+            print('sample results', f"./RL_based/checkpoints/{args.env_name}/output.txt")
             sample_result = replaybuffer.sample(0)
-            f = open(f"/home/ubuntu/LLM-Decider-Bench/RL_based/checkpoints/{args.env_name}/output.txt", "w")
+            f = open(f"./RL_based/checkpoints/{args.env_name}/output.txt", "w")
             print(sample_result, file=f)
             f.close()
