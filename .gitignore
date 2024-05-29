@@ -190,3 +190,6 @@ test_
 
 # gradio
 flagged
+
+*.gif
+meta/
