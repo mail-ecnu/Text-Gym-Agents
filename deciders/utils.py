@@ -8,10 +8,65 @@ from tenacity import (
     wait_random_exponential, # type: ignore
 )
 
+def preprocess_messages(messages):
+    ori_msg_cnt = 1
+    msg_cnt = 1
+    new_messages = []   
+    while ori_msg_cnt < len(messages)+1:
+        message = messages[ori_msg_cnt-1]
+        if msg_cnt%2==1:
+            if 'user' in message["role"] or 'user' in message["name"]:
+                message["role"] = "user" 
+                new_messages.append(message)
+                ori_msg_cnt += 1
+            elif  'name' in message.keys() and 'user' in message["name"]: 
+                message["role"] = "user" 
+                new_messages.append(message)
+                ori_msg_cnt += 1
+            else:
+                new_messages.append({"role": "user", "content": " "})
+        elif msg_cnt%2==0 :
+            if "assistant" in message["role"] or 'assistant' in message["name"]:
+                message["role"] = "assistant"
+                new_messages.append(message)
+                ori_msg_cnt += 1
+            elif 'name' in message.keys() and 'assistant' in message["name"]:
+                message["role"] = "assistant"
+                new_messages.append(message)
+                ori_msg_cnt += 1
+            else:
+                new_messages.append({"role": "assistant", "content": " "})
+        msg_cnt += 1
+    if msg_cnt%2==1:
+        new_messages.append({"role": "user", "content": "Anwser the question."}) 
+    return  new_messages
+
+def preprocess_nvidia_messages(messages):
+    ori_msg_cnt = 1
+    msg_cnt = 1
+    new_messages = []   
+    while ori_msg_cnt < len(messages)+1:
+        message = messages[ori_msg_cnt-1]
+        if 'user' in message["role"]:
+            message["role"] = "user" 
+        elif  'name' in message.keys() and 'user' in message["name"]: 
+            message["role"] = "user" 
+        elif "assistant" in message["role"]:
+            message["role"] = "assistant"
+        elif  'name' in message.keys() and 'assistant' in message["name"]:
+            message["role"] = "assistant"
+        new_messages.append(message)
+        ori_msg_cnt += 1
+    return  new_messages
+
 class NewResponse:
-    def __init__(self, response):
-        self.choices = [Choice(response['body']['result'])]
-        self.usage = response['body']['usage']
+    def __init__(self, response, is_dashscope=False):
+        if is_dashscope:
+            self.choices = [Choice(response['output']['choices'][0]['message'].content)]
+            self.usage = response['usage']
+        else: 
+            self.choices = [Choice(response['body']['result'])]
+            self.usage = response['body']['usage']
 
 class Choice:
     def __init__(self, content):
@@ -104,29 +159,20 @@ def get_chat(client, messages: list, api_type: str = "azure", model: str = "gpt-
             temperature=temperature,
             seed=seed
         )
+    elif api_type in ["nvidia"]:
+        new_messages = preprocess_nvidia_messages(messages)
+        # print(new_messages)
+        # breakpoint()
+        response = client.chat.completions.create(
+            model=model,
+            messages=new_messages,
+            max_tokens=max_tokens,
+            stop=stop_strs,
+            temperature=max(temperature, 1e-5),
+            seed=seed
+        )
     elif api_type in ["aistudio"]:
-        ori_msg_cnt = 1
-        msg_cnt = 1
-        new_messages = []   
-        while ori_msg_cnt < len(messages)+1:
-            message = messages[ori_msg_cnt-1]
-            if msg_cnt%2==1:
-                if 'user' in message["role"] or 'system' in message["role"]:
-                    message["role"] = "user" 
-                    new_messages.append(message)
-                    ori_msg_cnt += 1
-                else:
-                    new_messages.append({"role": "user", "content": " "})
-            elif msg_cnt%2==0 :
-                if "assistant" in message["role"]:
-                    message["role"] = "assistant"
-                    new_messages.append(message)
-                    ori_msg_cnt += 1
-                else:
-                    new_messages.append({"role": "assistant", "content": " "})
-            msg_cnt += 1
-        if msg_cnt%2==1:
-            new_messages.append({"role": "user", "content": "Anwser the question."}) 
+        new_messages = preprocess_messages(messages)
         response_dict = client.do(
             messages=new_messages,
             max_tokens=max_tokens,
@@ -137,19 +183,35 @@ def get_chat(client, messages: list, api_type: str = "azure", model: str = "gpt-
         )
         response = NewResponse(response_dict)
 
-    elif api_type in ["vllm", 'qwen'] :
+    elif api_type in ["vllm", 'qwen', 'groq'] :
         if model == 'Meta-Llama-3-8B-Instruct':
             stop_token = "<|eot_id|>"
         else:
             stop_token = "<|im_end|>"
-        response = client.chat.completions.create(
-            model=model,
-            messages=messages,
-            stop=[stop_token],
-            max_tokens=max_tokens,
-            temperature=temperature,
-            # extra_body={"guided_json": True,}
-        )
+        if model == "llama3-70b-instruct" and api_type == "qwen":
+            new_messages = preprocess_messages(messages)
+            import time
+            time.sleep(1)
+            response_dict = client.Generation.call(
+                model=model,
+                messages=new_messages,
+                stop=[stop_token],
+                max_tokens=max_tokens,
+                temperature=max(temperature, 1e-5),
+                # extra_body={"guided_json": True,}
+                result_format='message',  
+            )
+            response_dict['usage']['total_tokens'] = response_dict['usage']['input_tokens'] + response_dict['usage']['output_tokens']
+            response = NewResponse(response_dict, is_dashscope=True)   
+        else: 
+            response = client.chat.completions.create(
+                model=model,
+                messages=messages,
+                stop=[stop_token],
+                max_tokens=max_tokens,
+                temperature=temperature,
+                # extra_body={"guided_json": True,}
+            )
     usgae = response.usage
     total_token, cost = openai_api_calculate_cost(usgae, model)
     return response.choices[0].message.content, {"token": total_token, "cost": cost}

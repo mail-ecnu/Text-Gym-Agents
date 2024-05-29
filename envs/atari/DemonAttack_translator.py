@@ -1,20 +1,19 @@
-# [Translator classes and functions for Atari Skiing environment]
+# [Translator classes and functions for Atari Demon Attack environment]
 
 class ObsTranslator:
     def __init__(self):
         pass
 
     def translate(self, state):
-        player_x, clock_m, clock_s, clock_ms, score, \
-        object_y_0, object_y_1, object_y_2, object_y_3, object_y_4, object_y_5, object_y_6 = state
+        level, player_x, enemy_x1, enemy_x2, enemy_x3, missile_y, enemy_y1, enemy_y2, enemy_y3, num_lives = state
 
-        clock_time = f"{clock_m:02}:{clock_s:02}.{clock_ms:03}"
-        object_positions = [object_y_0, object_y_1, object_y_2, object_y_3, object_y_4, object_y_5, object_y_6]
+        enemy_positions = [(enemy_x1, enemy_y1), (enemy_x2, enemy_y2), (enemy_x3, enemy_y3)]
 
         return f"You are at position x={player_x}. " \
-               f"The current time is {clock_time}. " \
-               f"Your score is {score}. " \
-               f"Objects are at positions {object_positions}."
+               f"Missile is at position y={missile_y}. " \
+               f"Enemy positions are {enemy_positions}. " \
+               f"You are on level {level}. " \
+               f"You have {num_lives} lives remaining."
 
 
 class GameDescriber:
@@ -28,23 +27,24 @@ class GameDescriber:
         }
 
     def describe_goal(self):
-        return "The goal is to ski down the slope and avoid obstacles to achieve the best time and score."
+        return "The goal is to destroy all the enemies while avoiding their attacks to progress through levels."
 
     def translate_terminate_state(self, state, episode_len, max_episode_len):
-        return f"Game over. Final score: {state[4]}."
+        return f"Game over. You reached level {state[0]}."
 
     def translate_potential_next_state(self, state, action):
-        return f"After taking the action, you might move to a new position with the player at x={state[0]} and objects at positions {state[5:]}."
+        return f"After taking the action, you might move to position x={state[1]} and interact with enemies at positions {[(state[2], state[6]), (state[3], state[7]), (state[4], state[8])]}."
 
     def describe_game(self):
-        return "In the Skiing game, you control a skier and aim to navigate down the slope while avoiding obstacles. " \
+        return "In the Demon Attack game, you control a player character and aim to destroy enemy demons while avoiding their attacks. " \
                f"There are {self.args.frameskip} frames per step and the action sticks for the skipping frames." if self.args.frameskip > 0 else "" \
-               "Scoring Points: Points are scored based on time and avoiding obstacles. " \
-               "You can control the direction of your skier to maneuver through the course. Avoid hitting obstacles to maintain your speed and score!"
+               "Scoring Points: Points are scored by destroying enemy demons. " \
+               "You can control the movement and firing of your character to dodge attacks and hit enemies. Destroy all enemies to progress through levels!"
 
     def describe_action(self):
-        return "Type 1 for NOOP (no operation), 2 to move RIGHT, 3 to move LEFT. " \
-               "Ensure you only provide the action number from the valid action list, i.e., [1, 2, 3]."
+        return "Type 1 for NOOP (no operation), 2 to FIRE, 3 to move RIGHT, 4 to move LEFT, " \
+               "5 to RIGHT FIRE, 6 to LEFT FIRE. " \
+               "Ensure you only provide the action number from the valid action list, i.e., [1, 2, 3, 4, 5, 6]."
 
 
 class TransitionTranslator(ObsTranslator):
@@ -67,8 +67,14 @@ class TransitionTranslator(ObsTranslator):
         if action == 1:
             return "Take Action: 'Do nothing (NOOP)'"
         elif action == 2:
-            return "Take Action: 'Move RIGHT'"
+            return "Take Action: 'FIRE'"
         elif action == 3:
+            return "Take Action: 'Move RIGHT'"
+        elif action == 4:
             return "Take Action: 'Move LEFT'"
+        elif action == 5:
+            return "Take Action: 'RIGHT FIRE'"
+        elif action == 6:
+            return "Take Action: 'LEFT FIRE'"
         else:
             return "Take Action: 'Invalid action'"

@@ -39,11 +39,11 @@ class GameDescriber:
                "and you can set up a real scoring barrage. But don't get caught on the ropes yourself! Knock out your opponent!" 
 
     def describe_action(self):
-        return "Type '1' for NOOP (no operation), '2' to hit your opponent, " \
-               "'3' to move up, '4' to move right, '5' to move left, '6' to move down, '7' to move up and right, " \
-               "'8' to move up and left, '9' to move down and right, '10' to move down and left, '11' to hit your opponent and move up, " \
-               "'12' to hit your opponent and move right, '13' to hit your opponent and move left, '14' to hit your opponent and move down, " \
-               "'15' to hit your opponent and move up and right, '16' to hit your opponent and move up and left, '17' to hit your opponent and move down and right, " \
+        return "Type 1 for NOOP (no operation), 2 to hit your opponent, " \
+               "3 to move up, 4 to move right, 5 to move left, 6 to move down, 7 to move up and right, " \
+               "8 to move up and left, 9 to move down and right, 10 to move down and left, 11 to hit your opponent and move up, " \
+               "12 to hit your opponent and move right, 13 to hit your opponent and move left, 14 to hit your opponent and move down, " \
+               "15 to hit your opponent and move up and right, 16 to hit your opponent and move up and left, 17 to hit your opponent and move down and right, " \
                "or '18' to hit your opponent and move down and left. Ensure you only provide the action number " \
                "from the valid action list, i.e., [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]."
 
@@ -73,7 +73,7 @@ class TransitionTranslator(ObsTranslator):
             elif info['action'] == 7:
                 action_desc = f"Take Action: 'Move up-right'"
             elif info['action'] == 8:
-                action_desc = f"Take Action: 'Move up-lefr'"
+                action_desc = f"Take Action: 'Move up-left'"
             elif info['action'] == 9:
                 action_desc = f"Take Action: 'Move down-right'"
             elif info['action'] == 10:

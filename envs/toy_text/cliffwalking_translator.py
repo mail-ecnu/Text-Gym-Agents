@@ -7,7 +7,7 @@ class ObsTranslator:
         nrows = 12
         current_row = state // nrows
         current_col = state % nrows
-        return f"The player is at location ({current_row}, {current_col}) in the grid world."
+        return f"The You are at location ({current_row}, {current_col}) in the grid world."
 
 class GameDescriber:
     def __init__(self, args):

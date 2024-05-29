@@ -4,7 +4,7 @@ class ObsTranslator:
 
     def translate(self, state, nrow=4, ncol=4):
         row, col = state // nrow, state % ncol
-        res = f"The current position of the player is at row {row}, column {col}."
+        res = f"The current position of the You are at row {row}, column {col}."
         return res
 
 class GameDescriber:

@@ -1,22 +1,19 @@
-# [Translator classes and functions for Atari BattleZone environment]
+# [Translator classes and functions for Atari Private Eye environment]
 
 class ObsTranslator:
     def __init__(self):
         pass
 
     def translate(self, state):
-        blue_tank_facing_direction, blue_tank_size_y, blue_tank_x, blue_tank2_facing_direction, blue_tank2_size_y, blue_tank2_x, \
-        num_lives, missile_y, compass_needles_angle, angle_of_tank, left_tread_position, right_tread_position, crosshairs_color, score = state
+        player_x, player_y, room_number, player_direction, dove_x, dove_y, clock_0, clock_1, score_0, score_1 = state
 
-        return f"The blue tank is facing direction {blue_tank_facing_direction} and is at position x={blue_tank_x} with size y={blue_tank_size_y}. " \
-               f"The second blue tank is facing direction {blue_tank2_facing_direction} and is at position x={blue_tank2_x} with size y={blue_tank2_size_y}. " \
-               f"You have {num_lives} lives remaining. " \
-               f"The missile is at position y={missile_y}. " \
-               f"The compass needle is at an angle of {compass_needles_angle}. " \
-               f"The tank's angle is {angle_of_tank}. " \
-               f"The left tread position is {left_tread_position} and the right tread position is {right_tread_position}. " \
-               f"The crosshairs color is {crosshairs_color}. " \
-               f"Your score is {score}."
+        clock_time = clock_0 * 100 + clock_1
+        player_score = score_0 * 100 + score_1
+
+        return f"You are at position ({player_x}, {player_y}) in room {room_number} facing direction {player_direction}. " \
+               f"Dove is at position ({dove_x}, {dove_y}). " \
+               f"Time remaining: {clock_time} units. " \
+               f"Player's score: {player_score}."
 
 
 class GameDescriber:
@@ -30,19 +27,20 @@ class GameDescriber:
         }
 
     def describe_goal(self):
-        return "The goal is to destroy as many enemy tanks as possible and survive as long as you can."
+        return "The goal is to navigate through the rooms, solve puzzles, and collect items to achieve the highest score."
 
     def translate_terminate_state(self, state, episode_len, max_episode_len):
-        return f"Game over. Final score: {state[-1]}."
+        player_score = state[8] * 100 + state[9]
+        return f"Game over. Final score: {player_score}."
 
     def translate_potential_next_state(self, state, action):
-        return f"After taking the action, you might move to a new position with the blue tanks at positions {state[2]}, {state[5]} and the missile at position {state[7]}."
+        return f"After taking the action, you might move to position ({state[0]}, {state[1]}) in room {state[2]} with the dove at position ({state[4]}, {state[5]})."
 
     def describe_game(self):
-        return "In the BattleZone game, you control a tank and aim to destroy enemy tanks while avoiding being hit. " \
+        return "In the Private Eye game, you control a detective character and aim to navigate through rooms, solve puzzles, and collect items to achieve the highest score. " \
                f"There are {self.args.frameskip} frames per step and the action sticks for the skipping frames." if self.args.frameskip > 0 else "" \
-               "Scoring Points: Points are scored by destroying enemy tanks. " \
-               "You can control the movement and firing of your tank. Survive as long as possible to achieve a high score!"
+               "Scoring Points: Points are scored by solving puzzles and collecting items. " \
+               "You can control the movement and actions of your character to navigate through the rooms, solve puzzles, and collect items to achieve a high score."
 
     def describe_action(self):
         return "Type 1 for NOOP (no operation), 2 to FIRE, 3 to move UP, 4 to move RIGHT, 5 to move LEFT, 6 to move DOWN, " \

@@ -53,7 +53,7 @@ class GameDescriber:
                "You can control the movement of the paddle to keep the ball in play and direct it towards the blocks. Destroy all blocks to win!"
 
     def describe_action(self):
-        return "Type '1' for NOOP (no operation), '2' to FIRE, '3' to move RIGHT, '4' to move LEFT. " \
+        return "Type 1 for NOOP (no operation), 2 to FIRE, 3 to move RIGHT, 4 to move LEFT. " \
                "Ensure you only provide the action number from the valid action list, i.e., [1, 2, 3, 4]."
 
 

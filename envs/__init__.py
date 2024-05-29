@@ -16,7 +16,7 @@ from .atari import register_environments
 from .atari import Boxing_policies, Boxing_translator, Pong_policies, Pong_translator
 from .atari import mspacman_policies, mspacman_translator
 from .atari import montezumarevenge_policies, montezumarevenge_translator
-from .atari import Asteroids_translator, BattleZone_translator, Berzerk_translator, Bowling_translator, Breakout_translator, Skiing_translator
+from .atari import Asteroids_translator, BattleZone_translator, Berzerk_translator, Bowling_translator, Breakout_translator, DemonAttack_translator, Freeway_translator, Frostbite_translator, Hero_translator, Pitfall_translator, PrivateEye_translator, Qbert_translator, Riverraid_translator, Seaquest_translator, Skiing_translator, SpaceInvaders_translator, Tennis_translator, Venture_translator, VideoPinball_translator
 register_environments()
 
 
@@ -62,68 +62,97 @@ REGISTRY["mountaincarContinuous_policies"] = [mountaincarContinuous_policies.pse
 
 
 # Atari 
+
+REGISTRY["RepresentedBoxing_init_translator"] = Boxing_translator.GameDescriber
+REGISTRY["RepresentedBoxing_basic_translator"] = Boxing_translator.TransitionTranslator
+REGISTRY["RepresentedBoxing_basic_policies"] = []
+
+REGISTRY["RepresentedPong_init_translator"] = Pong_translator.GameDescriber
+REGISTRY["RepresentedPong_basic_translator"] = Pong_translator.TransitionTranslator
+REGISTRY["RepresentedPong_basic_policies"] = []
+
+
 REGISTRY["RepresentedAsteroids_init_translator"] = Asteroids_translator.GameDescriber
 REGISTRY["RepresentedAsteroids_basic_translator"] = Asteroids_translator.TransitionTranslator
 REGISTRY["RepresentedAsteroids_basic_policies"] = []
+
 
 REGISTRY["RepresentedBattleZone_init_translator"] = BattleZone_translator.GameDescriber
 REGISTRY["RepresentedBattleZone_basic_translator"] = BattleZone_translator.TransitionTranslator
 REGISTRY["RepresentedBattleZone_basic_policies"] = []
 
+
 REGISTRY["RepresentedBerzerk_init_translator"] = Berzerk_translator.GameDescriber
 REGISTRY["RepresentedBerzerk_basic_translator"] = Berzerk_translator.TransitionTranslator
 REGISTRY["RepresentedBerzerk_basic_policies"] = []
+
 
 REGISTRY["RepresentedBowling_init_translator"] = Bowling_translator.GameDescriber
 REGISTRY["RepresentedBowling_basic_translator"] = Bowling_translator.TransitionTranslator
 REGISTRY["RepresentedBowling_basic_policies"] = []
 
+
 REGISTRY["RepresentedBreakout_init_translator"] = Breakout_translator.GameDescriber
 REGISTRY["RepresentedBreakout_basic_translator"] = Breakout_translator.TransitionTranslator
 REGISTRY["RepresentedBreakout_basic_policies"] = []
+
+
+REGISTRY["RepresentedDemonAttack_init_translator"] = DemonAttack_translator.GameDescriber
+REGISTRY["RepresentedDemonAttack_basic_translator"] = DemonAttack_translator.TransitionTranslator
+REGISTRY["RepresentedDemonAttack_basic_policies"] = []
+
+REGISTRY["RepresentedFreeway_init_translator"] = Freeway_translator.GameDescriber
+REGISTRY["RepresentedFreeway_basic_translator"] = Freeway_translator.TransitionTranslator
+REGISTRY["RepresentedFreeway_basic_policies"] = []
+
+REGISTRY["RepresentedFrostbite_init_translator"] = Frostbite_translator.GameDescriber
+REGISTRY["RepresentedFrostbite_basic_translator"] = Frostbite_translator.TransitionTranslator
+REGISTRY["RepresentedFrostbite_basic_policies"] = []
+
+REGISTRY["RepresentedHero_init_translator"] = Hero_translator.GameDescriber
+REGISTRY["RepresentedHero_basic_translator"] = Hero_translator.TransitionTranslator
+REGISTRY["RepresentedHero_basic_policies"] = []
+
+REGISTRY["RepresentedPitfall_init_translator"] = Pitfall_translator.GameDescriber
+REGISTRY["RepresentedPitfall_basic_translator"] = Pitfall_translator.TransitionTranslator
+REGISTRY["RepresentedPitfall_basic_policies"] = []
+
+REGISTRY["RepresentedPrivateEye_init_translator"] = PrivateEye_translator.GameDescriber
+REGISTRY["RepresentedPrivateEye_basic_translator"] = PrivateEye_translator.TransitionTranslator
+REGISTRY["RepresentedPrivateEye_basic_policies"] = []
+
+REGISTRY["RepresentedQbert_init_translator"] = Qbert_translator.GameDescriber
+REGISTRY["RepresentedQbert_basic_translator"] = Qbert_translator.TransitionTranslator
+REGISTRY["RepresentedQbert_basic_policies"] = []
+
+REGISTRY["RepresentedRiverraid_init_translator"] = Riverraid_translator.GameDescriber
+REGISTRY["RepresentedRiverraid_basic_translator"] = Riverraid_translator.TransitionTranslator
+REGISTRY["RepresentedRiverraid_basic_policies"] = []
+
+REGISTRY["RepresentedSeaquest_init_translator"] = Seaquest_translator.GameDescriber
+REGISTRY["RepresentedSeaquest_basic_translator"] = Seaquest_translator.TransitionTranslator
+REGISTRY["RepresentedSeaquest_basic_policies"] = []
 
 REGISTRY["RepresentedSkiing_init_translator"] = Skiing_translator.GameDescriber
 REGISTRY["RepresentedSkiing_basic_translator"] = Skiing_translator.TransitionTranslator
 REGISTRY["RepresentedSkiing_basic_policies"] = []
 
 
-REGISTRY["RepresentedBoxing_init_translator"] = Boxing_translator.GameDescriber
-REGISTRY["RepresentedBoxing_basic_translator"] = Boxing_translator.TransitionTranslator
-REGISTRY["RepresentedBoxing_basic_policies"] = [
-    Boxing_policies.real_random_policy,
-    Boxing_policies.pseudo_random_policy,
-    Boxing_policies.dedicated_1_policy,
-    Boxing_policies.dedicated_2_policy,
-    Boxing_policies.dedicated_3_policy,
-    Boxing_policies.dedicated_4_policy,
-    Boxing_policies.dedicated_5_policy,
-    Boxing_policies.dedicated_6_policy,
-    Boxing_policies.dedicated_7_policy,
-    Boxing_policies.dedicated_8_policy,
-    Boxing_policies.dedicated_9_policy,
-    Boxing_policies.dedicated_10_policy,
-    Boxing_policies.dedicated_11_policy,
-    Boxing_policies.dedicated_12_policy,
-    Boxing_policies.dedicated_13_policy,
-    Boxing_policies.dedicated_14_policy,
-    Boxing_policies.dedicated_15_policy,
-    Boxing_policies.dedicated_16_policy,
-    Boxing_policies.dedicated_17_policy,
-    Boxing_policies.dedicated_18_policy
-]
+REGISTRY["RepresentedSpaceInvaders_init_translator"] = SpaceInvaders_translator.GameDescriber
+REGISTRY["RepresentedSpaceInvaders_basic_translator"] = SpaceInvaders_translator.TransitionTranslator
+REGISTRY["RepresentedSpaceInvaders_basic_policies"] = []
 
-REGISTRY["RepresentedPong_init_translator"] = Pong_translator.GameDescriber
-REGISTRY["RepresentedPong_basic_translator"] = Pong_translator.TransitionTranslator
-REGISTRY["RepresentedPong_basic_policies"] = [
-    Pong_policies.real_random_policy,
-    Pong_policies.pseudo_random_policy,
-    Pong_policies.dedicated_1_policy,
-    Pong_policies.dedicated_2_policy,
-    Pong_policies.dedicated_3_policy,
-    Pong_policies.dedicated_4_policy,
-    Pong_policies.dedicated_5_policy,
-    Pong_policies.dedicated_6_policy,
-]
+REGISTRY["RepresentedTennis_init_translator"] = Tennis_translator.GameDescriber
+REGISTRY["RepresentedTennis_basic_translator"] = Tennis_translator.TransitionTranslator
+REGISTRY["RepresentedTennis_basic_policies"] = []
+
+REGISTRY["RepresentedVenture_init_translator"] = Venture_translator.GameDescriber
+REGISTRY["RepresentedVenture_basic_translator"] = Venture_translator.TransitionTranslator
+REGISTRY["RepresentedVenture_basic_policies"] = []
+
+REGISTRY["RepresentedVideoPinball_init_translator"] = VideoPinball_translator.GameDescriber
+REGISTRY["RepresentedVideoPinball_basic_translator"] = VideoPinball_translator.TransitionTranslator
+REGISTRY["RepresentedVideoPinball_basic_policies"] = []
 
 REGISTRY["RepresentedMsPacman_init_translator"] = mspacman_translator.GameDescriber
 REGISTRY["RepresentedMsPacman_basic_translator"] = mspacman_translator.TransitionTranslator

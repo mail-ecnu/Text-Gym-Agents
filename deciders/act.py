@@ -44,7 +44,7 @@ class NaiveAct(gpt):
             self.model = "gpt-3.5-turbo"
         else:
             self.model = args.gpt_version
-        if args.api_type == "gemma" or args.api_type == 'vllm' or args.api_type == 'qwen' or args.api_type == 'aistudio':
+        if args.api_type in ["gemma", 'vllm', 'qwen','aistudio', 'groq', 'nvidia']:
             self.encoding = tiktoken.encoding_for_model('gpt-3.5-turbo')
         else:
             self.encoding = tiktoken.encoding_for_model(self.model)
@@ -72,6 +72,11 @@ class NaiveAct(gpt):
                 api_key=openai.api_key,
                 base_url=openai.api_base,
             )
+        elif self.args.api_type == "nvidia":
+            self.client = OpenAI(
+                api_key=openai.api_key,
+                base_url=openai.api_base,
+            )
         elif self.args.api_type == "vllm":
             if self.model == 'Meta-Llama-3-8B-Instruct':
                 stop_token = "<|eot_id|>"
@@ -88,7 +93,16 @@ class NaiveAct(gpt):
                 base_url=f'http://localhost:{self.args.port}/v1',
             )
         elif self.args.api_type == 'qwen':
-            self.client = OpenAI(api_key = openai.api_key, base_url = openai.api_base)
+            # self.client = OpenAI(api_key = openai.api_key, base_url = openai.api_base)
+            import dashscope 
+            dashscope.api_key = openai.api_key
+            self.client = dashscope
+        elif self.args.api_type == "groq":
+            from groq import Groq
+
+            self.client = Groq(
+                api_key=openai.api_key,
+            )
         elif self.args.api_type == "aistudio":
             import qianfan
             qianfan.get_config().AK = openai.qianfan_ak
@@ -114,7 +128,13 @@ class NaiveAct(gpt):
         else:
             self.use_short_mem = False
             self.mem_num = 0
-        
+    
+    def change_key(self,):
+        if self.args.api_type == "qwen":
+            for key in openai.key_lst:
+                if self.client.api_key != key: 
+                    self.client.api_key = key
+
     def update_mem(self,):
         traj = self.game_description 
         traj += self.goal_description
@@ -170,7 +190,9 @@ class NaiveAct(gpt):
                 model_kwargs={"seed": self.seed}
             )
         elif self.args.api_type == "openai":
-            autofixing_chat = ChatOpenAI(temperature=self.temperature, openai_api_key=openai.api_key,model=self.args.gpt_version)
+            autofixing_chat = ChatOpenAI(temperature=self.temperature, openai_api_key=openai.api_key,model=self.args.gpt_version, openai_api_base=openai.api_base)
+        elif self.args.api_type == "nvidia":
+            autofixing_chat = ChatOpenAI(temperature=self.temperature, openai_api_key=openai.api_key, model=self.args.gpt_version, openai_api_base=openai.api_base)
         elif self.args.api_type == "vllm":
             if self.model == 'Meta-Llama-3-8B-Instruct':
                 stop_token = "<|eot_id|>"
@@ -186,8 +208,11 @@ class NaiveAct(gpt):
         elif self.args.api_type == "qwen":
 #            breakpoint()
             autofixing_chat = ChatTongyi(dashscope_api_key=openai.api_key, temperature=self.temperature)
+        elif self.args.api_type == "groq":
+            from langchain_groq import ChatGroq
+            autofixing_chat = ChatGroq(groq_api_key=openai.api_key, temperature=self.temperature, model=self.args.gpt_version)
         elif self.args.api_type == "aistudio":
-            autofixing_chat = QianfanChatEndpoint(temperature=self.temperature, model=self.args.gpt_version, qianfan_ak=openai.qianfan_ak, qianfan_sk=openai.qianfan_sk)
+            autofixing_chat = QianfanChatEndpoint(temperature=max(self.temperature, 1e-5), model=self.args.gpt_version, qianfan_ak=openai.qianfan_ak, qianfan_sk=openai.qianfan_sk)
         parser = PydanticOutputParser(pydantic_object=PARSERS[num_action])
         autofixing_parser = OutputFixingParser.from_llm(
             llm=autofixing_chat, parser=parser)

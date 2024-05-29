@@ -1,22 +1,23 @@
-# [Translator classes and functions for Atari BattleZone environment]
+# [Translator classes and functions for Atari Venture environment]
 
 class ObsTranslator:
     def __init__(self):
         pass
 
     def translate(self, state):
-        blue_tank_facing_direction, blue_tank_size_y, blue_tank_x, blue_tank2_facing_direction, blue_tank2_size_y, blue_tank2_x, \
-        num_lives, missile_y, compass_needles_angle, angle_of_tank, left_tread_position, right_tread_position, crosshairs_color, score = state
+        sprite0_y, sprite1_y, sprite2_y, sprite3_y, sprite4_y, sprite5_y, sprite0_x, sprite1_x, sprite2_x, sprite3_x, sprite4_x, sprite5_x, \
+        player_x, player_y, current_room, num_lives, score_1_2, score_3_4 = state
 
-        return f"The blue tank is facing direction {blue_tank_facing_direction} and is at position x={blue_tank_x} with size y={blue_tank_size_y}. " \
-               f"The second blue tank is facing direction {blue_tank2_facing_direction} and is at position x={blue_tank2_x} with size y={blue_tank2_size_y}. " \
-               f"You have {num_lives} lives remaining. " \
-               f"The missile is at position y={missile_y}. " \
-               f"The compass needle is at an angle of {compass_needles_angle}. " \
-               f"The tank's angle is {angle_of_tank}. " \
-               f"The left tread position is {left_tread_position} and the right tread position is {right_tread_position}. " \
-               f"The crosshairs color is {crosshairs_color}. " \
-               f"Your score is {score}."
+        player_score = score_1_2 * 100 + score_3_4
+        sprite_positions = [
+            (sprite0_x, sprite0_y), (sprite1_x, sprite1_y), (sprite2_x, sprite2_y),
+            (sprite3_x, sprite3_y), (sprite4_x, sprite4_y), (sprite5_x, sprite5_y)
+        ]
+
+        return f"You are at position ({player_x}, {player_y}) in room {current_room}. " \
+               f"Number of lives left: {num_lives}. " \
+               f"Player's score: {player_score}. " \
+               f"Sprite positions: {sprite_positions}."
 
 
 class GameDescriber:
@@ -30,25 +31,30 @@ class GameDescriber:
         }
 
     def describe_goal(self):
-        return "The goal is to destroy as many enemy tanks as possible and survive as long as you can."
+        return "The goal is to explore rooms, collect treasures, and avoid or defeat enemies to achieve the highest score."
 
     def translate_terminate_state(self, state, episode_len, max_episode_len):
-        return f"Game over. Final score: {state[-1]}."
+        player_score = state[16] * 100 + state[17]
+        return f"Game over. Final score: {player_score}."
 
     def translate_potential_next_state(self, state, action):
-        return f"After taking the action, you might move to a new position with the blue tanks at positions {state[2]}, {state[5]} and the missile at position {state[7]}."
+        sprite_positions = [
+            (state[6], state[0]), (state[7], state[1]), (state[8], state[2]),
+            (state[9], state[3]), (state[10], state[4]), (state[11], state[5])
+        ]
+        return f"After taking the action, you might move to position ({state[12]}, {state[13]}) in room {state[14]} with sprites at positions {sprite_positions}."
 
     def describe_game(self):
-        return "In the BattleZone game, you control a tank and aim to destroy enemy tanks while avoiding being hit. " \
+        return "In the Venture game, you control a player character and aim to explore rooms, collect treasures, and avoid or defeat enemies to achieve the highest score. " \
                f"There are {self.args.frameskip} frames per step and the action sticks for the skipping frames." if self.args.frameskip > 0 else "" \
-               "Scoring Points: Points are scored by destroying enemy tanks. " \
-               "You can control the movement and firing of your tank. Survive as long as possible to achieve a high score!"
+               "Scoring Points: Points are scored by collecting treasures and defeating enemies. " \
+               "You can control the movement and actions of your character to navigate rooms, collect treasures, and avoid or defeat enemies to achieve a high score."
 
     def describe_action(self):
-        return "Type 1 for NOOP (no operation), 2 to FIRE, 3 to move UP, 4 to move RIGHT, 5 to move LEFT, 6 to move DOWN, " \
+        return "Type 1 for NOOP (no operation), 2 to FIRE (trigger fire button), 3 to move UP, 4 to move RIGHT, 5 to move LEFT, 6 to move DOWN, " \
                "7 to move UPRIGHT, 8 to move UPLEFT, 9 to move DOWNRIGHT, 10 to move DOWNLEFT, 11 to move UP and FIRE, 12 to move RIGHT and FIRE, " \
-               "13 to move LEFT and FIRE, 14 to move DOWN and FIRE, 15 to move UPRIGHT and FIRE, 16 to move UPLEFT and FIRE, 17 to move DOWNRIGHT and FIRE, " \
-               "or '18' to move DOWNLEFT and FIRE. Ensure you only provide the action number from the valid action list, i.e., [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]."
+               "13 to move LEFT and FIRE, 14 to move DOWN and FIRE, 15 to move UPRIGHT and FIRE, 16 to move UPLEFT and FIRE, 17 to move DOWNRIGHT and FIRE, '18' to move DOWNLEFT and FIRE. " \
+               "Ensure you only provide the action number from the valid action list, i.e., [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]."
 
 
 class TransitionTranslator(ObsTranslator):

@@ -113,7 +113,6 @@ def _run(translator, environment, decider, max_episode_len, logfile, args, trail
                     goal_description,
                     logfile
                 )
-
                 state_description, reward, termination, truncation, env_info = environment.step_llm(
                     action
                 )
@@ -170,7 +169,11 @@ def _run(translator, environment, decider, max_episode_len, logfile, args, trail
             break
         # time.sleep(1)
 
-    save_frames_as_gif(frames, path="./", filename=f"{args.env_name}-{args.decider}-{trail}.gif")
+    if args.gpt_version == "meta/llama3-70b-instruct":
+        my_gpt = "llama3-70b-instruct"
+    else:
+        my_gpt = args.gpt_version
+    save_frames_as_gif(frames, path="./myllm.log/", filename=f"{args.env_name}-{args.decider}-{my_gpt}-{trail}.gif")
     decider.env_history.add('terminate_state', environment.get_terminate_state(round+1, max_episode_len))
     decider.env_history.add("cummulative_reward", str(utility))
     # Record the final reward
@@ -304,8 +307,14 @@ if __name__ == "__main__":
         "--api_type",
         type=str,
         default="openai",
-        choices=["azure", "openai", "vllm", "qwen", "aistudio"],
+        choices=["azure", "openai", "vllm", "qwen", "aistudio", "groq", "nvidia"],
         help="choose api type, now support azure and openai"
+    )
+    parser.add_argument(
+        "--key_name",
+        type=str,
+        default="jar",
+        help="choose api key name to make multi-processing"
     )
     parser.add_argument(
         "--port",

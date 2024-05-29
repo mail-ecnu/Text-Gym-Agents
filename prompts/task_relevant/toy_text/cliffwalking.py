@@ -5,7 +5,7 @@ class ACT:
                 "question":
                     """
                 State description: 
-                Current Game State: The player is at location [3, 0] in the grid world.
+                Current Game State: The You are at location [3, 0] in the grid world.
                 Goal description: The goal is to navigate from the starting point to an target which locate at (3,11), avoiding the cliff, in as few steps as possible.
                 Action description: Your Next Move:\nPlease choose an action. Type '1' to move up, '2' to move right, '3' to move down, or '4' to move left. Ensure you only provide the action number from the valid action list, i.e., [1, 2, 3, 4].
                     """,
@@ -18,7 +18,7 @@ class ACT:
                 "question":
                     """
                 State description: 
-                Current Game State: The player is at location [0, 11] in the grid world.
+                Current Game State: The You are at location [0, 11] in the grid world.
                 Goal description: The goal is to navigate from the starting point to an target which locate at (3,11), avoiding the cliff, in as few steps as possible.
                 Action description: Your Next Move:\nPlease choose an action. Type '1' to move up, '2' to move right, '3' to move down, or '4' to move left. Ensure you only provide the action number from the valid action list, i.e., [1, 2, 3, 4].
                     """,
@@ -37,7 +37,7 @@ class COT:
                 "question":
                     """
                 State description: 
-                Current Game State: The player is at location [3, 0] in the grid world.
+                Current Game State: The You are at location [3, 0] in the grid world.
                 Goal description: The goal is to navigate from the starting point to an target which locate at (3,11), avoiding the cliff, in as few steps as possible.
                 Action description: Your Next Move:\nPlease choose an action. Type '1' to move up, '2' to move right, '3' to move down, or '4' to move left. Ensure you only provide the action number from the valid action list, i.e., [1, 2, 3, 4].
                     """,
@@ -50,7 +50,7 @@ class COT:
                 "question":
                     """
                 State description: 
-                Current Game State: The player is at location [0, 11] in the grid world.
+                Current Game State: The You are at location [0, 11] in the grid world.
                 Goal description: The goal is to navigate from the starting point to an target which locate at (3,11), avoiding the cliff, in as few steps as possible.
                 Action description: Your Next Move:\nPlease choose an action. Type '1' to move up, '2' to move right, '3' to move down, or '4' to move left. Ensure you only provide the action number from the valid action list, i.e., [1, 2, 3, 4].
                     """,
@@ -69,7 +69,7 @@ class PAL:
                 "question":
                     """
                 State description: 
-                Current Game State: The player is at location [3, 0] in the grid world.
+                Current Game State: The You are at location [3, 0] in the grid world.
                 Goal description: The goal is to navigate from the starting point to an target which locate at (3,11), avoiding the cliff, in as few steps as possible.
                 Action description: Your Next Move:\nPlease choose an action. Type '1' to move up, '2' to move right, '3' to move down, or '4' to move left. Ensure you only provide the action number from the valid action list, i.e., [1, 2, 3, 4].
                     """,
@@ -109,7 +109,7 @@ class PAL:
                 "question":
                     """
                 State description: 
-                Current Game State: The player is at location [0, 11] in the grid world.
+                Current Game State: The You are at location [0, 11] in the grid world.
                 Goal description: The goal is to navigate from the starting point to an target which locate at (3,11), avoiding the cliff, in as few steps as possible.
                 Action description: Your Next Move:\nPlease choose an action. Type '1' to move up, '2' to move right, '3' to move down, or '4' to move left. Ensure you only provide the action number from the valid action list, i.e., [1, 2, 3, 4].
                     """,
@@ -155,7 +155,7 @@ class CONSISTENCY:
                 "question":
                     """
                 State description: 
-                Current Game State: The player is at location [3, 0] in the grid world.
+                Current Game State: The You are at location [3, 0] in the grid world.
                 Goal description: The goal is to navigate from the starting point to an target which locate at (3,11), avoiding the cliff, in as few steps as possible.
                 Action description: Your Next Move:\nPlease choose an action. Type '1' to move up, '2' to move right, '3' to move down, or '4' to move left. Ensure you only provide the action number from the valid action list, i.e., [1, 2, 3, 4].
                     """,
@@ -168,7 +168,7 @@ class CONSISTENCY:
                 "question":
                     """
                 State description: 
-                Current Game State: The player is at location [0, 11] in the grid world.
+                Current Game State: The You are at location [0, 11] in the grid world.
                 Goal description: The goal is to navigate from the starting point to an target which locate at (3,11), avoiding the cliff, in as few steps as possible.
                 Action description: Your Next Move:\nPlease choose an action. Type '1' to move up, '2' to move right, '3' to move down, or '4' to move left. Ensure you only provide the action number from the valid action list, i.e., [1, 2, 3, 4].
                     """,
@@ -187,7 +187,7 @@ class SELFASK:
                 "question":
                     """
                 State description: 
-                Current Game State: The player is at location [3, 0] in the grid world.
+                Current Game State: The You are at location [3, 0] in the grid world.
                 Goal description: The goal is to navigate from the starting point to an target which locate at (3,11), avoiding the cliff, in as few steps as possible.
                 Action description: Your Next Move:\nPlease choose an action. Type '1' to move up, '2' to move right, '3' to move down, or '4' to move left. Ensure you only provide the action number from the valid action list, i.e., [1, 2, 3, 4].
                     """,
@@ -213,7 +213,7 @@ class SELFASK:
                 "question":
                     """
                 State description: 
-                Current Game State: The player is at location [0, 11] in the grid world.
+                Current Game State: The You are at location [0, 11] in the grid world.
                 Goal description: The goal is to navigate from the starting point to an target which locate at (3,11), avoiding the cliff, in as few steps as possible.
                 Action description: Your Next Move:\nPlease choose an action. Type '1' to move up, '2' to move right, '3' to move down, or '4' to move left. Ensure you only provide the action number from the valid action list, i.e., [1, 2, 3, 4].
                     """,
@@ -328,7 +328,7 @@ class REFLEXION:
             {
                 "question":
                     """
-                State description: Current Game State: The player is at location [2, 11] in the grid world.
+                State description: Current Game State: The You are at location [2, 11] in the grid world.
                 Goal description: The goal is to navigate from the starting point to an target which locate at (3,11), avoiding the cliff, in as few steps as possible.
                 Action description: Your Next Move:\nPlease choose an action. Type '1' to move up, '2' to move right, '3' to move down, or '4' to move left. Ensure you only provide the action number from the valid action list, i.e., [1, 2, 3, 4].
                 Your memory for the task below:
@@ -347,7 +347,7 @@ class REFLEXION:
             {
                 "question":
                     """
-                State description: Current Game State: The player is at location [3,0] in the grid world.
+                State description: Current Game State: The You are at location [3,0] in the grid world.
                 Goal description: The goal is to navigate from the starting point to an target which locate at (3,11), avoiding the cliff, in as few steps as possible.
                 Action description: Your Next Move:\nPlease choose an action. Type '1' to move up, '2' to move right, '3' to move down, or '4' to move left. Ensure you only provide the action number from the valid action list, i.e., [1, 2, 3, 4].
                 Your memory for the task below:
@@ -371,7 +371,7 @@ class EXE:
             {
                 "question":
                     """
-                State description: Current Game State: The player is at location [2, 11] in the grid world.
+                State description: Current Game State: The You are at location [2, 11] in the grid world.
                 Goal description: The goal is to navigate from the starting point to an target which locate at (3,11), avoiding the cliff, in as few steps as possible.
                 Action description: Your Next Move:\nPlease choose an action. Type '1' to move up, '2' to move right, '3' to move down, or '4' to move left. Ensure you only provide the action number from the valid action list, i.e., [1, 2, 3, 4].
                 The insights of the game are listed below: The key information that can be exploited to improve the player's performance is that they tend to move in a straight line towards the goal location, even if it means getting closer to the cliff. This behavior can be addressed by incorporating a more cautious approach that prioritizes avoiding the cliff over reaching the goal quickly. Additionally, the policy could be updated to encourage exploration of different paths towards the goal location, rather than always moving in a straight line. The negative consequences of not prioritizing cliff avoidance are highlighted in the player's poor performance and multiple penalties.
@@ -387,7 +387,7 @@ class EXE:
             },{
                 "question":
                     """
-                State description: Current Game State: The player is at location [3,0] in the grid world.
+                State description: Current Game State: The You are at location [3,0] in the grid world.
                 Goal description: The goal is to navigate from the starting point to an target which locate at (3,11), avoiding the cliff, in as few steps as possible.
                 Action description: Your Next Move:\nPlease choose an action. Type '1' to move up, '2' to move right, '3' to move down, or '4' to move left. Ensure you only provide the action number from the valid action list, i.e., [1, 2, 3, 4].
                 The insights of the game are listed below: The key information that can be exploited to improve performance of the player is that they tend to move in a straight line or zigzag pattern towards the goal location, even if it means getting closer to the cliff. This behavior can be improved by incorporating a more cautious approach that prioritizes avoiding the cliff over reaching the goal quickly, and by encouraging exploration of different paths towards the goal location. Additionally, the policy could be updated to include a penalty for falling off the cliff, which would further incentivize the player to avoid it.

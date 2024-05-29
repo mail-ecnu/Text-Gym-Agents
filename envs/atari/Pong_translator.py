@@ -6,7 +6,7 @@ class ObsTranslator:
 
     def translate(self, state):
         player_y, player_x, enemy_y, enemy_x, ball_x, ball_y, enemy_score, player_score = state
-        return f"The player is at position ({player_y, player_x}, your opponent is at position ({enemy_y, enemy_x}) ), the ball is at ({ball_y, ball_x})" \
+        return f"The You are at position ({player_y, player_x}, your opponent is at position ({enemy_y, enemy_x}) ), the ball is at ({ball_y, ball_x})" \
                f"your oppoent's score is {enemy_score}, your score is {player_score}."
 
 
@@ -34,8 +34,8 @@ class GameDescriber:
                "The first player to score 21 points wins the game."
 
     def describe_action(self):
-        return "Type '1' for NOOP (no operation), '2' to hit the ball, " \
-               "'3' to move right, '4' to move left, '5' to move right while hit the ball, '6' to move left while hit the ball. Ensure you only provide the action number " \
+        return "Type 1 for NOOP (no operation), 2 to hit the ball, " \
+               "3 to move right, 4 to move left, 5 to move right while hit the ball, 6 to move left while hit the ball. Ensure you only provide the action number " \
                "from the valid action list, i.e., [1, 2, 3, 4, 5, 6]."
 
 

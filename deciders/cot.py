@@ -14,6 +14,7 @@ from langchain.callbacks import FileCallbackHandler
 from langchain_community.callbacks import get_openai_callback
 from .act import NaiveAct
 from .utils import run_chain, get_chat, num_tokens_from_string
+from gym.spaces import Discrete
 
 class ChainOfThought(NaiveAct):
     def __init__(self, action_space, args, prompts, distiller, temperature=0.1, max_tokens=None, logger=None):
@@ -28,6 +29,7 @@ class ChainOfThought(NaiveAct):
         goal_description,
         logfile=None,
     ):
+        # self.change_key()
         self.action_description = action_description
         self._add_history_before_action(game_description, goal_description, state_description)
         messages = []
@@ -58,9 +60,13 @@ class ChainOfThought(NaiveAct):
         if self.use_short_mem:
             if len(self.env_history) > 1:
                 messages.append({"role": "user",  "content":  f"Here is the last {min(self.mem_num, len(self.env_history))} history you have seen: {self.env_history.get_histories(self.mem_num)}"})
+                messages.append({"role": "assistant",  "content":  f"I have memorized it."})
 
-
-        instruction = f'Currently, {state_description}.{action_description}\n  You should first take a deep breath. Then you  should think step by step about the action selection and  lay out your thought process explicitly. After that you should decide an action based on the thought. For the whole response, you should use JSON format with two keys "thought process" and "action".'
+        instruction = f'Currently, {state_description}.{action_description}\n Now select your action. You should first take a deep breath. Then you  should think step by step about the action selection and  lay out your thought process explicitly. After that you should decide an action based on the thought. For the whole response, you should use JSON format with two keys "thought process" and "action"'
+        if isinstance(self.action_space, Discrete):
+            instruction += " where the action should be a scalar."
+        else:
+            instruction += "."
         instruction_msg = {"role": "user", "content": instruction}
         for i in range(len(messages)):
             if num_tokens_from_string(self.args.gpt_version, messages[:i]) > self.args.max_query_tokens-num_tokens_from_string(self.args.gpt_version, instruction_msg):

@@ -57,9 +57,9 @@ class GameDescriber:
                "You can control the movement and firing of your character. Avoid getting hit and escape from Evil Otto to survive!"
 
     def describe_action(self):
-        return "Type '1' for NOOP (no operation), '2' to FIRE, '3' to move UP, '4' to move RIGHT, '5' to move LEFT, '6' to move DOWN, " \
-               "'7' to move UPRIGHT, '8' to move UPLEFT, '9' to move DOWNRIGHT, '10' to move DOWNLEFT, '11' to move UP and FIRE, '12' to move RIGHT and FIRE, " \
-               "'13' to move LEFT and FIRE, '14' to move DOWN and FIRE, '15' to move UPRIGHT and FIRE, '16' to move UPLEFT and FIRE, '17' to move DOWNRIGHT and FIRE, " \
+        return "Type 1 for NOOP (no operation), 2 to FIRE, 3 to move UP, 4 to move RIGHT, 5 to move LEFT, 6 to move DOWN, " \
+               "7 to move UPRIGHT, 8 to move UPLEFT, 9 to move DOWNRIGHT, 10 to move DOWNLEFT, 11 to move UP and FIRE, 12 to move RIGHT and FIRE, " \
+               "13 to move LEFT and FIRE, 14 to move DOWN and FIRE, 15 to move UPRIGHT and FIRE, 16 to move UPLEFT and FIRE, 17 to move DOWNRIGHT and FIRE, " \
                "or '18' to move DOWNLEFT and FIRE. Ensure you only provide the action number from the valid action list, i.e., [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]."
 
 

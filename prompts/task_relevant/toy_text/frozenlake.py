@@ -4,7 +4,7 @@ class ACT:
             {
                 "question":
                     """
-            State description: Current Game State: The current position of the player is at row 0, column 1.
+            State description: Current Game State: The current position of the You are at row 0, column 1.
             Goal description: The goal is to navigate across the frozen lake and reach the goal position located at (3,3) without falling into any holes, which are located at (1,1), (1,3), (2,3) and (0,3).
             Action description: Your Next Move: 
             Please choose an action. The possible actions are:
@@ -21,7 +21,7 @@ class ACT:
             {
                 "question":
                     """
-            State description: Current Game State: The current position of the player is at row 1, column 0.
+            State description: Current Game State: The current position of the You are at row 1, column 0.
             Goal description: The goal is to navigate across the frozen lake and reach the goal position located at (3,3) without falling into any holes, which are located at (1,1), (1,3), (2,3) and (0,3).
             Action description: Your Next Move: 
             Please choose an action. The possible actions are:
@@ -44,7 +44,7 @@ class COT:
             {
                 "question":
                     """
-            State description: Current Game State: The current position of the player is at row 0, column 1.
+            State description: Current Game State: The current position of the You are at row 0, column 1.
             Goal description: The goal is to navigate across the frozen lake and reach the goal position located at (3,3) without falling into any holes, which are located at (1,1), (1,3), (2,3) and (0,3).
             Action description: Your Next Move: 
             Please choose an action. The possible actions are:
@@ -64,7 +64,7 @@ class COT:
             {
                 "question":
                     """
-            State description: Current Game State: The current position of the player is at row 1, column 0.
+            State description: Current Game State: The current position of the You are at row 1, column 0.
             Goal description: The goal is to navigate across the frozen lake and reach the goal position located at (3,3) without falling into any holes, which are located at (1,1), (1,3), (2,3) and (0,3).
             Action description: Your Next Move: 
             Please choose an action. The possible actions are:
@@ -89,7 +89,7 @@ class PAL:
         self.PERCEPTRON_BASIC_FS_EXAMPLES = [{
                 "question":
                     """
-            State description: Current Game State: The current position of the player is at row 0, column 1.
+            State description: Current Game State: The current position of the You are at row 0, column 1.
             Goal description: The goal is to navigate across the frozen lake and reach the goal position located at (3,3) without falling into any holes, which are located at (1,1), (1,3), (2,3) and (0,3).
             Action description: Your Next Move: 
             Please choose an action. The possible actions are:
@@ -208,7 +208,7 @@ class CONSISTENCY:
         self.PERCEPTRON_BASIC_FS_EXAMPLES = [{
                 "question":
                     """
-            State description: Current Game State: The current position of the player is at row 0, column 1.
+            State description: Current Game State: The current position of the You are at row 0, column 1.
             Goal description: The goal is to navigate across the frozen lake and reach the goal position located at (3,3) without falling into any holes, which are located at (1,1), (1,3), (2,3) and (0,3).
             Action description: Your Next Move: 
             Please choose an action. The possible actions are:
@@ -228,7 +228,7 @@ class CONSISTENCY:
             {
                 "question":
                     """
-            State description: Current Game State: The current position of the player is at row 1, column 0.
+            State description: Current Game State: The current position of the You are at row 1, column 0.
             Goal description: The goal is to navigate across the frozen lake and reach the goal position located at (3,3) without falling into any holes, which are located at (1,1), (1,3), (2,3) and (0,3).
             Action description: Your Next Move: 
             Please choose an action. The possible actions are:
@@ -252,7 +252,7 @@ class SELFASK:
         self.PERCEPTRON_BASIC_FS_EXAMPLES = [{
                 "question":
                     """
-            State description: Current Game State: The current position of the player is at row 0, column 1.
+            State description: Current Game State: The current position of the You are at row 0, column 1.
             Goal description: The goal is to navigate across the frozen lake and reach the goal position located at (3,3) without falling into any holes, which are located at (1,1), (1,3), (2,3) and (0,3).
             Action description: Your Next Move: 
             Please choose an action. The possible actions are:
@@ -265,7 +265,7 @@ class SELFASK:
                     """
             Are follow-up questions needed here: Yes.
             Follow up: What is the current location of the player?
-            Intermediate answer: The current position of the player is at row 0, column 1, i.e., (0,1).
+            Intermediate answer: The current position of the You are at row 0, column 1, i.e., (0,1).
             Follow up: Where is the goal location?
             Intermediate answer: The goal position is located at row 3, column 3, i.e., (3,3).
             Follow up: Where are the obstacles (holes) located?
@@ -282,7 +282,7 @@ class SELFASK:
             {
                 "question":
                     """
-            State description: Current Game State: The current position of the player is at row 1, column 0.
+            State description: Current Game State: The current position of the You are at row 1, column 0.
             Goal description: The goal is to navigate across the frozen lake and reach the goal position located at (3,3) without falling into any holes, which are located at (1,1), (1,3), (2,3) and (0,3).
             Action description: Your Next Move: 
             Please choose an action. The possible actions are:
@@ -295,7 +295,7 @@ class SELFASK:
                     """
             Are follow-up questions needed here: Yes.
             Follow up: What is the current location of the player?
-            Intermediate answer: The current position of the player is at row 1, column 0, i.e., (1,0).
+            Intermediate answer: The current position of the You are at row 1, column 0, i.e., (1,0).
             Follow up: Where is the goal location?
             Intermediate answer: The goal position is located at row 3, column 3, i.e., (3,3).
             Follow up: Where are the obstacles (holes) located?
@@ -399,7 +399,7 @@ class REFLEXION:
             {
                 "question":
                     """
-                State description: Current Game State: The current position of the player is at row 2, column 0.
+                State description: Current Game State: The current position of the You are at row 2, column 0.
                 Goal description: The goal is to navigate across the frozen lake and reach the goal position located at (3,3) without falling into any holes, which are located at (1,1), (1,3), (2,3) and (0,3).
                 Action description: Your Next Move: 
                 Please choose an action. The possible actions are:
@@ -423,7 +423,7 @@ class REFLEXION:
             {
                 "question":
                     """
-                State description: Current Game State: The current position of the player is at row 1, column 0.
+                State description: Current Game State: The current position of the You are at row 1, column 0.
                 Goal description: The goal is to navigate across the frozen lake and reach the goal position located at (3,3) without falling into any holes, which are located at (1,1), (1,3), (2,3) and (0,3).
                 Action description: Your Next Move: 
                 Please choose an action. The possible actions are:
@@ -452,7 +452,7 @@ class EXE:
             {
                 "question":
                     """
-                State description: Current Game State: The current position of the player is at row 2, column 0.
+                State description: Current Game State: The current position of the You are at row 2, column 0.
                 Goal description: The goal is to navigate across the frozen lake and reach the goal position located at (3,3) without falling into any holes, which are located at (1,1), (1,3), (2,3) and (0,3).
                 Action description: Your Next Move: 
                 Please choose an action. The possible actions are:

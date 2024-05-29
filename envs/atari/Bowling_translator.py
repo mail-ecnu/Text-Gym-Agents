@@ -39,8 +39,8 @@ class GameDescriber:
                "You can control the direction and power of your roll. Aim carefully to knock down all the pins for a strike!"
 
     def describe_action(self):
-        return "Type '1' for NOOP (no operation), '2' to release the ball straight (FIRE), " \
-               "'3' to move up, '4' to move down, '5' to adjust ball position up and release (UPFIRE), '6' to adjust ball position down and release (DOWNFIRE). " \
+        return "Type 1 for NOOP (no operation), 2 to release the ball straight (FIRE), " \
+               "3 to move up, 4 to move down, 5 to adjust ball position up and release (UPFIRE), 6 to adjust ball position down and release (DOWNFIRE). " \
                "Ensure you only provide the action number " \
                "from the valid action list, i.e., [1, 2, 3, 4, 5, 6]."
 

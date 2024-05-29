@@ -1,22 +1,17 @@
-# [Translator classes and functions for Atari BattleZone environment]
+# [Translator classes and functions for Atari Pitfall environment]
 
 class ObsTranslator:
     def __init__(self):
         pass
 
     def translate(self, state):
-        blue_tank_facing_direction, blue_tank_size_y, blue_tank_x, blue_tank2_facing_direction, blue_tank2_size_y, blue_tank2_x, \
-        num_lives, missile_y, compass_needles_angle, angle_of_tank, left_tread_position, right_tread_position, crosshairs_color, score = state
+        player_x, player_y, enemy_logs_x, enemy_scorpion_x, bottom_of_rope_y, clock_sec, clock_min = state
 
-        return f"The blue tank is facing direction {blue_tank_facing_direction} and is at position x={blue_tank_x} with size y={blue_tank_size_y}. " \
-               f"The second blue tank is facing direction {blue_tank2_facing_direction} and is at position x={blue_tank2_x} with size y={blue_tank2_size_y}. " \
-               f"You have {num_lives} lives remaining. " \
-               f"The missile is at position y={missile_y}. " \
-               f"The compass needle is at an angle of {compass_needles_angle}. " \
-               f"The tank's angle is {angle_of_tank}. " \
-               f"The left tread position is {left_tread_position} and the right tread position is {right_tread_position}. " \
-               f"The crosshairs color is {crosshairs_color}. " \
-               f"Your score is {score}."
+        return f"You are at position ({player_x}, {player_y}). " \
+               f"Enemy logs are at position x={enemy_logs_x}. " \
+               f"Enemy scorpion is at position x={enemy_scorpion_x}. " \
+               f"Bottom of rope is at position y={bottom_of_rope_y}. " \
+               f"Time remaining: {clock_min} minutes and {clock_sec} seconds."
 
 
 class GameDescriber:
@@ -30,19 +25,19 @@ class GameDescriber:
         }
 
     def describe_goal(self):
-        return "The goal is to destroy as many enemy tanks as possible and survive as long as you can."
+        return "The goal is to navigate through the jungle, avoiding obstacles and enemies, to collect treasures within the time limit."
 
     def translate_terminate_state(self, state, episode_len, max_episode_len):
-        return f"Game over. Final score: {state[-1]}."
+        return f"Game over. Time remaining: {state[6]} minutes and {state[5]} seconds."
 
     def translate_potential_next_state(self, state, action):
-        return f"After taking the action, you might move to a new position with the blue tanks at positions {state[2]}, {state[5]} and the missile at position {state[7]}."
+        return f"After taking the action, you might move to position ({state[0]}, {state[1]}) and interact with obstacles and enemies at positions log_x={state[2]}, scorpion_x={state[3]}."
 
     def describe_game(self):
-        return "In the BattleZone game, you control a tank and aim to destroy enemy tanks while avoiding being hit. " \
+        return "In the Pitfall game, you control a player character and aim to navigate through the jungle, avoiding obstacles and enemies, to collect treasures within the time limit. " \
                f"There are {self.args.frameskip} frames per step and the action sticks for the skipping frames." if self.args.frameskip > 0 else "" \
-               "Scoring Points: Points are scored by destroying enemy tanks. " \
-               "You can control the movement and firing of your tank. Survive as long as possible to achieve a high score!"
+               "Scoring Points: Points are scored by collecting treasures. " \
+               "You can control the movement and actions of your character to navigate through the jungle, avoid obstacles and enemies, and collect treasures to achieve a high score."
 
     def describe_action(self):
         return "Type 1 for NOOP (no operation), 2 to FIRE, 3 to move UP, 4 to move RIGHT, 5 to move LEFT, 6 to move DOWN, " \
